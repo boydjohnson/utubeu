@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import socialConfig
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -118,3 +119,11 @@ AUTHENTICATION_BACKENDS = [
     'social.backends.facebook.Facebook2OAuth2',
     'django.contrib.auth.backends.ModelBackend'
 ]
+
+
+#SOCIAL OAUTH
+LOGIN_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY= socialConfig.google_client_id
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = socialConfig.google_secret
+
