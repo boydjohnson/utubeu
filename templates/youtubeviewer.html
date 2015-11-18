@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+
+    <style>
+        #chattertext {
+            height: 200px;
+            overflow-y: scroll;
+            border:1px solid black;
+        }
+
+        .sidebar-toggle {
+            transform: rotate(90deg);
+            transform-origin: top left 0;
+            width: 200px;
+            float: left;
+        }
+    </style>
+
+</head>
+<body>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div id="dock" class="col-md-4">
+
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="row">
+        <div  class="col-md-4 embed-responsive embed-responsive-4by3">
+            <iframe  id="video" class="embed-responsive-item"></iframe>
+        </div>
+
+        <div class="col-md-1 btn btn-danger sidebar-toggle">
+            Chat
+        </div>
+
+        <div class="col-md-4 sidebar">
+
+            <div id="chattertext">
+
+            </div>
+            <textarea class="col-md-12" id="chatterbox" rows="2" placeholder="Chat!"></textarea>
+            <textarea class="col-md-12" id="videourl" rows="2"></textarea>
+
+            <div id="sendbutton" class="btn btn-success col-md-12">Send</div>
+            <div id="sendvideobutton" class="btn btn-warning col-md-12" col-md-12>Send Video</div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    var websocket = new WebSocket('ws:127.0.0.1:9000');
+    $('#sendbutton').click(function () {
+        websocket.send($('#chatterbox').val());
+    })
+
+    websocket.onmessage = function (event) {
+        var msg = JSON.parse(event.data);
+        if (msg.screen != null) {
+            var difference = msg.screen.count - $('#dock').children().length;
+            for (var i = 0; i < difference; i++) {
+                $('#dock').append('<img src="screen.png" height="25" width="25">');
+            }
+            if (difference < 0) {
+                for (var i = 0; i < -difference; i++) {
+                    $('#dock').children('img:first').remove();
+                }
+            }
+        }
+        if (msg.msg != null) {
+            $('#chattertext').append('<p>' + msg.msg + '</p>');
+            $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
+        }
+    };
+
+    $('.sidebar-toggle').click(function () {
+        if ($('.sidebar').hasClass('hidden')) {
+            $('.sidebar').removeClass('hidden');
+            $('.sidebar-toggle').removeClass('btn-info').addClass('btn-danger');
+            $('.sidebar-toggle').removeClass('col-md-offset-12').addClass('col-md-offset-8');
+
+        } else {
+            $('.sidebar').addClass('hidden');
+            $('.sidebar-toggle').removeClass('btn-danger').addClass('btn-info');
+            $('.sidebar-toggle').removeClass('col-md-offset-8').addClass('col-md-offset-12');
+        }
+
+    });
+
+    $('#sendvideobutton').click(function(){
+       $('#video').attr('src',$('#videourl').val());
+    });
+
+    var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          events: {
+            'onReady': onPlayerReady,
+          }
+        });
+      }
+
+    function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+
+
+
+</script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+        integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+        crossorigin="anonymous"></script>
+</body>
+</html>
