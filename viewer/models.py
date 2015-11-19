@@ -11,3 +11,9 @@ class ChatRoom(models.Model):
     uuid = models.UUIDField(verbose_name='chatroom_uuid', null=False, default=uuid.uuid4, unique=True)
     owner = models.ForeignKey(User, related_name='chatroom_from_owner', null=False)
     users = models.ManyToManyField(User, related_name='chatroom_from_users', null=False)
+    type = models.IntegerField(editable=False, null=False)
+
+
+    def __unicode__(self):
+        return self.name + " " + self.owner.username
+
