@@ -1,43 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
+{% extends 'base.html' %}
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
-          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
-          crossorigin="anonymous">
+{% block title %}{% if user and user.is_authenticated %}Hello, {{ user.get_full_name | default:user.username }}{% else %}UTubeU{% endif %} {% endblock %}
 
-</head>
-<body>
+{% block content %}
+    <p>
+    <ul>
+        {% if user and not user.is_anonymous %}
+            <li>
+                <a>Hello {{ user.get_full_name|default:user.username }}!</a>
+            </li>
+            <li>
+                <a href="{% url 'viewer:logout' %}?next={% url 'viewer:login' %}">Logout</a>
+            </li>
+        {% else %}
+            <li>
+                <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
+            </li>
+            <li>
+                <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
+            </li>
+            <li>
+                <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>
+            </li>
+        {% endif %}
+    </ul>
+    </p>
 
-<p>
-   <ul>
-   {% if user and not user.is_anonymous %}
-     <li>
-       <a>Hello {{ user.get_full_name|default:user.username }}!</a>
-     </li>
-     <li>
-       <a href="{% url 'viewer:logout' %}?next={% url 'viewer:login' %}">Logout</a>
-     </li>
-   {% else %}
-     <li>
-       <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
-     </li>
-     <li>
-       <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
-     </li>
-     <li>
-       <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>
-     </li>
-   {% endif %}
-   </ul>
- </p>
+    {% if user and user.is_authenticated %}
+        {% for chatroom in chatrooms %}
+            <div class="btn btn-info">
+                Enter {{ chatroom.name }}
+            </div>
+        {% endfor %}
+        {% if number_owned < 2 %}
+            <div id="create-button" class="btn btn-success" data-toggle="collapse" data-target="#room-maker">
+                Create a chatroom.
+            </div>
+            <div id="room-maker" class="collapse">
+                <form action="{% url 'viewer:login' %}">
+                    <div class="form-row">
+                        <label>Name:</label>
+                        <input type="text" name="chatroom_name">
+                    </div>
+                    <div class="form-row">
+                        <label>Description</label>
+                        <textarea name="description" rows="2"></textarea>
+                    </div>
+                </form>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
-        integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
-        crossorigin="anonymous"></script>
-</body>
-</html>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}
