@@ -5,93 +5,126 @@
 
 {% block content %}
     <div class="row">
-    <div class="col-md-3">
-        <ul>
+        <div class="col-md-3">
+            <ul>
+                {% if user and user.is_authenticated %}
+                    <li>
+                        <a>Hello {{ user.get_full_name|default:user.username }}!</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'viewer:logout' %}?next={% url 'viewer:login' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col-md-3">
             {% if user and user.is_authenticated %}
-                <li>
-                    <a>Hello {{ user.get_full_name|default:user.username }}!</a>
-                </li>
-                <li>
-                    <a href="{% url 'viewer:logout' %}?next={% url 'viewer:login' %}">Logout</a>
-                </li>
-            {% else %}
-                <li>
-                    <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
-                </li>
-                <li>
-                    <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
-                </li>
-                <li>
-                    <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>
-                </li>
+                {% for chatroom in chatrooms %}
+                    <div class="btn btn-info">
+                        Enter {{ chatroom.name }}
+                    </div>
+                {% endfor %}
+                {% for chatroom in owned_chatrooms %}
+                    <div class="btn btn-warning">
+                        Enter {{ chatroom.name }}
+                    </div>
+
+                {% endfor %}
+                </div>
+                <div class="col-md-3">
+
+                {% if number_owned < 2 %}
+                    <div id="create-button" class="btn btn-success" data-toggle="collapse" data-target="#room-maker">
+                        Create a chatroom.
+                    </div>
+                    <div id="room-maker" class="collapse">
+                        <form action="{% url 'viewer:login' %}" method="post">{% csrf_token %}
+                            <div class="form-row">
+                                <label>Name:</label>
+                                <input type="text" name="chatroom_name">
+                            </div>
+                            <div class="form-row">
+                                <label>Description:</label>
+                                <textarea name="description" rows="2"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <label>Email of Friend:</label>
+                                <input id="user0" type="email" multiple="false" name="user0">
+                            </div>
+                            <div id="makeit_button" class="btn btn-success">Create!</div>
+                        </form>
+
+
+                    </div>
+                {% endif %}
             {% endif %}
-        </ul>
-    </div>
-    <div class="col-md-3">
-        {% if user and user.is_authenticated %}
-            {% for chatroom in chatrooms %}
-                <div class="btn btn-info">
-                    Enter {{ chatroom.name }}
-                </div>
-            {% endfor %}
-    </div>
-    <div class="col-md-3">
-
-            {% if number_owned < 2 %}
-                <div id="create-button" class="btn btn-success" data-toggle="collapse" data-target="#room-maker">
-                    Create a chatroom.
-                </div>
-                <div id="room-maker" class="collapse">
-                    <form action="{% url 'viewer:login' %}" method="post">
-                        <div class="form-row">
-                            <label>Name:</label>
-                            <input type="text" name="chatroom_name">
-                        </div>
-                        <div class="form-row">
-                            <label>Description:</label>
-                            <textarea name="description" rows="2"></textarea>
-                        </div>
-                        <div class="form-row">
-                            <label>Email of Friend:</label>
-                            <input id="user0" type="email" multiple="false" name="user0">
-                        </div>
-                        <div id="makeit_button" class="btn btn-success">Create!</div>
-                    </form>
-
-
-                </div>
-            {% endif %}
-        {% endif %}
-    </div>
+            </div>
     </div>
 {% endblock %}
 
 {% block js %}
     <script>
-    $(document).ready(function(){
-        for (var user_number = 1; user_number < 19; user_number++) {
-            var previous_with_number = 'user' + (user_number - 1).toString();
-            var with_number = 'user' + user_number.toString();
-            var next_sibling_selector = "#" + with_number;
-            var selector = "#" + previous_with_number;
-            console.log(selector);
-            console.log(next_sibling_selector);
+        $(document).ready(function () {
+            for (var user_number = 1; user_number < 19; user_number++) {
+                var previous_with_number = 'user' + (user_number - 1).toString();
+                var with_number = 'user' + user_number.toString();
+                var next_sibling_selector = "#" + with_number;
+                var selector = "#" + previous_with_number;
 
-            var user_email = $('<div class="form-row"><label>Email of Friend:</label><input type="email"></div>');
-            user_email.children('input').attr('id', with_number);
-            user_email.children('input').attr('name', with_number);
-            user_email.children('input').attr('multiple', "false");
-            user_email.hide();
-            $('#makeit_button').before(user_email);
-            $(selector).on('input change', function () {
-                $(this).parent().next().show();
+                var user_email = $('<div class="form-row"><label>Email of Friend:</label><input type="email"></div>');
+                user_email.children('input').attr('id', with_number);
+                user_email.children('input').attr('name', with_number);
+                user_email.children('input').attr('multiple', "false");
+                user_email.hide();
+                $('#makeit_button').before(user_email);
+                $(selector).on('input change', function () {
+                    $(this).parent().next().show();
+                });
+            }
+
+            var emails = $('input[type=email]').map(function () {
+                if (!$(this).val() == "") {
+                    return $(this).val()
+                }
+                ;
+            }).get();
+            var name = $('input[type=text]').val();
+            var description = $('textarea').val();
+            var url = $('form').attr('action');
+            console.log(url);
+            console.log(emails);
+            console.log(name);
+            console.log(description);
+
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", $('input[name=csrfmiddlewaretoken]').val());
+                }
             });
-        }
 
-        $('input:email').each()
+            $('#makeit_button').click(function () {
+                $.post(url,
+                        {
+                            'user_emails': emails, 'chatroom_name': name, 'chatroom_description': description
+                        }
+                ).success(function () {
+                            $('input').val("");
+                            $('textarea').val("");
+                        });
+            });
 
 
-    });
+        });
     </script>
 
 {% endblock %}

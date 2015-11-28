@@ -1,12 +1,14 @@
+from django.contrib.auth.views import logout as auth_logout
 from django.shortcuts import render, redirect
 from django.template.context import RequestContext
+from django.views.decorators.csrf import ensure_csrf_cookie
 
-from django.contrib.auth.views import logout as auth_logout
+
 
 from viewer.models import Chatroom
 from viewer.forms import Chatroom_with_InvitedChatroom
 
-
+@ensure_csrf_cookie
 def login(request):
         user = request.user
         if user.is_authenticated():
@@ -17,6 +19,7 @@ def login(request):
         else:
             chatrooms = []
         owned_chatrooms = []
+        chatrooms = list(chatrooms)
         for c in chatrooms:
             if c.owner == user:
                 owned_chatrooms.append(c)
