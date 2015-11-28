@@ -2,8 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
-import uuid
+from django.db.models import F
 
 
 def only_two_chatrooms_per_user(obj):
@@ -12,30 +11,34 @@ def only_two_chatrooms_per_user(obj):
         raise ValidationError("Can only create 2 %s instances per user" % model.__name__)
 
 
-
-
-class ChatRoom(models.Model):
+class Chatroom(models.Model):
     name = models.TextField(verbose_name='Chatroom Name', max_length=50, blank=False, null=False)
     description = models.TextField(max_length=100, blank=True, null=True)
-    uuid = models.UUIDField(verbose_name='chatroom_uuid', null=False, default=uuid.uuid4, unique=True)
-    owner = models.ForeignKey(User, related_name='chatroom_from_owner', null=False)
+    owner = models.ForeignKey(to=User, related_name='chatroom_from_owner', null=False)
 
-    users = models.ManyToManyField(User, related_name='chatroom_from_users', null=False)
-    user_emails = models.EmailField(verbose_name="Chatroom Users' emails", null=False)
+    users = models.ManyToManyField(to=User, related_name='chatroom_from_users', null=False)
+    user_emails = models.ManyToManyField(to='InvitedChatroom', related_name='chatroom_from_emails')
 
     room_number = models.IntegerField(default=0)
-    number_in = models.IntegerField(default=0)
+
 
     class Meta:
-        unique_together = ('owner', 'room_number', 'number_in')
+        unique_together = ('owner', 'room_number')
 
     def __unicode__(self):
         return self.name + " " + self.owner.username
 
     def clean(self):
         only_two_chatrooms_per_user(self)
-        super(self, ChatRoom).clean()
+        super(self, Chatroom).clean()
 
-    def save(self, *args, **kwargs):
-        model = self.__class__
 
+class InvitedChatroom(models.Model):
+    chatroom = models.OneToOneField(to='Chatroom', related_name='invited_room')
+    user_email = models.EmailField()
+    number_in = models.IntegerField(default=0)
+    loggedin = models.BooleanField(default=False, null=False)
+
+
+    def __unicode__(self):
+        return self.chatroom.name + " " + self.user_email

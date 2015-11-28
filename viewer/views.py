@@ -3,7 +3,7 @@ from django.template.context import RequestContext
 
 from django.contrib.auth.views import logout as auth_logout
 
-from viewer.models import ChatRoom
+from viewer.models import Chatroom
 
 # Create your views here.
 
@@ -12,7 +12,7 @@ def login(request):
     if request.method == 'GET':
         user = request.user
         if user.is_authenticated():
-            chatrooms = ChatRoom.objects.filter(users=user)
+            chatrooms = Chatroom.objects.filter(users=user)
         else:
             chatrooms = []
         number_of_owned_chatrooms = 0
