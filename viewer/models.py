@@ -2,7 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.db.models import F
+
 
 
 def only_two_chatrooms_per_user(obj):
@@ -18,9 +18,6 @@ class Chatroom(models.Model):
 
     users = models.ManyToManyField(to=User, related_name='chatroom_from_users', null=False)
     user_emails = models.ManyToManyField(to='InvitedChatroom', related_name='chatroom_from_emails')
-
-    class Meta:
-        unique_together = ('owner', 'room_number')
 
     def __unicode__(self):
         return self.name + " " + self.owner.username

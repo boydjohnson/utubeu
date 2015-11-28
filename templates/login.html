@@ -53,7 +53,7 @@
                         </div>
                         <div class="form-row">
                             <label>Email of Friend:</label>
-                            <input id="user0" type="email" name="user0">
+                            <input id="user0" type="email" multiple="false" name="user0">
                         </div>
                         <div id="makeit_button" class="btn btn-success">Create!</div>
                     </form>
@@ -68,7 +68,7 @@
 
 {% block js %}
     <script>
-
+    $(document).ready(function(){
         for (var user_number = 1; user_number < 19; user_number++) {
             var previous_with_number = 'user' + (user_number - 1).toString();
             var with_number = 'user' + user_number.toString();
@@ -80,12 +80,18 @@
             var user_email = $('<div class="form-row"><label>Email of Friend:</label><input type="email"></div>');
             user_email.children('input').attr('id', with_number);
             user_email.children('input').attr('name', with_number);
+            user_email.children('input').attr('multiple', "false");
             user_email.hide();
             $('#makeit_button').before(user_email);
             $(selector).on('input change', function () {
                 $(this).parent().next().show();
             });
         }
+
+        $('input:email').each()
+
+
+    });
     </script>
 
 {% endblock %}
