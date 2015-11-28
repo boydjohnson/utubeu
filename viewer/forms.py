@@ -4,17 +4,31 @@ from django.db import transaction
 
 from viewer.models import Chatroom, InvitedChatroom
 
+class EmailMultiField(forms.MultiValueField):
+    def __init__(self, *args, **kwargs):
+        print args
+        fields = [forms.EmailField() for f in args]
+        super(EmailMultiField, self).__init__(fields, *args, **kwargs)
+
+    def compress(self, data_list):
+        return data_list
+
+
 class Chatroom_with_InvitedChatroom(forms.Form):
     '''This Form is used when a user first makes a Chatroom
     and there will be at least one InvitedChatroom user_email from the owner'''
-    chatroom_name = forms.TextInput()
-    description = forms.Textarea()
-    user_emails = forms.MultiValueField()
+    chatroom_name=forms.CharField()
+    chatroom_description = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        super(Chatroom_with_InvitedChatroom, self).__init__(*args, **kwargs)
+        self.fields['user_emails'] = EmailMultiField(*args)
+
 
     @transaction.atomic
     def save(self, owner):
-        cr_name = self.cleaned_data.get('chatroom_name')
-        cr_description = self.cleaned_data.get('chatroom_description')
+        cr_name = self.cleaned_data.get(u'chatroom_name')
+        cr_description = self.cleaned_data.get(u'chatroom_description')
 
         cr = Chatroom(name=cr_name, description=cr_description, owner=owner)
         cr.save()
@@ -23,7 +37,7 @@ class Chatroom_with_InvitedChatroom(forms.Form):
         ivcr = InvitedChatroom(chatroom=cr, user_email=owner.email, number_in=0, loggedin=True)
         ivcr.save()
 
-        emails = self.cleaned_data.get('user_emails',[])
+        emails = set(self.cleaned_data.get(u'user_emails[]',[]))
         if len(emails)>19:
             emails = emails[:18]
         invited_chatrooms = []

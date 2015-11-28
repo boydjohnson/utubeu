@@ -1,9 +1,10 @@
 from django.contrib.auth.views import logout as auth_logout
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.context import RequestContext
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-
+from json import loads, dumps
 
 from viewer.models import Chatroom
 from viewer.forms import Chatroom_with_InvitedChatroom
@@ -12,9 +13,12 @@ from viewer.forms import Chatroom_with_InvitedChatroom
 def login(request):
         user = request.user
         if user.is_authenticated():
-            form = Chatroom_with_InvitedChatroom(request.POST or None) #Here is the form posting
+
+            form = Chatroom_with_InvitedChatroom(loads(request.POST[u'data'],'utf-8') if u'data' in request.POST.keys() else None or None) #Here is the form posting
             if form.is_valid():
+                print "success"
                 form.save(owner=request.user)
+                return HttpResponse(dumps({"success": True}), content_type="application/json")
             chatrooms = Chatroom.objects.filter(users=user)
         else:
             chatrooms = []
@@ -25,7 +29,7 @@ def login(request):
                 owned_chatrooms.append(c)
                 chatrooms.remove(c)
         context = RequestContext(request, {'user': user, 'owned_chatrooms': owned_chatrooms,
-                                           'number_owned': len(owned_chatrooms), 'chatrooms': chatrooms})
+                                           'number_owned': len(owned_chatrooms), 'chatrooms': chatrooms, 'form':form})
 
 
 

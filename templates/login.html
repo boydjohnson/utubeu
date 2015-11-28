@@ -4,6 +4,8 @@
     {{ user.get_full_name | default:user.username }}{% else %}UTubeU{% endif %} {% endblock %}
 
 {% block content %}
+
+
     <div class="row">
         <div class="col-md-3">
             <ul>
@@ -73,6 +75,7 @@
 {% endblock %}
 
 {% block js %}
+
     <script>
         $(document).ready(function () {
             for (var user_number = 1; user_number < 19; user_number++) {
@@ -92,17 +95,6 @@
                 });
             }
 
-            var emails = $('input[type=email]').map(function () {
-                if (!$(this).val() == "") {
-                    return $(this).val()
-                }
-                ;
-            }).get();
-            var name = $('input[type=text]').val();
-            var description = $('textarea').val();
-            var url = $('form').attr('action');
-            console.log(name);
-            console.log(description);
 
             $.ajaxSetup({
                 beforeSend: function (xhr, settings) {
@@ -111,13 +103,28 @@
             });
 
             $('#makeit_button').click(function () {
+                var emails = $('input[type=email]').map(function () {
+                    if (!$(this).val() == "") {
+                        return $(this).val()
+                    }
+                }).get();
+                var name = $('input[type=text]').val();
+                var description = $('textarea').val();
+                var url = $('form').attr('action');
+
+
+                json_data = {
+                    'user_emails': emails, 'chatroom_name': name,
+                    'chatroom_description': description
+                };
+
                 $.post(url,
-                        {
-                            'user_emails': emails, 'chatroom_name': name, 'chatroom_description': description
-                        }
-                ).success(function () {
-                            $('input').val("");
-                            $('textarea').val("");
+                        {data: JSON.stringify(json_data)}
+                ).success(function (data) {
+                            if (data.success) {
+                                $('input').val("");
+                                $('textarea').val("");
+                            }
                         });
             });
 
