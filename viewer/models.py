@@ -19,9 +19,6 @@ class Chatroom(models.Model):
     users = models.ManyToManyField(to=User, related_name='chatroom_from_users', null=False)
     user_emails = models.ManyToManyField(to='InvitedChatroom', related_name='chatroom_from_emails')
 
-    room_number = models.IntegerField(default=0)
-
-
     class Meta:
         unique_together = ('owner', 'room_number')
 
@@ -30,7 +27,7 @@ class Chatroom(models.Model):
 
     def clean(self):
         only_two_chatrooms_per_user(self)
-        super(self, Chatroom).clean()
+        super(Chatroom, self).clean()
 
 
 class InvitedChatroom(models.Model):

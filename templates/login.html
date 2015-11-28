@@ -4,63 +4,66 @@
     {{ user.get_full_name | default:user.username }}{% else %}UTubeU{% endif %} {% endblock %}
 
 {% block content %}
-
-    <ul>
+    <div class="row">
+    <div class="col-md-3">
+        <ul>
+            {% if user and user.is_authenticated %}
+                <li>
+                    <a>Hello {{ user.get_full_name|default:user.username }}!</a>
+                </li>
+                <li>
+                    <a href="{% url 'viewer:logout' %}?next={% url 'viewer:login' %}">Logout</a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
+                </li>
+                <li>
+                    <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
+                </li>
+                <li>
+                    <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="col-md-3">
         {% if user and user.is_authenticated %}
-            <li>
-                <a>Hello {{ user.get_full_name|default:user.username }}!</a>
-            </li>
-            <li>
-                <a href="{% url 'viewer:logout' %}?next={% url 'viewer:login' %}">Logout</a>
-            </li>
-        {% else %}
-            <li>
-                <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
-            </li>
-            <li>
-                <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
-            </li>
-            <li>
-                <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>
-            </li>
+            {% for chatroom in chatrooms %}
+                <div class="btn btn-info">
+                    Enter {{ chatroom.name }}
+                </div>
+            {% endfor %}
+    </div>
+    <div class="col-md-3">
+
+            {% if number_owned < 2 %}
+                <div id="create-button" class="btn btn-success" data-toggle="collapse" data-target="#room-maker">
+                    Create a chatroom.
+                </div>
+                <div id="room-maker" class="collapse">
+                    <form action="{% url 'viewer:login' %}" method="post">
+                        <div class="form-row">
+                            <label>Name:</label>
+                            <input type="text" name="chatroom_name">
+                        </div>
+                        <div class="form-row">
+                            <label>Description:</label>
+                            <textarea name="description" rows="2"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <label>Email of Friend:</label>
+                            <input id="user0" type="email" name="user0">
+                        </div>
+                        <div id="makeit_button" class="btn btn-success">Create!</div>
+                    </form>
+
+
+                </div>
+            {% endif %}
         {% endif %}
-    </ul>
-
-    {% if user and user.is_authenticated %}
-        {% for chatroom in chatrooms %}
-            <div class="btn btn-info">
-                Enter {{ chatroom.name }}
-            </div>
-        {% endfor %}
-
-
-
-        {% if number_owned < 2 %}
-            <div id="create-button" class="btn btn-success" data-toggle="collapse" data-target="#room-maker">
-                Create a chatroom.
-            </div>
-            <div id="room-maker" class="collapse">
-                <form action="{% url 'viewer:login' %}" method="post">
-                    <div class="form-row">
-                        <label>Name:</label>
-                        <input type="text" name="chatroom_name">
-                    </div>
-                    <div class="form-row">
-                        <label>Description:</label>
-                        <textarea name="description" rows="2"></textarea>
-                    </div>
-                    <div class="form-row">
-                        <label>Email of Friend:</label>
-                        <input id="user0" type="email" name="user0">
-                    </div>
-                    <div id="makeit_button" class="btn btn-success">Create!</div>
-                </form>
-
-
-            </div>
-        {% endif %}
-    {% endif %}
-
+    </div>
+    </div>
 {% endblock %}
 
 {% block js %}
@@ -69,7 +72,7 @@
         for (var user_number = 1; user_number < 19; user_number++) {
             var previous_with_number = 'user' + (user_number - 1).toString();
             var with_number = 'user' + user_number.toString();
-            var next_sibling_selector = "#"+ with_number;
+            var next_sibling_selector = "#" + with_number;
             var selector = "#" + previous_with_number;
             console.log(selector);
             console.log(next_sibling_selector);
