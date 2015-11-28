@@ -19,14 +19,23 @@ class ChatRoom(models.Model):
     description = models.TextField(max_length=100, blank=True, null=True)
     uuid = models.UUIDField(verbose_name='chatroom_uuid', null=False, default=uuid.uuid4, unique=True)
     owner = models.ForeignKey(User, related_name='chatroom_from_owner', null=False)
+
     users = models.ManyToManyField(User, related_name='chatroom_from_users', null=False)
+    user_emails = models.EmailField(verbose_name="Chatroom Users' emails", null=False)
 
+    room_number = models.IntegerField(default=0)
+    number_in = models.IntegerField(default=0)
 
+    class Meta:
+        unique_together = ('owner', 'room_number', 'number_in')
 
     def __unicode__(self):
         return self.name + " " + self.owner.username
 
-
     def clean(self):
         only_two_chatrooms_per_user(self)
         super(self, ChatRoom).clean()
+
+    def save(self, *args, **kwargs):
+        model = self.__class__
+

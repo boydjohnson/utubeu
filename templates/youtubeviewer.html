@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
-          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
-          crossorigin="anonymous">
 
+{% block css %}
     <style>
         #chattertext {
             height: 200px;
@@ -22,11 +15,11 @@
         }
     </style>
 
-</head>
-<body>
+{% endblock %}
 
 
-<div class="container-fluid">
+
+{% block content %}
     <div class="row">
         <div id="dock" class="col-md-4">
 
@@ -65,15 +58,15 @@
     </div>
 
 
-</div>
+{% endblock %}
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+{% block js %}
 <script>
     var websocket = new WebSocket('ws:127.0.0.1:9000');
     $('#sendbutton').click(function () {
         websocket.send($('#chatterbox').val());
-    })
+    });
 
     websocket.onmessage = function (event) {
         var msg = JSON.parse(event.data);
@@ -129,9 +122,4 @@
 
 
 </script>
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
-        integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
-        crossorigin="anonymous"></script>
-</body>
-</html>
+{% endblock %}

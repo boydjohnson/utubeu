@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}{% if user and user.is_authenticated %}Hello, {{ user.get_full_name | default:user.username }}{% else %}UTubeU{% endif %} {% endblock %}
+{% block title %}{% if user and user.is_authenticated %}Hello,
+    {{ user.get_full_name | default:user.username }}{% else %}UTubeU{% endif %} {% endblock %}
 
 {% block content %}
-    <p>
+
     <ul>
-        {% if user and not user.is_anonymous %}
+        {% if user and user.is_authenticated %}
             <li>
                 <a>Hello {{ user.get_full_name|default:user.username }}!</a>
             </li>
@@ -24,7 +25,6 @@
             </li>
         {% endif %}
     </ul>
-    </p>
 
     {% if user and user.is_authenticated %}
         {% for chatroom in chatrooms %}
@@ -32,24 +32,57 @@
                 Enter {{ chatroom.name }}
             </div>
         {% endfor %}
+
+
+
         {% if number_owned < 2 %}
             <div id="create-button" class="btn btn-success" data-toggle="collapse" data-target="#room-maker">
                 Create a chatroom.
             </div>
             <div id="room-maker" class="collapse">
-                <form action="{% url 'viewer:login' %}">
+                <form action="{% url 'viewer:login' %}" method="post">
                     <div class="form-row">
                         <label>Name:</label>
                         <input type="text" name="chatroom_name">
                     </div>
                     <div class="form-row">
-                        <label>Description</label>
+                        <label>Description:</label>
                         <textarea name="description" rows="2"></textarea>
                     </div>
+                    <div class="form-row">
+                        <label>Email of Friend:</label>
+                        <input id="user0" type="email" name="user0">
+                    </div>
+                    <div id="makeit_button" class="btn btn-success">Create!</div>
                 </form>
 
 
             </div>
         {% endif %}
     {% endif %}
+
+{% endblock %}
+
+{% block js %}
+    <script>
+
+        for (var user_number = 1; user_number < 19; user_number++) {
+            var previous_with_number = 'user' + (user_number - 1).toString();
+            var with_number = 'user' + user_number.toString();
+            var next_sibling_selector = "#"+ with_number;
+            var selector = "#" + previous_with_number;
+            console.log(selector);
+            console.log(next_sibling_selector);
+
+            var user_email = $('<div class="form-row"><label>Email of Friend:</label><input type="email"></div>');
+            user_email.children('input').attr('id', with_number);
+            user_email.children('input').attr('name', with_number);
+            user_email.hide();
+            $('#makeit_button').before(user_email);
+            $(selector).on('input change', function () {
+                $(this).parent().next().show();
+            });
+        }
+    </script>
+
 {% endblock %}
