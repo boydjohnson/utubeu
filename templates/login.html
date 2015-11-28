@@ -101,14 +101,12 @@
             var name = $('input[type=text]').val();
             var description = $('textarea').val();
             var url = $('form').attr('action');
-            console.log(url);
-            console.log(emails);
             console.log(name);
             console.log(description);
 
             $.ajaxSetup({
                 beforeSend: function (xhr, settings) {
-                    xhr.setRequestHeader("X-CSRFToken", $('input[name=csrfmiddlewaretoken]').val());
+                    xhr.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
                 }
             });
 
