@@ -54,7 +54,7 @@ def enter_chatroom(request, chatroom):
             cr = Chatroom.objects.filter(users=request.user).get(pk=chatroom)
         except:
             raise PermissionDenied("User is not a member of that chatroom.")
-        render(request, 'youtubeviewer.html', context={'chatroom': cr, 'email': request.user.email})
+        return render(request, 'youtubeviewer.html', context={'chatroom': cr, 'email': request.user.email})
 
     else:
         raise PermissionDenied("User is not authenticated.")
