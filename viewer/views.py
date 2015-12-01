@@ -1,4 +1,5 @@
 from django.contrib.auth.views import logout as auth_logout
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -58,3 +59,11 @@ def create_chatroom(request):
 
 def enter_chatroom(request, chatroom):
     if request.user.is_authenticated() and request.method=='GET':
+        try:
+            cr = Chatroom.objects.filter(users=request.user).get(pk=chatroom)
+        except:
+            raise PermissionDenied("User is not a member of that chatroom.")
+        render(request, 'youtubeviewer.html', context={'chatroom': cr, 'email': request.user.email})
+
+    else:
+        raise PermissionDenied("User is not authenticated.")

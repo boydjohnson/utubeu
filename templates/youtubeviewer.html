@@ -25,6 +25,9 @@
 
         </div>
     </div>
+    <div class="row">
+    {{ chatroom.name }}
+    </div>
 
 
 
@@ -86,6 +89,10 @@
             $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
         }
     };
+    websocket.onopen = function(event){
+        websocket.send(JSON.stringify({chatroom:{{ chatroom.pk }}, email: {{ email }}}));
+    };
+
 
     $('.sidebar-toggle').click(function () {
         if ($('.sidebar').hasClass('hidden')) {
