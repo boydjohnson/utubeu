@@ -18,28 +18,22 @@
                     </li>
                 {% else %}
                     <li>
-                        <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
-                    </li>
-                    <li>
                         <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>
                     </li>
                 {% endif %}
             </ul>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 chatrooms">
             {% if user and user.is_authenticated %}
                 {% for chatroom in chatrooms %}
-                    <div class="btn btn-info">
+                    <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-info">
                         Enter {{ chatroom.name }}
-                    </div>
+                    </a>
                 {% endfor %}
                 {% for chatroom in owned_chatrooms %}
-                    <div class="btn btn-warning">
+                    <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-warning">
                         Enter {{ chatroom.name }}
-                    </div>
+                    </a>
 
                 {% endfor %}
                 </div>
@@ -50,7 +44,7 @@
                         Create a chatroom.
                     </div>
                     <div id="room-maker" class="collapse">
-                        <form action="{% url 'viewer:login' %}" method="post">{% csrf_token %}
+                        <form action="{% url 'viewer:create_chatroom' %}" method="post">{% csrf_token %}
                             <div class="form-row">
                                 <label>Name:</label>
                                 <input type="text" name="chatroom_name">
@@ -121,10 +115,12 @@
                 $.post(url,
                         {data: JSON.stringify(json_data)}
                 ).success(function (data) {
-                            if (data.success) {
                                 $('input').val("");
                                 $('textarea').val("");
-                            }
+                                $('#create-button').toggle();
+
+
+                                $('.chatroom').append('<a href="/chatroom/'+data.chatroom_id+'" class="btn btn-warning">'+data.chatroom_name+'</a>');
                         });
             });
 

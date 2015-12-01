@@ -125,3 +125,11 @@ LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY= socialConfig.google_client_id
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = socialConfig.google_secret
 
+
+
+#Will be Redis Caching
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}

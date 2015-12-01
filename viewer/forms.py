@@ -39,8 +39,9 @@ class Chatroom_with_InvitedChatroom(forms.Form):
 
         emails = set(self.cleaned_data.get(u'user_emails[]',[]))
         if len(emails)>19:
-            emails = emails[:18]
+            emails = emails[:19]
         invited_chatrooms = []
         for i,email in enumerate(emails):
             invited_chatrooms.append(InvitedChatroom(chatroom=cr, user_email=email, number_in=i+1, loggedin=False))
         InvitedChatroom.objects.bulk_create(invited_chatrooms)
+        return cr
