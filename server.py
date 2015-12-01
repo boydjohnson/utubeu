@@ -4,6 +4,15 @@ from twisted.internet import reactor
 from json import dumps
 
 
+class ChatroomUser:
+    def __init__(self, youtubewebsocketsuser, useremail, chatroom_id):
+        self.user = youtubewebsocketsuser
+        self.email = useremail
+        self.chatroom_id = chatroom_id
+
+
+
+
 class YouTubeWebSockets(WebSocketServerProtocol):
 
     def onConnect(self, request):
@@ -11,7 +20,6 @@ class YouTubeWebSockets(WebSocketServerProtocol):
 
     def onMessage(self, payload, isBinary):
         JSON = {'screen':{'count':len(self.factory.users)}}
-        print len(self.factory.users)
         if not isBinary:
             JSON['msg'] = payload.decode('utf-8')
             for s in self.factory.users:
