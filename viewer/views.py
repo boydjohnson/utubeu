@@ -15,12 +15,6 @@ from viewer.forms import Chatroom_with_InvitedChatroom
 def login(request):
         user = request.user
         if user.is_authenticated():
-
-            form = Chatroom_with_InvitedChatroom(loads(request.POST[u'data'],'utf-8') if u'data' in request.POST.keys() else None or None) #Here is the form posting
-            if form.is_valid():
-                print "success"
-                form.save(owner=request.user)
-                return HttpResponse(dumps({"success": True}), content_type="application/json")
             chatrooms = Chatroom.objects.filter(users=user)
         else:
             chatrooms = []
@@ -32,9 +26,6 @@ def login(request):
                 chatrooms.remove(c)
         context = RequestContext(request, {'user': user, 'owned_chatrooms': owned_chatrooms,
                                            'number_owned': len(owned_chatrooms), 'chatrooms': chatrooms})
-
-
-
         return render(request, 'login.html', context=context)
 
 
