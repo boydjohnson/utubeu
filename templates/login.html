@@ -30,12 +30,12 @@
                 {% for chatroom in chatrooms %}
                     <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-info">
                         Enter {{ chatroom.name }}
-                    </a>
+                    </a><div class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
                 {% endfor %}
                 {% for chatroom in owned_chatrooms %}
                     <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-warning">
                         Enter {{ chatroom.name }}
-                    </a>
+                    </a><div class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
 
                 {% endfor %}
                 </div>
