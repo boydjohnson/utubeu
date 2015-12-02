@@ -46,8 +46,15 @@ def create_chatroom(request):
         emailFormSet = formset_factory(EmailForm, extra=19, max_num=19, validate_max=True)
         emailFormSet(request.POST)
         if chatroomForm.is_valid() and emailFormSet.is_valid():
-            chatroom = chatroomForm.save(owner=user)
-            emailFormSet.save(chatroom=chatroom)
+            chatroom = chatroomForm.save(commit=False)
+            chatroom.owner = user
+            chatroom.users.add(user)
+            chatroom.save()
+            emails = emailFormSet.save(commit=False)
+            for email in emails:
+                email.chatroom = chatroom
+                email.loggedin = False
+                email.save()
             return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name }), content_type="application/json")
         else:
             return HttpResponse(dumps({'errors':[chatroomForm.errors.to_json(),emailFormSet.errors.to_json()]}),
