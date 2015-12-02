@@ -4,7 +4,9 @@
     {{ user.get_full_name | default:user.username }}{% else %}UTubeU{% endif %} {% endblock %}
 
 {% block content %}
+    <div id="error_bank" class="row">
 
+    </div>
 
     <div class="row">
         <div class="col-md-3">
@@ -113,14 +115,18 @@
                 };
 
                 $.post(url,
-                        {data: JSON.stringify(json_data)}
-                ).success(function (data) {
+                        JSON.stringify(json_data)
+                ).done(function (data) {
+                            if(data.errors==null) {
                                 $('input').val("");
                                 $('textarea').val("");
                                 $('#create-button').toggle();
 
 
-                                $('.chatroom').append('<a href="/chatroom/'+data.chatroom_id+'" class="btn btn-warning">'+data.chatroom_name+'</a>');
+                                $('.chatroom').append('<a href="/chatroom/' + data.chatroom_id + '" class="btn btn-warning">' + data.chatroom_name + '</a>');
+                            }}).fail(function(data){
+                                $('#error_bank').append('<p>'+data.errors+'</p>');
+
                         });
             });
 

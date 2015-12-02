@@ -11,13 +11,19 @@ def only_two_chatrooms_per_user(obj):
         raise ValidationError("Can only create 2 %s instances per user" % model.__name__)
 
 
+def only_20_emails_per_chatroom(obj):
+    model = obj.__class__
+    if model.objects.filter(chatroom=obj.chatroom)>=20:
+        raise ValidationError("Can only have 20 %s instances per chatroom" % model.__name__)
+
+
 class Chatroom(models.Model):
     name = models.TextField(verbose_name='Chatroom Name', max_length=50, blank=False, null=False)
     description = models.TextField(max_length=100, blank=True, null=True)
     owner = models.ForeignKey(to=User, related_name='chatroom_from_owner', null=False)
 
     users = models.ManyToManyField(to=User, related_name='chatroom_from_users', null=False)
-    user_emails = models.ManyToManyField(to='InvitedChatroom', related_name='chatroom_from_emails')
+
 
     def __unicode__(self):
         return self.name + " " + self.owner.username
@@ -27,12 +33,14 @@ class Chatroom(models.Model):
         super(Chatroom, self).clean()
 
 
-class InvitedChatroom(models.Model):
-    chatroom = models.OneToOneField(to='Chatroom', related_name='invited_room')
+class InvitedEmails(models.Model):
     user_email = models.EmailField()
-    number_in = models.IntegerField(default=0)
     loggedin = models.BooleanField(default=False, null=False)
-
+    chatroom = models.ForeignKey('Chatroom', related_name='emails_from_chatroom')
 
     def __unicode__(self):
-        return self.chatroom.name + " " + self.user_email
+        return self.user_email + self.chatroom.name
+
+    def clean(self):
+        only_20_emails_per_chatroom(self)
+        super(InvitedEmails, self).clean()

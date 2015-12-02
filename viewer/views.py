@@ -1,6 +1,6 @@
 from django.contrib.auth.views import logout as auth_logout
-from django.core.cache import cache
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.forms.models import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.context import RequestContext
@@ -9,9 +9,9 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from json import loads, dumps
 
 from viewer.models import Chatroom
-from viewer.forms import Chatroom_with_InvitedChatroom
+from viewer.forms import ChatroomForm, EmailForm
 
-import sys
+
 
 @ensure_csrf_cookie
 def login(request):
@@ -40,14 +40,16 @@ def logout(request):
 def create_chatroom(request):
     user = request.user
     if user.is_authenticated():
-        form = Chatroom_with_InvitedChatroom(loads(request.POST['data']))
-        if form.is_valid():
-            chatroom = form.save(owner=user)
-            return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name}), content_type="application/json")
+        chatroomForm = ChatroomForm(request.POST or None)
+        emailFormSet = formset_factory(EmailForm, extra=19, max_num=19, validate_max=True)
+        emailFormSet(request.POST or None)
+        if chatroomForm.is_valid() and emailFormSet.is_valid():
+            chatroom = chatroomForm.save(owner=user)
+            emailFormSet.save(chatroom=chatroom)
+            return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name }), content_type="application/json")
         else:
-            print "ERRORSS*******", form.errors.as_json()
-            sys.stdout.flush()
-            raise ValidationError("Form was malformed.")
+            return HttpResponse(dumps({'errors':[chatroomForm.errors.to_json(),emailFormSet.errors.to_json()]}),
+                                content_type="application/json")
     else:
         raise PermissionDenied("User is not authenticated.")
 
