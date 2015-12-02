@@ -16,20 +16,22 @@ from viewer.forms import ChatroomForm, EmailForm
 @ensure_csrf_cookie
 def login(request):
         user = request.user
-        if user.is_authenticated():
+        if user.is_authenticated() and request.method=="GET":
             chatrooms = Chatroom.objects.filter(users=user)
-        else:
-            chatrooms = []
-        owned_chatrooms = []
-        chatrooms = list(chatrooms)
-        for c in chatrooms:
-            if c.owner == user:
-                owned_chatrooms.append(c)
-                chatrooms.remove(c)
-        context = RequestContext(request, {'user': user, 'owned_chatrooms': owned_chatrooms,
-                                           'number_owned': len(owned_chatrooms), 'chatrooms': chatrooms})
-        return render(request, 'login.html', context=context)
+            chatroomForm = ChatroomForm()
+            emailFormSet = formset_factory(EmailForm, extra=19, max_num=19, validate_max=True)
+            owned_chatrooms = []
+            chatrooms = list(chatrooms)
+            for c in chatrooms:
+                if c.owner == user:
+                    owned_chatrooms.append(c)
+                    chatrooms.remove(c)
 
+            return render(request, 'login.html', context={'user': user, 'owned_chatrooms': owned_chatrooms,
+                                           'number_owned': len(owned_chatrooms), 'chatrooms': chatrooms,
+                                                          'email_formset':emailFormSet, 'chatroom_form':chatroomForm})
+        else:
+            return render(request, 'login.html', context={'user':user})
 
 def logout(request):
     """Logs out user"""
@@ -39,10 +41,10 @@ def logout(request):
 
 def create_chatroom(request):
     user = request.user
-    if user.is_authenticated():
-        chatroomForm = ChatroomForm(request.POST or None)
+    if user.is_authenticated() and request.method=="POST":
+        chatroomForm = ChatroomForm(request.POST)
         emailFormSet = formset_factory(EmailForm, extra=19, max_num=19, validate_max=True)
-        emailFormSet(request.POST or None)
+        emailFormSet(request.POST)
         if chatroomForm.is_valid() and emailFormSet.is_valid():
             chatroom = chatroomForm.save(owner=user)
             emailFormSet.save(chatroom=chatroom)
