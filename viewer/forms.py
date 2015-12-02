@@ -7,7 +7,7 @@ import sys
 
 class EmailMultiField(forms.MultiValueField):
     def __init__(self, *args, **kwargs):
-        fields = (forms.EmailField() for f in kwargs.pop('user_emails', []))
+        fields = (forms.EmailField() for f in kwargs.pop('emailsFromForm', []))
         super(EmailMultiField, self).__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
@@ -23,9 +23,8 @@ class Chatroom_with_InvitedChatroom(forms.Form):
     def __init__(self, *args, **kwargs):
         super(Chatroom_with_InvitedChatroom, self).__init__(*args, **kwargs)
         emails = args[0].pop('user_emails') if 'user_emails' in args[0].keys() else []
-        print "EMAILS *******", emails
-        sys.stdout.flush()
-        self.fields['user_emails'] = EmailMultiField(user_emails=emails)
+        self.fields['user_emails'] = EmailMultiField(emailsFromForm=emails)
+        print "SELF.FIELDS********", self.fields
 
 
     @transaction.atomic
