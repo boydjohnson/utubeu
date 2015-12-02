@@ -11,6 +11,8 @@ from json import loads, dumps
 from viewer.models import Chatroom
 from viewer.forms import Chatroom_with_InvitedChatroom
 
+import sys
+
 @ensure_csrf_cookie
 def login(request):
         user = request.user
@@ -40,6 +42,7 @@ def create_chatroom(request):
     if user.is_authenticated():
         form = Chatroom_with_InvitedChatroom(loads(request.POST['data']))
         print "WHAT IN THE HECK", request.POST['data']
+        sys.stdout.flush()
         if form.is_valid():
             chatroom = form.save(owner=request.user)
             return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name}), content_type="application/json")
