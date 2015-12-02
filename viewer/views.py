@@ -11,6 +11,7 @@ from json import loads, dumps
 from viewer.models import Chatroom
 from viewer.forms import Chatroom_with_InvitedChatroom
 
+import sys
 
 @ensure_csrf_cookie
 def login(request):
@@ -45,6 +46,7 @@ def create_chatroom(request):
             return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name}), content_type="application/json")
         else:
             print "ERRORSS*******", form.errors.as_json()
+            sys.stdout.flush()
             raise ValidationError("Form was malformed.")
     else:
         raise PermissionDenied("User is not authenticated.")
