@@ -63,6 +63,20 @@ def create_chatroom(request):
         raise PermissionDenied("User is not authenticated.")
 
 
+def delete_chatroom(request):
+    if request.user.is_authenticated() and request.method=="POST":
+        chatroom_id = request.POST.get('chatroom_id')
+        try:
+            cr = Chatroom.objects.filter(owner=request.user).get(pk=chatroom_id)
+            cr.delete()
+            return HttpResponse(dumps({'success': True}), content_type="application/json")
+        except:
+            raise PermissionDenied("User is not the owner of that chatroom.")
+
+    else:
+        raise PermissionDenied("User is not authenticated")
+
+
 def enter_chatroom(request, chatroom):
     if request.user.is_authenticated() and request.method=='GET':
         try:

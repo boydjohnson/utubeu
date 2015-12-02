@@ -30,13 +30,17 @@
                 {% for chatroom in chatrooms %}
                     <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-info">
                         Enter {{ chatroom.name }}
-                    </a><div class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
                 {% endfor %}
                 {% for chatroom in owned_chatrooms %}
-                    <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-warning">
-                        Enter {{ chatroom.name }}
-                    </a><div class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
+                    <div class="btn-group">
+                        <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-warning">
+                            Enter {{ chatroom.name }}
+                        </a>
 
+                        <div class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
+                    </div>
                 {% endfor %}
                 </div>
                 <div class="col-md-3">
@@ -77,7 +81,7 @@
             });
 
 
-            $('#post_chatroom_email_form').on('submit', function(event){
+            $('#post_chatroom_email_form').on('submit', function (event) {
                 event.preventDefault();
                 $.post($(this).attr('action'),
                         $(this).serialize()
@@ -95,6 +99,14 @@
 
                         });
             });
+
+            $('.delete_chatroom').click(function (event) {
+                $.post("{% url 'viewer:delete_chatroom' %}", {'chatroom_id': $(this).attr('data-chatroom_id')}).done(function (data) {
+                    if (data.success) {
+                        $(this).parent().remove();
+                    }
+                })
+            })
         });
     </script>
 
