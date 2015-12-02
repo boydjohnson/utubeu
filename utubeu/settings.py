@@ -31,7 +31,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['utubeu.herokuapp.com']
 
@@ -133,7 +133,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_secret
 
 
 
-#Will be Redis Caching
+#Redis Caching
 redis_url = urlparse.urlparse(os.environ.get('REDIS_URL'))
 CACHES = {
     "default": {
@@ -146,3 +146,5 @@ CACHES = {
     }
 }
 
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
