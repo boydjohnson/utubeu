@@ -57,7 +57,7 @@ def create_chatroom(request):
                 email.save()
             return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name }), content_type="application/json")
         else:
-            return HttpResponse(dumps({'errors':[chatroomForm.errors.to_json(),emailFormSet.errors.to_json()]}),
+            return HttpResponse(dumps({'errors':[chatroomForm.errors,emailFormSet.errors]}),
                                 content_type="application/json")
     else:
         raise PermissionDenied("User is not authenticated.")
