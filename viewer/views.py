@@ -48,6 +48,7 @@ def create_chatroom(request):
         if chatroomForm.is_valid() and emailFormSet.is_valid():
             chatroom = chatroomForm.save(commit=False)
             chatroom.owner = user
+            chatroom.save()
             chatroom.users.add(user)
             chatroom.save()
             emails = emailFormSet.save(commit=False)
