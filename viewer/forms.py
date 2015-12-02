@@ -30,12 +30,16 @@ class Chatroom_with_InvitedChatroom(forms.Form):
     def save(self, owner):
         cr_name = self.cleaned_data.get('chatroom_name')
         cr_description = self.cleaned_data.get('chatroom_description')
+        print "DESCRIPTION :", cr_description, "  NAME :", cr_name
+        sys.stdout.flush()
 
         cr = Chatroom(name=cr_name, description=cr_description, owner=owner)
         cr.save()
         cr.users.add(owner)
 
         ivcr = InvitedChatroom(chatroom=cr, user_email=owner.email, number_in=0, loggedin=True)
+        print "IVCR   ******", ivcr
+        sys.stdout.flush()
         ivcr.save()
 
         emails = set(self.cleaned_data.get('user_emails', []))
