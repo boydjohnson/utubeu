@@ -44,7 +44,7 @@ def create_chatroom(request):
     if user.is_authenticated() and request.method=="POST":
         chatroomForm = ChatroomForm(request.POST)
         emailFormSet = formset_factory(EmailForm, extra=19, max_num=19, validate_max=True)
-        emailFormSet(request.POST)
+        emailFormSet = emailFormSet(request.POST)
         if chatroomForm.is_valid() and emailFormSet.is_valid():
             chatroom = chatroomForm.save(commit=False)
             chatroom.owner = user
