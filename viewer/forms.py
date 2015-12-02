@@ -39,6 +39,9 @@ class Chatroom_with_InvitedChatroom(forms.Form):
         ivcr.save()
 
         emails = set(self.cleaned_data.get('user_emails', []))
+        print "EMAIL ***E**E*E*", emails
+        sys.stdout.flush()
+
         if len(emails)>19:
             emails = emails[:19]
         invited_chatrooms = []
