@@ -46,12 +46,13 @@
                         Create a chatroom.
                     </div>
                     <div id="room-maker" class="collapse">
-                        <form action="{% url 'viewer:create_chatroom' %}" method="post">{% csrf_token %}
+                        <form action="{% url 'viewer:create_chatroom' %}" method="post"
+                              id="post_chatroom_email_form">{% csrf_token %}
                             {{ chatroom_form }}
                             {% for form in email_formset %}
                                 {{ form }}
                             {% endfor %}
-                            <div id="makeit_button" class="btn btn-success">Create!</div>
+                            <input type="submit" id="makeit_button" class="btn btn-success" name="Create!">
                         </form>
 
 
@@ -66,23 +67,6 @@
 
     <script>
         $(document).ready(function () {
-            for (var user_number = 1; user_number < 19; user_number++) {
-                var previous_with_number = 'user' + (user_number - 1).toString();
-                var with_number = 'user' + user_number.toString();
-                var next_sibling_selector = "#" + with_number;
-                var selector = "#" + previous_with_number;
-
-                var user_email = $('<div class="form-row"><label>Email of Friend:</label><input type="email"></div>');
-                user_email.children('input').attr('id', with_number);
-                user_email.children('input').attr('name', with_number);
-                user_email.children('input').attr('multiple', "false");
-                user_email.hide();
-                $('#makeit_button').before(user_email);
-                $(selector).on('input change', function () {
-                    $(this).parent().next().show();
-                });
-            }
-
 
             $.ajaxSetup({
                 beforeSend: function (xhr, settings) {
@@ -90,39 +74,28 @@
                 }
             });
 
-            $('#makeit_button').click(function () {
-                var emails = $('input[type=email]').map(function () {
-                    if (!$(this).val() == "") {
-                        return $(this).val()
-                    }
-                }).get();
-                var name = $('input[type=text]').val();
-                var description = $('textarea').val();
-                var url = $('form').attr('action');
 
+            $('#post_chatroom_email_form').on('submit', function(event){
+                event.preventDefault();
+                $('')
 
-                json_data = {
-                    'user_emails': emails, 'chatroom_name': name,
-                    'chatroom_description': description
-                };
 
                 $.post(url,
-                        JSON.stringify(json_data)
+                        $(this).serialize()
                 ).done(function (data) {
-                            if(data.errors==null) {
+                            if (data.errors == null) {
                                 $('input').val("");
                                 $('textarea').val("");
                                 $('#create-button').toggle();
 
 
                                 $('.chatroom').append('<a href="/chatroom/' + data.chatroom_id + '" class="btn btn-warning">' + data.chatroom_name + '</a>');
-                            }}).fail(function(data){
-                                $('#error_bank').append('<p>'+data.errors+'</p>');
+                            }
+                        }).fail(function (data) {
+                            $('#error_bank').append('<p>' + data.errors + '</p>');
 
                         });
             });
-
-
         });
     </script>
 

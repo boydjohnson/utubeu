@@ -7,6 +7,8 @@ from viewer.models import Chatroom, InvitedEmails
 
 class ChatroomForm(forms.ModelForm):
     """This is a model form for creating the chatroom"""
+    name = forms.CharField()
+
     class Meta:
         model= Chatroom
         fields = ['name', 'description']

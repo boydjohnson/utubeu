@@ -13,7 +13,7 @@ from viewer.forms import ChatroomForm, EmailForm
 
 
 
-@ensure_csrf_cookie
+
 def login(request):
         user = request.user
         if user.is_authenticated() and request.method=="GET":
@@ -38,7 +38,7 @@ def logout(request):
     auth_logout(request)
     return redirect('/')
 
-
+@ensure_csrf_cookie
 def create_chatroom(request):
     user = request.user
     if user.is_authenticated() and request.method=="POST":
