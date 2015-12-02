@@ -1,0 +1,13 @@
+Django==1.8.6
+PyJWT==1.4.0
+argparse==1.2.1
+django-redis==4.3.0
+gunicorn==19.4.1
+oauthlib==1.0.3
+python-openid==2.2.5
+python-social-auth==0.2.13
+redis==2.10.5
+requests==2.8.1
+requests-oauthlib==0.5.0
+six==1.10.0
+wsgiref==0.1.2

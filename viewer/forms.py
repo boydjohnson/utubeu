@@ -4,10 +4,10 @@ from django.db import transaction
 
 from viewer.models import Chatroom, InvitedChatroom
 
+
 class EmailMultiField(forms.MultiValueField):
     def __init__(self, *args, **kwargs):
-        print args
-        fields = [forms.EmailField() for f in args]
+        fields = (forms.EmailField() for f in kwargs.pop('user_emails', []))
         super(EmailMultiField, self).__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
@@ -15,20 +15,21 @@ class EmailMultiField(forms.MultiValueField):
 
 
 class Chatroom_with_InvitedChatroom(forms.Form):
-    '''This Form is used when a user first makes a Chatroom
-    and there will be at least one InvitedChatroom user_email from the owner'''
+    """This Form is used when a user first makes a Chatroom
+    and there will be at least one InvitedChatroom user_email from the owner"""
     chatroom_name=forms.CharField()
     chatroom_description = forms.CharField()
 
     def __init__(self, *args, **kwargs):
         super(Chatroom_with_InvitedChatroom, self).__init__(*args, **kwargs)
-        self.fields['user_emails'] = EmailMultiField(*args)
+        emails = args[0].pop(u'user_emails') if u'user_emails' in args[0].keys() else []
+        self.fields['user_emails'] = EmailMultiField(user_emails = emails)
 
 
     @transaction.atomic
     def save(self, owner):
-        cr_name = self.cleaned_data.get(u'chatroom_name')
-        cr_description = self.cleaned_data.get(u'chatroom_description')
+        cr_name = self.cleaned_data.get('chatroom_name')
+        cr_description = self.cleaned_data.get('chatroom_description')
 
         cr = Chatroom(name=cr_name, description=cr_description, owner=owner)
         cr.save()
@@ -37,7 +38,7 @@ class Chatroom_with_InvitedChatroom(forms.Form):
         ivcr = InvitedChatroom(chatroom=cr, user_email=owner.email, number_in=0, loggedin=True)
         ivcr.save()
 
-        emails = set(self.cleaned_data.get(u'user_emails[]',[]))
+        emails = set(self.cleaned_data.get('user_emails', []))
         if len(emails)>19:
             emails = emails[:19]
         invited_chatrooms = []
