@@ -12,7 +12,11 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import socialConfig
+try:
+    from socialConfig import google_client_id, google_secret
+except:
+    google_client_id = os.environ['GOOGLE_CLIENT']
+    google_secret = os.environ['GOOGLE_SECRET']
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -122,8 +126,8 @@ AUTHENTICATION_BACKENDS = [
 #SOCIAL OAUTH
 LOGIN_REDIRECT_URL = '/'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY= socialConfig.google_client_id
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = socialConfig.google_secret
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY= google_client_id
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_secret
 
 
 
