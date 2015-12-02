@@ -1,6 +1,7 @@
 Django==1.8.6
 PyJWT==1.4.0
 argparse==1.2.1
+dj-database-url==0.3.0
 django-redis==4.3.0
 gunicorn==19.4.1
 oauthlib==1.0.3
