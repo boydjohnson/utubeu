@@ -48,11 +48,12 @@
                     <div id="room-maker" class="collapse">
                         <form action="{% url 'viewer:create_chatroom' %}" method="post"
                               id="post_chatroom_email_form">{% csrf_token %}
+                            {{ email_formset.management_form }}
                             {{ chatroom_form }}
                             {% for form in email_formset %}
                                 {{ form }}
                             {% endfor %}
-                            {{ email_formset.management_form }}
+
                             <input type="submit" id="makeit_button" class="btn btn-success">Create!</input>
                         </form>
 
