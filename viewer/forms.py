@@ -24,13 +24,13 @@ class Chatroom_with_InvitedChatroom(forms.Form):
         super(Chatroom_with_InvitedChatroom, self).__init__(*args, **kwargs)
         emails = args[0].pop('user_emails') if 'user_emails' in args[0].keys() else []
         self.fields['user_emails'] = EmailMultiField(emailsFromForm=emails)
-        print "SELF.FIELDS********", self.fields
+
 
 
     @transaction.atomic
     def save(self, owner):
-        cr_name = self.cleaned_data.get(u'chatroom_name')
-        cr_description = self.cleaned_data.get(u'chatroom_description')
+        cr_name = self.cleaned_data.get('chatroom_name')
+        cr_description = self.cleaned_data.get('chatroom_description')
 
         cr = Chatroom(name=cr_name, description=cr_description, owner=owner)
         cr.save()
