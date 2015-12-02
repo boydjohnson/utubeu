@@ -112,7 +112,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'statics'),
-               )
+                    os.path.join(BASE_DIR, 'collection')
+                   )
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'collection')
 
 AUTHENTICATION_BACKENDS = [
     'social.backends.open_id.OpenIdAuth',
