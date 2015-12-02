@@ -11,7 +11,6 @@ from json import loads, dumps
 from viewer.models import Chatroom
 from viewer.forms import Chatroom_with_InvitedChatroom
 
-import sys
 
 @ensure_csrf_cookie
 def login(request):
