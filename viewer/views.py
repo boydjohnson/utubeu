@@ -44,6 +44,7 @@ def create_chatroom(request):
             chatroom = form.save(owner=user)
             return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name}), content_type="application/json")
         else:
+            print "ERRORSS*******", form.errors.as_json()
             raise ValidationError("Form was malformed.")
     else:
         raise PermissionDenied("User is not authenticated.")
