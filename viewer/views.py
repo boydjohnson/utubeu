@@ -47,12 +47,12 @@ def create_chatroom(request):
         emails = emailFormSet(request.POST)
         if chatroomForm.is_valid() and emails.is_valid():
             chatroom = chatroomForm.save(commit=False)
-            chatroom.owner = user
+            chatroom.owner = [user]
             chatroom.save()
             chatroom.users.add(user)
             chatroom.save()
             for email in emails:
-                email.chatroom = chatroom
+                email.chatroom = [chatroom]
                 email.loggedin = False
                 email.save()
             return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name }), content_type="application/json")
