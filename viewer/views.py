@@ -38,7 +38,7 @@ def logout(request):
 def create_chatroom(request):
     user = request.user
     if user.is_authenticated():
-        form = Chatroom_with_InvitedChatroom(loads(request.POST[u'data'], 'utf-8'))
+        form = Chatroom_with_InvitedChatroom(loads(request.POST['data'], 'utf-8'))
         if form.is_valid():
             chatroom = form.save(owner=request.user)
             return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name}), content_type="application/json")
