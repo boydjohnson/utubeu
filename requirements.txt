@@ -1,6 +1,8 @@
 Django==1.8.6
 PyJWT==1.4.0
+Twisted==15.5.0
 argparse==1.2.1
+autobahn==0.10.9
 dj-database-url==0.3.0
 django-redis-cache==1.6.4
 gunicorn==19.4.1
@@ -12,5 +14,7 @@ redis==2.10.5
 requests==2.8.1
 requests-oauthlib==0.5.0
 six==1.10.0
+txaio==2.1.0
 whitenoise==2.0.6
 wsgiref==0.1.2
+zope.interface==4.1.3
