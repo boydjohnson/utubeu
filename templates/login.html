@@ -47,18 +47,10 @@
                     </div>
                     <div id="room-maker" class="collapse">
                         <form action="{% url 'viewer:create_chatroom' %}" method="post">{% csrf_token %}
-                            <div class="form-row">
-                                <label>Name:</label>
-                                <input type="text" name="chatroom_name">
-                            </div>
-                            <div class="form-row">
-                                <label>Description:</label>
-                                <textarea name="description" rows="2"></textarea>
-                            </div>
-                            <div class="form-row">
-                                <label>Email of Friend:</label>
-                                <input id="user0" type="email" multiple="false" name="user0">
-                            </div>
+                            {{ chatroom_form }}
+                            {% for form in email_formset %}
+                                {{ form }}
+                            {% endfor %}
                             <div id="makeit_button" class="btn btn-success">Create!</div>
                         </form>
 
