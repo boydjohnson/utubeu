@@ -7,13 +7,13 @@ from django.core.exceptions import ValidationError
 
 def only_two_chatrooms_per_user(obj):
     model = obj.__class__
-    if model.objects.filter(owner=obj.owner) >= 2:
+    if hasattr(obj, 'owner') and model.objects.filter(owner=obj.owner) >= 2:
         raise ValidationError("Can only create 2 %s instances per user" % model.__name__)
 
 
 def only_20_emails_per_chatroom(obj):
     model = obj.__class__
-    if model.objects.filter(chatroom=obj.chatroom)>=20:
+    if hasattr(obj, 'chatroom') and model.objects.filter(chatroom=obj.chatroom)>=19:
         raise ValidationError("Can only have 20 %s instances per chatroom" % model.__name__)
 
 
