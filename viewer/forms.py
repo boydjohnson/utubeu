@@ -24,6 +24,10 @@ class Chatroom_with_InvitedChatroom(forms.Form):
     def __init__(self, *args, **kwargs):
         super(Chatroom_with_InvitedChatroom, self).__init__(*args, **kwargs)
         emails = args[0].pop('user_emails') if 'user_emails' in args[0].keys() else []
+        print "EMAILS((((****", type(emails), emails
+        sys.stdout.flush()
+
+
         self.fields['user_emails'] = EmailMultiField(emailsFromForm=emails, required=False)
 
 
