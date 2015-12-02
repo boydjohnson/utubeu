@@ -31,7 +31,7 @@ SECRET_KEY = 'ba4i=3t7xk1r@i^$yui5)3llrj=x&$j%ic32m$uayg_i%j8k@b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['utubeu.herokuapp.com']
 
 
 # Application definition
