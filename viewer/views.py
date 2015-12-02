@@ -52,7 +52,7 @@ def create_chatroom(request):
             chatroom.users.add(user)
             chatroom.save()
             for email in emails:
-                email.chatroom = chatroom
+                email.chatroom.add(chatroom)
                 email.loggedin = False
                 email.save()
             return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name }), content_type="application/json")
