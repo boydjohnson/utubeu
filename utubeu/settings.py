@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'utubeu.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ['DATABASE_URL'],
     }
 }
