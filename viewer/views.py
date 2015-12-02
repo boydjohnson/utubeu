@@ -49,7 +49,7 @@ def create_chatroom(request):
             chatroom = chatroomForm.save(commit=False)
             chatroom.owner = user
             chatroom.users.add(user)
-            chatroom.save()
+            chatroom = chatroom.save()
             emails = emailFormSet.save(commit=False)
             for email in emails:
                 email.chatroom = chatroom
