@@ -1,1 +1,1 @@
-web: twistd -y server.py
+web: python server.py
