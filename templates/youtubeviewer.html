@@ -66,7 +66,7 @@
 
 {% block js %}
 <script>
-    var websocket = new WebSocket('wss://'+window.location.host);
+    var websocket = new WebSocket('ws://'+window.location.host+'receiver');
     $('#sendbutton').click(function () {
         websocket.send($('#chatterbox').val());
     });
