@@ -65,7 +65,7 @@ def create_chatroom(request):
 
 def delete_chatroom(request):
     if request.user.is_authenticated() and request.method=="POST":
-        chatroom_id = request.POST.get('chatroom_id')
+        chatroom_id = int(request.POST.get('chatroom_id'))
         try:
             cr = Chatroom.objects.filter(owner=request.user).get(pk=chatroom_id)
             cr.delete()
