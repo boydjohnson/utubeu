@@ -42,19 +42,13 @@ def logout(request):
 def create_chatroom(request):
     user = request.user
     if user.is_authenticated() and request.method=="POST":
-        chatroomForm = ChatroomForm(request.POST)
+        chatroomForm = ChatroomForm(request.POST, owner=user)
         emailFormSet = formset_factory(EmailForm, extra=19, max_num=19, validate_max=True)
         emails = emailFormSet(request.POST)
         if chatroomForm.is_valid() and emails.is_valid():
             chatroom = chatroomForm.save(commit=False)
-            chatroom.owner = user
-            chatroom.save()
-            chatroom.users.add(user)
-            chatroom.save()
             for email in emails:
-                email.chatroom.add(chatroom)
-                email.loggedin = False
-                email.save()
+                email.save(chatroom=chatroom)
             return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name }), content_type="application/json")
         else:
             return HttpResponse(dumps({'errors':[chatroomForm.errors,emailFormSet.errors]}),

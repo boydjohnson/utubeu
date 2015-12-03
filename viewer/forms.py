@@ -13,10 +13,26 @@ class ChatroomForm(forms.ModelForm):
         model= Chatroom
         fields = ['name', 'description']
 
+    def __init__(self, *args, **kwargs):
+        self.owner = kwargs.pop('owner')
+
+    def save(self, commit=True):
+        chatroom = super(ChatroomForm, self).save(commit=False)
+        chatroom.owner = self.owner
+        chatroom.users.add(self.owner)
+        chatroom.save(commit)
+        return chatroom
+
 class EmailForm(forms.ModelForm):
     """This is the modelform to be used with formset_factory to make all of the email forms"""
     class Meta:
         model=InvitedEmails
         fields = ['user_email']
 
-
+    def save(self, commit=True, *args, **kwargs):
+        chatroom = kwargs.get('chatroom')
+        email = super(EmailForm, self).save(commit=False)
+        email.chatroom.add(chatroom)
+        email.loggedin = False
+        email.save(commit)
+        return email
