@@ -64,6 +64,6 @@ if __name__ == '__main__':
 
     site = Site(rootResource)
 
-    reactor.listenTCP(os.environ.get("PORT"), site)
+    reactor.listenTCP(int(os.environ.get("PORT")), site)
     reactor.run()
 
