@@ -71,9 +71,17 @@ class YouTubeWebSockets(WebSocketServerProtocol):
         if not isBinary:
             server_input = loads(payload, encoding='utf-8')
             chatroom_id = int(server_input.pop("chatroom_id"))
+            chatroomUsers = self.factory.users.get(chatroom_id)
             if "message" in server_input:
+                user_name = server_input.get("username")
+                for cru in chatroomUsers:
+                    if cru.username!=user_name:
+                        server_output = server_input
+                    else:
+                        del server_input['username']
+                        server_output = server_input
+                    cru.user.sendMessage(dumps(server_output).encode('utf-8'), isBinary=False)
 
-                s.sendMessage(dumps(JSON).encode('utf-8'))
 
     def onClose(self, wasClean, code, reason):
         """The reason will be just the primary key of the chatroom---This seems like a hack"""
