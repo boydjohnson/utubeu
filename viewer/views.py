@@ -2,7 +2,6 @@ from django.contrib.auth.views import logout as auth_logout
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.forms.models import formset_factory
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 
@@ -27,12 +26,12 @@ def login(request):
                 if c.owner == user:
                     owned_chatrooms.append(c)
                     chatrooms.remove(c)
-            context = RequestContext(request, {'user': user, 'owned_chatrooms': owned_chatrooms,
+
+            return render(request, 'login.html', context={'user': user, 'owned_chatrooms': owned_chatrooms,
                                            'number_owned': len(owned_chatrooms), 'chatrooms': chatrooms,
-                                                          'email_formset': emailFormSet, 'chatroom_form': chatroomForm})
-            return render(request, 'login.html', context=context)
+                                            'email_formset': emailFormSet, 'chatroom_form': chatroomForm})
         else:
-            return render(request, 'login.html', context=RequestContext(request, {'user':user}))
+            return render(request, 'login.html', context={'user': user})
 
 def logout(request):
     """Logs out user"""
