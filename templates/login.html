@@ -31,7 +31,7 @@
                     <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-info">
                         Enter {{ chatroom.name }}
                     </a>
-                    <div class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
+                    <div data-chatroom_id="{{ chatroom.pk }}" class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
                 {% endfor %}
                 {% for chatroom in owned_chatrooms %}
                     <div class="btn-group">
@@ -39,7 +39,7 @@
                             Enter {{ chatroom.name }}
                         </a>
 
-                        <div class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
+                        <div data-chatroom_id="{{ chatroom.pk }}" class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
                     </div>
                 {% endfor %}
                 </div>
