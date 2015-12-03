@@ -1,6 +1,17 @@
 from autobahn.twisted.websocket import WebSocketServerFactory, WebSocketServerProtocol
+from autobahn.twisted.resource import WebSocketResource, WSGIRootResource
 
 from twisted.internet import reactor
+from twisted.web.server import Site
+from twisted.web.wsgi import WSGIResource
+
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "utubeu.settings")
+
+from whitenoise.django import DjangoWhiteNoise
+
+
+from django.core.wsgi import get_wsgi_application
 from json import dumps
 
 
@@ -41,5 +52,18 @@ if __name__ == '__main__':
     factory = SeparateServerFactory("ws://utubeu.herokuapp.com/receiver", debug=False)
     factory.protocol = YouTubeWebSockets
 
-    reactor.listenTCP(9000, factory)
+    wsResource = WebSocketResource(factory)
+
+
+    application = get_wsgi_application()
+    application = DjangoWhiteNoise(application)
+
+    djangoResource = WSGIResource(reactor, reactor.getThreadPool(), application)
+
+    rootResource = WSGIRootResource(djangoResource, {'ws': wsResource})
+
+    site = Site(rootResource)
+
+    reactor.listenTCP(os.environ.get("PORT"), site)
     reactor.run()
+

@@ -1,2 +1,1 @@
-web: gunicorn utubeu.wsgi
-worker: python server.py
+web: twistd -y server.py
