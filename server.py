@@ -49,7 +49,7 @@ class SeparateServerFactory(WebSocketServerFactory):
 
 if __name__ == '__main__':
 
-    factory = SeparateServerFactory("ws://utubeu.herokuapp.com/receiver", debug=False)
+    factory = SeparateServerFactory("ws://utubeu.herokuapp.com/ws", debug=False)
     factory.protocol = YouTubeWebSockets
 
     wsResource = WebSocketResource(factory)
