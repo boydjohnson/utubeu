@@ -14,8 +14,9 @@ class ChatroomForm(forms.ModelForm):
         fields = ['name', 'description']
 
     def __init__(self, *args, **kwargs):
-        super(ChatroomForm, self).__init__(*args, **kwargs)
         self.owner = kwargs.pop('owner', None)
+        super(ChatroomForm, self).__init__(*args, **kwargs)
+
 
     def save(self, commit=True):
         chatroom = super(ChatroomForm, self).save(commit=False)
