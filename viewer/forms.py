@@ -21,8 +21,8 @@ class ChatroomForm(forms.ModelForm):
     def save(self, commit=True):
         chatroom = super(ChatroomForm, self).save(commit=False)
         chatroom.owner = self.owner
-        chatroom.users.add(self.owner)
         chatroom.save(commit)
+        chatroom.users.add(self.owner)
         return chatroom
 
 class EmailForm(forms.ModelForm):
@@ -34,7 +34,7 @@ class EmailForm(forms.ModelForm):
     def save(self, commit=True, *args, **kwargs):
         chatroom = kwargs.get('chatroom')
         email = super(EmailForm, self).save(commit=False)
-        email.chatroom.add(chatroom)
+        email.chatroom = chatroom
         email.loggedin = False
         email.save(commit)
         return email

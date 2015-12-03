@@ -29,7 +29,7 @@ def login(request):
 
             return render(request, 'login.html', context={'user': user, 'owned_chatrooms': owned_chatrooms,
                                            'number_owned': len(owned_chatrooms), 'chatrooms': chatrooms,
-                                                          'email_formset':emailFormSet, 'chatroom_form':chatroomForm})
+                                                          'email_formset': emailFormSet, 'chatroom_form': chatroomForm})
         else:
             return render(request, 'login.html', context={'user':user})
 
@@ -41,17 +41,18 @@ def logout(request):
 @ensure_csrf_cookie
 def create_chatroom(request):
     user = request.user
-    if user.is_authenticated() and request.method=="POST":
+    if user.is_authenticated() and request.method == "POST":
         chatroomForm = ChatroomForm(request.POST, owner=user)
-        emailFormSet = formset_factory(EmailForm, extra=19, max_num=19, validate_max=True)
-        emails = emailFormSet(request.POST)
-        if chatroomForm.is_valid() and emails.is_valid():
-            chatroom = chatroomForm.save(commit=False)
-            for email in emails:
-                email.save(chatroom=chatroom)
-            return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name }), content_type="application/json")
-        else:
-            return HttpResponse(dumps({'errors':[chatroomForm.errors,emailFormSet.errors]}),
+        if chatroomForm.is_valid():
+            chatroom = chatroomForm.save()
+            emailFormSet = formset_factory(EmailForm, extra=19, max_num=19, validate_max=True)
+            emails = emailFormSet(request.POST)
+            if emails.is_valid():
+                for email in emails:
+                    email.save(chatroom=chatroom)
+                return HttpResponse(dumps({"chatroom_id": chatroom.pk, "chatroom_name": chatroom.name }), content_type="application/json")
+            else:
+                return HttpResponse(dumps({'errors':[chatroomForm.errors, emailFormSet.errors]}),
                                 content_type="application/json")
     else:
         raise PermissionDenied("User is not authenticated.")
