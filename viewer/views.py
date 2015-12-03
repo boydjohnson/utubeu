@@ -2,8 +2,8 @@ from django.contrib.auth.views import logout as auth_logout
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.forms.models import formset_factory
 from django.http import HttpResponse
+from django.template import RequestContext
 from django.shortcuts import render, redirect
-from django.template.context import RequestContext
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from json import loads, dumps
@@ -19,19 +19,20 @@ def login(request):
         if user.is_authenticated() and request.method=="GET":
             chatrooms = Chatroom.objects.filter(users=user)
             chatroomForm = ChatroomForm()
-            emailFormSet = formset_factory(EmailForm, extra=19, max_num=19, validate_max=True)
+            emailFormSet = formset_factory(EmailForm, extra=19, max_num=19)
+            emailFormSet = emailFormSet()
             owned_chatrooms = []
             chatrooms = list(chatrooms)
             for c in chatrooms:
                 if c.owner == user:
                     owned_chatrooms.append(c)
                     chatrooms.remove(c)
-
-            return render(request, 'login.html', context={'user': user, 'owned_chatrooms': owned_chatrooms,
+            context = RequestContext(request, {'user': user, 'owned_chatrooms': owned_chatrooms,
                                            'number_owned': len(owned_chatrooms), 'chatrooms': chatrooms,
                                                           'email_formset': emailFormSet, 'chatroom_form': chatroomForm})
+            return render(request, 'login.html', context=context)
         else:
-            return render(request, 'login.html', context={'user':user})
+            return render(request, 'login.html', context=RequestContext(request, {'user':user}))
 
 def logout(request):
     """Logs out user"""
@@ -45,7 +46,7 @@ def create_chatroom(request):
         chatroomForm = ChatroomForm(request.POST, owner=user)
         if chatroomForm.is_valid():
             chatroom = chatroomForm.save()
-            emailFormSet = formset_factory(EmailForm, extra=19, max_num=19, validate_max=True)
+            emailFormSet = formset_factory(EmailForm, extra=5, max_num=19)
             emails = emailFormSet(request.POST)
             if emails.is_valid():
                 for email in emails:

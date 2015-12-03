@@ -51,11 +51,12 @@
                     </div>
                     <div id="room-maker" class="collapse">
                         <form action="{% url 'viewer:create_chatroom' %}" method="post"
-                              id="post_chatroom_email_form">{% csrf_token %}
+                              id="post_chatroom_email_form">
+                            {% csrf_token %}
                             {{ email_formset.management_form }}
-                            {{ chatroom_form }}
+                            {{ chatroom_form.as_p }}
                             {% for form in email_formset %}
-                                {{ form }}
+                                {{ form.as_p }}
                             {% endfor %}
 
                             <input type="submit" id="makeit_button" class="btn btn-success" value="Create!">
@@ -90,7 +91,7 @@
                             if (data.errors == null) {
                                 $('input').val("");
                                 $('textarea').val("");
-                                $('#create-button').toggle();
+                                $('.collapse').collapse();
 
 
                                 $('.chatroom').append('<a href="/chatroom/' + data.chatroom_id + '" class="btn btn-warning">' + data.chatroom_name + '</a>');
