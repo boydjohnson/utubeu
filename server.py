@@ -38,7 +38,7 @@ class SeparateServerFactory(WebSocketServerFactory):
 
 if __name__ == '__main__':
 
-    factory = SeparateServerFactory("ws://utubeu.herokuapp.com:9000", debug=False)
+    factory = SeparateServerFactory("ws://127.0.0.1:9000", debug=False)
     factory.protocol = YouTubeWebSockets
 
     reactor.listenTCP(9000, factory)

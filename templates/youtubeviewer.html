@@ -66,7 +66,7 @@
 
 {% block js %}
 <script>
-    var websocket = new WebSocket('ws:utubeu.herokuapp.com:9000');
+    var websocket = new WebSocket('ws:127.0.0.1:9000');
     $('#sendbutton').click(function () {
         websocket.send($('#chatterbox').val());
     });
