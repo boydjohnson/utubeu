@@ -34,7 +34,7 @@ def logout(request):
     auth_logout(request)
     return redirect('/')
 
-@transaction.atomic()
+@transaction.atomic
 @ensure_csrf_cookie
 def create_chatroom(request):
     user = request.user
