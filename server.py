@@ -21,7 +21,7 @@ class ChatroomUser:
         self.username = username
         self.chatroom_id = chatroom_id
 
-    def __unicode__(self):
+    def __repr__(self):
         return self.username
 
 class YouTubeWebSockets(WebSocketServerProtocol):
@@ -59,18 +59,29 @@ class YouTubeWebSockets(WebSocketServerProtocol):
         if chatroom_id in self.factory.users:
             chatroomUsers = self.factory.users.get(chatroom_id)
             chatroomUsers.append(new_user)
-            output = {'usernames': [cru.username for cru in chatroomUsers]}
-            for cru in chatroomUsers:
-                cru.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
         else:
             self.factory.users[chatroom_id]= [new_user]
+
+    def onOpen(self):
+        """On open can be terribly inefficient because it only is called when a user enters the chatroom
+        """
+        for id, user_room in self.factory.users.iteritems():
+            for chatroom_user in user_room:
+                if chatroom_user.user == self:
+                    chatroom_id = id
+        try:
+            users = self.factory.users.get(chatroom_id)
+            message = {'usernames':[cru.username for cru in users]}
+            for u in users:
+                u.user.sendMessage(dumps(message).encode('utf-8'), isBinary=False)
+        except KeyError:
+            print "no chatroom"
 
     def onMessage(self, payload, isBinary):
         if not isBinary:
             server_input = loads(payload, encoding='utf-8')
             chatroom_id = int(server_input.pop("chatroom_id"))
             chatroomUsers = self.factory.users.get(chatroom_id)
-            server_input['usernames'] = [cru.username for cru in chatroomUsers]
             if "message" in server_input:
                 user_name = server_input.get("username")
                 for cru in chatroomUsers:
@@ -82,13 +93,16 @@ class YouTubeWebSockets(WebSocketServerProtocol):
 
     def onClose(self, wasClean, code, reason):
         """The reason will be just the primary key of the chatroom---This seems like a hack"""
-        chatroom_id = int(reason)
-        chatroomUsers = self.factory.users.get(chatroom_id)
-        chatroomUsers = [ cru for cru in chatroomUsers if self != cru.user]
-        self.factory.users[chatroom_id] = chatroomUsers
-        output = {'usernames':[cru.username for cru in chatroomUsers]}
-        for c in chatroomUsers:
-            c.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
+        try:
+            chatroom_id = int(reason)
+            chatroomUsers = self.factory.users.get(chatroom_id)
+            chatroomUsers = [ cru for cru in chatroomUsers if self != cru.user]
+            self.factory.users[chatroom_id] = chatroomUsers
+            output = {'usernames':[cru.username for cru in chatroomUsers]}
+            for c in chatroomUsers:
+                c.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
+        except ValueError:
+            pass
 
 class SeparateServerFactory(WebSocketServerFactory):
 
@@ -100,8 +114,6 @@ class SeparateServerFactory(WebSocketServerFactory):
 
 
 if __name__ == '__main__':
-
-
     #This is needed for development vs heroku environment
     try:
         port=int(os.environ.get("PORT"))
@@ -110,12 +122,10 @@ if __name__ == '__main__':
         port=8000
         websockets_url="ws://127.0.0.1:8000/ws"
 
-
     factory = SeparateServerFactory(websockets_url, debug=False)
     factory.protocol = YouTubeWebSockets
 
     wsResource = WebSocketResource(factory)
-
 
     application = get_wsgi_application()
     application = DjangoWhiteNoise(application)
