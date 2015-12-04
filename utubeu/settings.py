@@ -37,7 +37,7 @@ DEBUG = True
 if not DEBUG:
     SECRET_KEY = os.environ['SECRET_KEY']
 else:
-    SECRET_KEY= '20843hnfsdfh84304nfefh803h4'
+    SECRET_KEY = '20843hnfsdfh84304nfefh803h4'
 
 ALLOWED_HOSTS = ['utubeu.herokuapp.com']
 
@@ -92,16 +92,16 @@ WSGI_APPLICATION = 'utubeu.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-try:
-    DATABASES = {}
-    DATABASES['default'] = dj_database_url.config()
-except:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-            }
-}
+
+DATABASES = dict()
+DATABASES['default'] = dj_database_url.config()
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 
 # Internationalization
@@ -124,7 +124,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'statics'),
-                   )
+                    )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'collection')
 
@@ -137,15 +137,15 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-#SOCIAL OAUTH
+# SOCIAL OAUTH
 LOGIN_REDIRECT_URL = '/'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY= google_client_id
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = google_client_id
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_secret
 
 
 
-#Redis Caching
+# Redis Caching
 # redis_url = urlparse.urlparse(os.environ.get('REDIS_URL'))
 # CACHES = {
 #     "default": {
