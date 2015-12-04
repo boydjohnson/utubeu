@@ -1,5 +1,6 @@
 from django.contrib.auth.views import logout as auth_logout
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.db.models import Q
 from django.forms.models import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -7,7 +8,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 from json import loads, dumps
 
-from viewer.models import Chatroom
+from viewer.models import Chatroom, InvitedEmails
 from viewer.forms import ChatroomForm, EmailForm
 
 
@@ -17,18 +18,14 @@ def login(request):
         user = request.user
         if user.is_authenticated() and request.method=="GET":
             chatrooms = Chatroom.objects.filter(users=user)
+            invites = InvitedEmails.objects.filter(user_email=user.email).filter(~Q(chatroom__users=user))
             chatroomForm = ChatroomForm()
             emailFormSet = formset_factory(EmailForm, extra=19, max_num=19)
             emailFormSet = emailFormSet()
-            owned_chatrooms = []
-            chatrooms = list(chatrooms)
-            for c in chatrooms:
-                if c.owner == user:
-                    owned_chatrooms.append(c)
-                    chatrooms.remove(c)
-
+            owned_chatrooms = chatrooms.filter(owner=user)
+            non_owned_chatrooms = chatrooms.filter(~Q(owner=user))
             return render(request, 'login.html', context={'user': user, 'owned_chatrooms': owned_chatrooms,
-                                           'number_owned': len(owned_chatrooms), 'chatrooms': chatrooms,
+                            'number_owned': len(owned_chatrooms), 'chatrooms': non_owned_chatrooms, 'invites': invites,
                                             'email_formset': emailFormSet, 'chatroom_form': chatroomForm})
         else:
             return render(request, 'login.html', context={'user': user})

@@ -27,13 +27,18 @@
         </div>
         <div class="col-md-3 chatrooms">
             {% if user and user.is_authenticated %}
+
+                <div>
+                Non-owned Chatrooms:
+                </div>
                 {% for chatroom in chatrooms %}
                     <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-info">
                         Enter {{ chatroom.name }}
                     </a>
-                    <div data-chatroom_id="{{ chatroom.pk }}"
-                         class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
                 {% endfor %}
+                <div>
+                Owned Chatrooms:
+                </div>
                 {% for chatroom in owned_chatrooms %}
                     <div class="btn-group">
                         <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-warning">
@@ -43,6 +48,12 @@
                         <div data-chatroom_id="{{ chatroom.pk }}"
                              class="delete_chatroom btn btn-danger glyphicon glyphicon-remove"></div>
                     </div>
+                {% endfor %}
+                <div>
+                    Invites:
+                </div>
+                {% for invite in invites %}
+                        <div data-chatroom_id="{{ invite.chatroom.pk }}" class="btn btn-info">Join: {{ invite.chatroom.name }}</div>
                 {% endfor %}
                 </div>
                 <div class="col-md-3">
