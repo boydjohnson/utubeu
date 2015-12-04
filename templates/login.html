@@ -102,10 +102,12 @@
                             if (data.errors == null) {
                                 $('input').val("");
                                 $('textarea').val("");
-                                $('.collapse').collapse();
-
-
+                                $('.collapse').collapse('hide');
                                 $('.chatroom').append('<a href="/chatroom/' + data.chatroom_id + '" class="btn btn-warning">' + data.chatroom_name + '</a>');
+                                if(data.no_more_chatrooms){
+                                    $('#room-maker').remove();
+                                    $('#create-button').remove();
+                                }
                             }
                         }).fail(function (data) {
                             $('#error_bank').append('<p>' + data.errors + '</p>');
