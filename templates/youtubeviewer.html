@@ -19,7 +19,7 @@
         }
 
 
-        .individual_result {
+        .individual_result, .suggested {
             border:solid 1px black;
         }
     </style>
@@ -43,18 +43,18 @@
 
 
     <div class="row">
-        <div class="col-md-4 embed-responsive embed-responsive-4by3">
+        <div class="col-md-3 embed-responsive embed-responsive-4by3">
             <iframe id="video" class="embed-responsive-item"></iframe>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div id="search_results"></div>
             <textarea class="col-md-12" id="videosearchbox" rows="1"></textarea>
 
             <div id="search_button" class="btn btn-success col-md-12">Search Videos!</div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-3">
 
             <div id="chattertext">
 
@@ -63,6 +63,8 @@
 
             <div id="sendbutton" class="btn btn-success col-md-12">Send</div>
         </div>
+
+        <div id="suggestion_list" class="col-md-3"></div>
 
 
     </div>
@@ -86,7 +88,9 @@
                 $('#search_button').click(function (evt) {
                     gapi.client.youtube.search.list({
                         q: $('#videosearchbox').val(),
-                        part: 'snippet'
+                        part: 'snippet',
+                        type: 'video',
+                        videoEmbeddable: 'true'
                     }).execute(function (response) {
                         $('#search_results').children().remove();
                         for(i in response.result.items) {
@@ -96,7 +100,7 @@
                             var title = data.snippet.title;
                             var description = data.snippet.description;
                             $('#search_results').append('<div class="individual_result" data-video-id="'+ video_id +'"><img src="'
-                                    +image_url+'"></img><p class="h3">' + title + '</p><p>'+description+'</p>');
+                                    +image_url+'"></img><p class="h3">' + title + '</p><p class="description">'+description+'</p>');
                         }
                         $('.individual_result').prepend('<div class="make_suggestion btn btn-success pull-right">Suggest It!</div>');
                         addSuggestionClickListeners();
@@ -110,18 +114,25 @@
                     var video_id = $(this).parent().attr('data-video-id');
                     var chatroom_id = "{{ chatroom.pk }}";
                     var username = "{{ user.username }}";
+                    var title = $(this).parent().children('p.h3').text();
+                    var description = $(this).parent().children('p.description').text()
+                    var image_url = $(this).parent().children('img').attr('src');
+                    console.log($(this).parent());
 
-                    websocket.send(JSON.stringify({chatroom_id: chatroom_id, youtube_value: video_id, username: username}));
+                    websocket.send(JSON.stringify({chatroom_id: chatroom_id, youtube_value: video_id, username: username,
+                                                title: title, description: description, image_url: image_url}));
                 })
             }
 
             $('#sendbutton').click(function () {
-                websocket.send(JSON.stringify({
-                    'chatroom_id': "{{ chatroom.pk }}",
-                    'username': "{{ user.username }}",
-                    'message': $('#chatterbox').val()
-                }));
-                $('#chatterbox').val("");
+                if($('#chatterbox').val()!="") {
+                    websocket.send(JSON.stringify({
+                        'chatroom_id': "{{ chatroom.pk }}",
+                        'username': "{{ user.username }}",
+                        'message': $('#chatterbox').val()
+                    }));
+                    $('#chatterbox').val("");
+                }
             });
 
             websocket.onmessage = function (event) {
@@ -142,6 +153,17 @@
                     }
                     $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
 
+                }
+                if(input.youtube_value != null){
+                    if(input.username !=null) {
+                        var username = input.username;
+                    }else {
+                        var username = "You";
+                    }
+                        var html_to_insert = '<div class="suggested" data-video-id="'+ input.youtube_value +'"><img src="'
+                                    +input.image_url+'"></img><div class="btn btn-success pull-right vote_btn">Vote!</div><p class="pull-right">'+
+                                username+'</p><p class="h3">' + input.title + '</p><p class="description">'+input.description+'</p>'
+                    $('#suggestion_list').append(html_to_insert);
                 }
             };
 

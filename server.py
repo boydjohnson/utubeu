@@ -35,8 +35,10 @@ class YouTubeWebSockets(WebSocketServerProtocol):
 
     The next two will work better with Redis
 
-    IN suggestion = {chatroom_id: 58, youtube_value: '3Mehdi895Ddi', username: somebody}
-    OUT suggestion = {youtube_value: '...', //depending username: somebody}
+    IN suggestion = {chatroom_id: 58, youtube_value: '3Mehdi895Ddi', title: 'Uptown Funk...', description: 'stuff about ...',
+                        image_url:'https:.....', username: somebody}
+    OUT suggestion = {youtube_value: '...', title: '...', description: '...',
+                       image_url: 'https:...', //depending username: somebody}
 
     IN vote = {chatroom_id: 58, youtube_value: '4859DidEing48d', username: somebody}
     OUT vote = {youtube_value: '...', vote_total: percentage}
@@ -89,7 +91,13 @@ class YouTubeWebSockets(WebSocketServerProtocol):
                     if cru.username==user_name:
                         individual_output.pop('username')
                     cru.user.sendMessage(dumps(individual_output).encode('utf-8'), isBinary=False)
-
+            elif "youtube_value" in server_input:
+                user_name = server_input.get("username")
+                for cru in chatroomUsers:
+                    individual_output = dict(server_input)
+                    if cru.username == user_name:
+                        individual_output.pop("username")
+                    cru.user.sendMessage(dumps(individual_output).encode('utf-8'), isBinary=False)
 
     def onClose(self, wasClean, code, reason):
         """The reason will be just the primary key of the chatroom---This seems like a hack"""
