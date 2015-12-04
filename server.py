@@ -64,15 +64,13 @@ class YouTubeWebSockets(WebSocketServerProtocol):
                 cru.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
         else:
             self.factory.users[chatroom_id]= [new_user]
-            output = {'usernames': [new_user.username]}
-            new_user.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
-
 
     def onMessage(self, payload, isBinary):
         if not isBinary:
             server_input = loads(payload, encoding='utf-8')
             chatroom_id = int(server_input.pop("chatroom_id"))
             chatroomUsers = self.factory.users.get(chatroom_id)
+            server_input['usernames'] = [cru.username for cru in chatroomUsers]
             if "message" in server_input:
                 user_name = server_input.get("username")
                 for cru in chatroomUsers:
@@ -82,15 +80,15 @@ class YouTubeWebSockets(WebSocketServerProtocol):
                     cru.user.sendMessage(dumps(individual_output).encode('utf-8'), isBinary=False)
 
 
-    # def onClose(self, wasClean, code, reason):
-    #     """The reason will be just the primary key of the chatroom---This seems like a hack"""
-    #     chatroom_id = int(reason)
-    #     chatroomUsers = self.factory.users.get(chatroom_id)
-    #     chatroomUsers = [ cru for cru in chatroomUsers if self != cru.user]
-    #     self.factory.users[chatroom_id] = chatroomUsers
-    #     output = {'usernames':[cru.username for cru in chatroomUsers]}
-    #     for c in chatroomUsers:
-    #         c.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
+    def onClose(self, wasClean, code, reason):
+        """The reason will be just the primary key of the chatroom---This seems like a hack"""
+        chatroom_id = int(reason)
+        chatroomUsers = self.factory.users.get(chatroom_id)
+        chatroomUsers = [ cru for cru in chatroomUsers if self != cru.user]
+        self.factory.users[chatroom_id] = chatroomUsers
+        output = {'usernames':[cru.username for cru in chatroomUsers]}
+        for c in chatroomUsers:
+            c.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
 
 class SeparateServerFactory(WebSocketServerFactory):
 
