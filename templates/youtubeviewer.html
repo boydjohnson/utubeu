@@ -8,16 +8,19 @@
             background-color: white;
         }
 
-        .sidebar-toggle {
-            transform: rotate(90deg);
-            transform-origin: top left 0;
-            width: 200px;
-            float: left;
-        }
         #dock {
             background-color: floralwhite;
             border: solid 2px black;
             border-radius: 5px;
+        }
+        #search_results {
+            background-color: floralwhite;
+            border: 1px solid black;
+        }
+
+
+        .individual_result {
+            border:solid 1px black;
         }
     </style>
 
@@ -44,8 +47,11 @@
             <iframe id="video" class="embed-responsive-item"></iframe>
         </div>
 
-        <div class="col-md-1 btn btn-danger sidebar-toggle">
-            Chat
+        <div class="col-md-4">
+            <div id="search_results"></div>
+            <textarea class="col-md-12" id="videosearchbox" rows="1"></textarea>
+
+            <div id="search_button" class="btn btn-success col-md-12">Search Videos!</div>
         </div>
 
         <div class="col-md-4">
@@ -54,12 +60,8 @@
 
             </div>
             <textarea class="col-md-12" id="chatterbox" rows="2" placeholder="Chat!"></textarea>
+
             <div id="sendbutton" class="btn btn-success col-md-12">Send</div>
-
-            <textarea class="col-md-12" id="videourl" rows="2"></textarea>
-            <div id="sendvideobutton" class="btn btn-warning col-md-12" col-md-12>Send Video</div>
-
-
         </div>
 
 
@@ -70,75 +72,107 @@
 
 
 {% block js %}
+
     <script>
-        var websocket = new WebSocket('ws://' + window.location.host + '/ws?chatroom-id=' + "{{ chatroom.pk }}&user-name=" + "{{ user.username }}");
-        $('#sendbutton').click(function () {
-            websocket.send(JSON.stringify({
-                'chatroom_id': "{{ chatroom.pk }}",
-                'username': "{{ user.username }}",
-                'message': $('#chatterbox').val()
-            }));
-            $('#chatterbox').val("");
-        });
-
-        websocket.onmessage = function (event) {
-            var input = JSON.parse(event.data);
-            if (input.usernames != null) {
-                var usernames = input.usernames;
-                $('#dock').children().remove();
-                for (var i = 0; i < usernames.length; i++) {
-                    $('#dock').append('<div class="h3">' + usernames[i] + '</div>');
-                }
+            function initialize() {
+                console.log("CRAP!!!");
+                gapi.client.setApiKey('AIzaSyAvvnsZ3V67P23Td-0mD7BuuN42eoN7nNE');
+                gapi.client.load('youtube', 'v3').then(function () {
+                    afterLoad();
+                })
             }
 
-            if (input.message != null) {
-                if (input.username != null) {
-                    $('#chattertext').append('<p>' + input.username + " : " + input.message + '</p>');
-                } else {
-                    $('#chattertext').append('<p class="text-right">' + "You : " + input.message + '</p>');
-                }
-                $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
 
+            function afterLoad() {
+                $('#search_button').click(function (evt) {
+                    gapi.client.youtube.search.list({
+                        q: $('#videosearchbox').val(),
+                        part: 'snippet'
+                    }).execute(function (response) {
+                        $('#search_results').children().remove();
+                        for(i in response.result.items) {
+                            var data = response.result.items[i];
+                            var video_id = data.id.videoId;
+                            var image_url = data.snippet.thumbnails.default.url;
+                            var title = data.snippet.title;
+                            var description = data.snippet.description;
+                            $('#search_results').append('<div class="individual_result" data-video-id="'+ video_id +'"><img src="'
+                                    +image_url+'"></img><p class="h3">' + title + '</p><p>'+description+'</p>');
+                        }
+                        $('.individual_result').prepend('<div class="make_suggestion btn btn-success pull-right">Suggest It!</div>')
+                    })
+                });
             }
-        };
 
-        $('.sidebar-toggle').click(function () {
-            if ($('.sidebar').hasClass('hidden')) {
-                $('.sidebar').removeClass('hidden');
-                $('.sidebar-toggle').removeClass('btn-info').addClass('btn-danger');
-                $('.sidebar-toggle').removeClass('col-md-offset-12').addClass('col-md-offset-8');
-
-            } else {
-                $('.sidebar').addClass('hidden');
-                $('.sidebar-toggle').removeClass('btn-danger').addClass('btn-info');
-                $('.sidebar-toggle').removeClass('col-md-offset-8').addClass('col-md-offset-12');
-            }
-
-        });
-
-        $('#sendvideobutton').click(function () {
-            $('#video').attr('src', $('#videourl').val());
-        });
-
-        window.onbeforeunload = function(){
-            websocket.onclose = function(){};
-            websocket.close(1000, "{{ chatroom.pk }}");
-        };
-
-
-        var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                events: {
-                    'onReady': onPlayerReady,
-                }
+            var websocket = new WebSocket('ws://' + window.location.host + '/ws?chatroom-id=' + "{{ chatroom.pk }}&user-name=" + "{{ user.username }}");
+            $('#sendbutton').click(function () {
+                websocket.send(JSON.stringify({
+                    'chatroom_id': "{{ chatroom.pk }}",
+                    'username': "{{ user.username }}",
+                    'message': $('#chatterbox').val()
+                }));
+                $('#chatterbox').val("");
             });
-        }
 
-        function onPlayerReady(event) {
-            event.target.playVideo();
-        }
+            websocket.onmessage = function (event) {
+                var input = JSON.parse(event.data);
+                if (input.usernames != null) {
+                    var usernames = input.usernames;
+                    $('#dock').children().remove();
+                    for (var i = 0; i < usernames.length; i++) {
+                        $('#dock').append('<div class="h3">' + usernames[i] + '</div>');
+                    }
+                }
+
+                if (input.message != null) {
+                    if (input.username != null) {
+                        $('#chattertext').append('<p>' + input.username + " : " + input.message + '</p>');
+                    } else {
+                        $('#chattertext').append('<p class="text-right">' + "You : " + input.message + '</p>');
+                    }
+                    $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
+
+                }
+            };
+
+            $('.sidebar-toggle').click(function () {
+                if ($('.sidebar').hasClass('hidden')) {
+                    $('.sidebar').removeClass('hidden');
+                    $('.sidebar-toggle').removeClass('btn-info').addClass('btn-danger');
+                    $('.sidebar-toggle').removeClass('col-md-offset-12').addClass('col-md-offset-8');
+
+                } else {
+                    $('.sidebar').addClass('hidden');
+                    $('.sidebar-toggle').removeClass('btn-danger').addClass('btn-info');
+                    $('.sidebar-toggle').removeClass('col-md-offset-8').addClass('col-md-offset-12');
+                }
+
+            });
+
+            $('#sendvideobutton').click(function () {
+                $('#video').attr('src', $('#videourl').val());
+            });
+
+            window.onbeforeunload = function () {
+                websocket.onclose = function () {
+                };
+                websocket.close(1000, "{{ chatroom.pk }}");
+            };
 
 
+            var player;
+
+            function onYouTubeIframeAPIReady() {
+                player = new YT.Player('player', {
+                    events: {
+                        'onReady': onPlayerReady,
+                    }
+                });
+            }
+
+            function onPlayerReady(event) {
+                event.target.playVideo();
+            }
     </script>
+    <script src="https://apis.google.com/js/client.js?onload=initialize"></script>
 {% endblock %}
