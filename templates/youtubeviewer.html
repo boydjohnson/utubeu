@@ -75,7 +75,6 @@
 
     <script>
             function initialize() {
-                console.log("CRAP!!!");
                 gapi.client.setApiKey('AIzaSyAvvnsZ3V67P23Td-0mD7BuuN42eoN7nNE');
                 gapi.client.load('youtube', 'v3').then(function () {
                     afterLoad();
@@ -99,12 +98,23 @@
                             $('#search_results').append('<div class="individual_result" data-video-id="'+ video_id +'"><img src="'
                                     +image_url+'"></img><p class="h3">' + title + '</p><p>'+description+'</p>');
                         }
-                        $('.individual_result').prepend('<div class="make_suggestion btn btn-success pull-right">Suggest It!</div>')
+                        $('.individual_result').prepend('<div class="make_suggestion btn btn-success pull-right">Suggest It!</div>');
+                        addSuggestionClickListeners();
                     })
                 });
             }
 
             var websocket = new WebSocket('ws://' + window.location.host + '/ws?chatroom-id=' + "{{ chatroom.pk }}&user-name=" + "{{ user.username }}");
+            function addSuggestionClickListeners(){
+                $('.make_suggestion').click(function(evt){
+                    var video_id = $(this).parent().attr('data-video-id');
+                    var chatroom_id = "{{ chatroom.pk }}";
+                    var username = "{{ user.username }}";
+
+                    websocket.send(JSON.stringify({chatroom_id: chatroom_id, youtube_value: video_id, username: username}));
+                })
+            }
+
             $('#sendbutton').click(function () {
                 websocket.send(JSON.stringify({
                     'chatroom_id': "{{ chatroom.pk }}",
