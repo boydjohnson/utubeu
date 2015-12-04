@@ -21,6 +21,8 @@ class ChatroomUser:
         self.username = username
         self.chatroom_id = chatroom_id
 
+    def __unicode__(self):
+        return self.username
 
 class YouTubeWebSockets(WebSocketServerProtocol):
     """
@@ -52,15 +54,14 @@ class YouTubeWebSockets(WebSocketServerProtocol):
             is the value in the self.factory.users dict with chatroom_id being the key
         """
         params = request.params
-        chatroom_id = int(params.get("chatroom-id"))
-        new_user = ChatroomUser(self, params.get("user-name"), chatroom_id)
+        chatroom_id = int(params.get(u"chatroom-id")[0])
+        new_user = ChatroomUser(self, params.get(u"user-name")[0], chatroom_id)
         if chatroom_id in self.factory.users:
             chatroomUsers = self.factory.users.get(chatroom_id)
             chatroomUsers.append(new_user)
             output = {'usernames': [cru.username for cru in chatroomUsers]}
             for cru in chatroomUsers:
                 cru.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
-            self.factory.users[chatroom_id]= chatroomUsers
         else:
             self.factory.users[chatroom_id]= [new_user]
             output = {'usernames': [new_user.username]}
@@ -75,23 +76,21 @@ class YouTubeWebSockets(WebSocketServerProtocol):
             if "message" in server_input:
                 user_name = server_input.get("username")
                 for cru in chatroomUsers:
-                    if cru.username!=user_name:
-                        server_output = server_input
-                    else:
-                        del server_input['username']
-                        server_output = server_input
-                    cru.user.sendMessage(dumps(server_output).encode('utf-8'), isBinary=False)
+                    individual_output = dict(server_input)
+                    if cru.username==user_name:
+                        individual_output.pop('username')
+                    cru.user.sendMessage(dumps(individual_output).encode('utf-8'), isBinary=False)
 
 
-    def onClose(self, wasClean, code, reason):
-        """The reason will be just the primary key of the chatroom---This seems like a hack"""
-        chatroom_id = int(reason)
-        chatroomUsers = self.factory.users.get(chatroom_id)
-        chatroomUsers = [ cru for cru in chatroomUsers if self != cru.user]
-        self.factory.users[chatroom_id] = chatroomUsers
-        output = {'usernames':[cru.username for cru in chatroomUsers]}
-        for c in chatroomUsers:
-            c.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
+    # def onClose(self, wasClean, code, reason):
+    #     """The reason will be just the primary key of the chatroom---This seems like a hack"""
+    #     chatroom_id = int(reason)
+    #     chatroomUsers = self.factory.users.get(chatroom_id)
+    #     chatroomUsers = [ cru for cru in chatroomUsers if self != cru.user]
+    #     self.factory.users[chatroom_id] = chatroomUsers
+    #     output = {'usernames':[cru.username for cru in chatroomUsers]}
+    #     for c in chatroomUsers:
+    #         c.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
 
 class SeparateServerFactory(WebSocketServerFactory):
 

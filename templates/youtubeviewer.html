@@ -5,6 +5,7 @@
             height: 200px;
             overflow-y: scroll;
             border:1px solid black;
+            background-color: white;
         }
 
         .sidebar-toggle {
@@ -26,7 +27,12 @@
         </div>
     </div>
     <div class="row">
+    <div class="col-md-3">
     {{ chatroom.name }}
+    </div>
+    <div class="col-md-9">
+        {{ chatroom.description }}
+    </div>
     </div>
 
 
@@ -43,7 +49,7 @@
             Chat
         </div>
 
-        <div class="col-md-4 sidebar">
+        <div class="col-md-4">
 
             <div id="chattertext">
 
@@ -68,12 +74,12 @@
 <script>
     var websocket = new WebSocket('ws://'+window.location.host+'/ws?chatroom-id='+"{{ chatroom.pk }}&user-name="+"{{ user.username }}");
     $('#sendbutton').click(function () {
-        websocket.send($('#chatterbox').val());
+        websocket.send(JSON.stringify({'chatroom_id': "{{ chatroom.pk }}", 'username': "{{ user.username }}", 'message': $('#chatterbox').val()}));
     });
 
     websocket.onmessage = function (event) {
-        var msg = JSON.parse(event.data);
-        if (msg.screen != null) {
+        var input = JSON.parse(event.data);
+        if (input.screen != null) {
             var difference = msg.screen.count - $('#dock').children().length;
             for (var i = 0; i < difference; i++) {
                 $('#dock').append('<img src="screen.png" height="25" width="25">');
@@ -84,8 +90,12 @@
                 }
             }
         }
-        if (msg.msg != null) {
-            $('#chattertext').append('<p>' + msg.msg + '</p>');
+        if (input.message != null) {
+            if(input.username !=null) {
+                $('#chattertext').append('<p>' +input.username+" : "+ input.message + '</p>');
+            }else{
+                $('#chattertext').append('<p class="text-right">'+"You : "+input.message+'</p>');
+            }
             $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
         }
     };
