@@ -29,7 +29,7 @@
             {% if user and user.is_authenticated %}
 
                 <div>
-                Non-owned Chatrooms:
+                    Non-owned Chatrooms:
                 </div>
                 {% for chatroom in chatrooms %}
                     <a href="/chatroom/{{ chatroom.pk }}" class="btn btn-info">
@@ -37,7 +37,7 @@
                     </a>
                 {% endfor %}
                 <div>
-                Owned Chatrooms:
+                    Owned Chatrooms:
                 </div>
                 {% for chatroom in owned_chatrooms %}
                     <div class="btn-group">
@@ -53,7 +53,8 @@
                     Invites:
                 </div>
                 {% for invite in invites %}
-                        <div data-chatroom_id="{{ invite.chatroom.pk }}" class="btn btn-info">Join: {{ invite.chatroom.name }}</div>
+                    <div data-chatroom_id="{{ invite.chatroom.pk }}" class="join_chatroom btn btn-info">
+                        Join: {{ invite.chatroom.name }}</div>
                 {% endfor %}
                 </div>
                 <div class="col-md-3">
@@ -104,7 +105,7 @@
                                 $('textarea').val("");
                                 $('.collapse').collapse('hide');
                                 $('.chatroom').append('<a href="/chatroom/' + data.chatroom_id + '" class="btn btn-warning">' + data.chatroom_name + '</a>');
-                                if(data.no_more_chatrooms){
+                                if (data.no_more_chatrooms) {
                                     $('#room-maker').remove();
                                     $('#create-button').remove();
                                 }
@@ -127,7 +128,23 @@
                         chatroom_btn_group.remove();
                     }
                 })
+            });
+
+            $('.join_chatroom').click(function (event) {
+                var join_button = $(this);
+                $.ajaxSetup({
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
+                    }
+                });
+                $.post("{% url 'viewer:join_chatroom' %}", {'chatroom_id': join_button.attr('data-chatroom_id')}).done(function (data) {
+
+                    join_button.remove();
+
+                })
             })
+
+
         });
     </script>
 

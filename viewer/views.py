@@ -1,5 +1,5 @@
 from django.contrib.auth.views import logout as auth_logout
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError, ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import Q
 from django.forms.models import formset_factory
@@ -67,6 +67,22 @@ def delete_chatroom(request):
             return HttpResponse(dumps({'success': True}), content_type="application/json")
         except:
             raise PermissionDenied("User is not the owner of that chatroom.")
+
+    else:
+        raise PermissionDenied("User is not authenticated")
+
+def join_chatroom(request):
+    user= request.user
+    if user.is_authenticated() and request.method == "POST":
+        try:
+            chatroom_id = int(request.POST.get('chatroom_id'))
+            chatroom = Chatroom.objects.filter(pk=chatroom_id).filter(emails_from_chatroom__user_email=user.email).get()
+            chatroom.users.add(user)
+            return HttpResponse(dumps({'chatroom_id': chatroom_id}))
+        except KeyError:
+            raise ValidationError("POST request wasn't configured correctly")
+        except ObjectDoesNotExist:
+            raise PermissionDenied("User has not been added to chatroom")
 
     else:
         raise PermissionDenied("User is not authenticated")
