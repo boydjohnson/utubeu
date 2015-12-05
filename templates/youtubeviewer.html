@@ -125,8 +125,11 @@
             }
 
             function addVoteClickListeners(){
-                $('.vote_btn').click(function(){
+                $('.vote_btn').click(function (){
                     var button_clicked = $(this);
+                    console.log(button_clicked);
+                    console.log(button_clicked.parent());
+
                     var video_url = button_clicked.parent().attr('data-video-id');
                     console.log(video_url);
 
