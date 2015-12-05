@@ -92,6 +92,7 @@
 
         function afterLoad() {
             $('#search_button').click(function (evt) {
+                evt.preventDefault();
                 gapi.client.youtube.search.list({
                     q: $('#videosearchbox').val(),
                     part: 'snippet',
@@ -146,7 +147,8 @@
             })
         }
 
-        $('#sendbutton').click(function () {
+        $('#sendbutton').click(function (evt) {
+            evt.preventDefault();
             if ($('#chatterbox').val() != "") {
                 websocket.send(JSON.stringify({
                     'chatroom_id': "{{ chatroom.pk }}",
