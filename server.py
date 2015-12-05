@@ -160,15 +160,16 @@ class YouTubeWebSockets(WebSocketServerProtocol):
                 total_users = float(cache.get(CHATROOM_USERS_KEY(chatroom_id)))
                 voting_percentage = total_votes/total_users
                 if voting_percentage > .4:
+                    cache.delete(chatroom_votes_key)
                     for cru in chatroomUsers:
                         cru.user.sendMessage(dumps({'start': True, 'youtube_value': server_input.get('youtube_value')}).encode('utf-8'),
                                              isBinary=False)
-                        chatroom_sugg_key = CHATROOM_SUGGESTIONS_KEY(chatroom_id)
-                        suggestions = cache.lrange(chatroom_sugg_key, 0, -1)
-                        for i, s in enumerate(suggestions):
-                            sugg = loads(s)
-                            if sugg.get('youtube_value')==server_input.get('youtube_value'):
-                                cache.lrem(chatroom_sugg_key, s, 0)
+                    chatroom_sugg_key = CHATROOM_SUGGESTIONS_KEY(chatroom_id)
+                    suggestions = cache.lrange(chatroom_sugg_key, 0, -1)
+                    for i, s in enumerate(suggestions):
+                        sugg = loads(s)
+                        if sugg.get('youtube_value')==server_input.get('youtube_value'):
+                            cache.lrem(chatroom_sugg_key, s, 0)
                 else:
                     for cru in chatroomUsers:
                         cru.user.sendMessage(dumps({'youtube_value': server_input.get('youtube_value'),
