@@ -125,10 +125,8 @@
             }
 
             function addVoteClickListeners(){
-                console.log("AddVoteClickListeners ran");
                 $('.vote_btn').click(function(){
                     var button_clicked = $(this);
-                    console.log(button_clicked.parent());
                     var video_url = button_clicked.parent().attr('data-video-id');
                     websocket.send(JSON.stringify({'chatroom_id': "{{ chatroom.pk }}",
                                      'vote': true, 'youtube_value': video_url}));
@@ -180,6 +178,8 @@
                 }
                 if(input.percentage !=null){
                     var youtube_value = input.youtube_value;
+                    console.log(youtube_value);
+                    console.log($('.suggested["data-video-id"='+youtube_value+']'));
                     $('.suggested["data-video-id"='+youtube_value+']').prepend('<div class="well">'+input.percentage+'</div>');
 
                 }
