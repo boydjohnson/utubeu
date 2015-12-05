@@ -233,14 +233,13 @@
         function cueTheVideo(youtube_value) {
 
 
-            window.player.cueVideoById(youtube_value, 0, 15, 'medium');
+            player.loadVideoById(youtube_value);
 
         }
 
     function onYouTubeIframeAPIReady() {
                 console.log("onYouTubeIframeAPIReady() called");
-
-               window.player = new YT.Player('player', {
+               player = new YT.Player('player', {
                     events: {
                         'onReady': onPlayerReady,
                     }
