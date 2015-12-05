@@ -117,7 +117,6 @@
                     var title = $(this).parent().children('p.h3').text();
                     var description = $(this).parent().children('p.description').text()
                     var image_url = $(this).parent().children('img').attr('src');
-                    console.log($(this).parent());
 
                     websocket.send(JSON.stringify({chatroom_id: chatroom_id, youtube_value: video_id, username: username,
                                                 title: title, description: description, image_url: image_url}));
@@ -166,6 +165,7 @@
                     $('#suggestion_list').append(html_to_insert);
                 }
                 if(input.last_ten !=null){
+                    console.log(input.last_ten);
                     for(i in input.last_ten){
                         var pair_user_message= input.last_ten[i];
                         $('#chattertext').append('<p>'+pair_user_message.username+" : "+pair_user_message.msg+'</p>');
