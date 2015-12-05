@@ -62,7 +62,10 @@ class YouTubeWebSockets(WebSocketServerProtocol):
     userlist = { usernames = [somebody, somebodyelse, ...]}
 
     """
-
+    def doPing(self):
+        if self.run:
+            self.sendPing()
+            reactor.callLater(10, self.doPing)
 
     def onConnect(self, request):
         """the client sends in parameters of chatroom-id and user-name
@@ -81,6 +84,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
     def onOpen(self):
         """On open can be terribly inefficient because it only is called when a user enters the chatroom
         """
+        self.run=True
         for id, user_room in self.factory.users.iteritems():
             for chatroom_user in user_room:
                 if chatroom_user.user == self:
@@ -123,6 +127,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
 
     def onClose(self, wasClean, code, reason):
         """The reason will be just the primary key of the chatroom---This seems like a hack"""
+        self.run=False
         try:
             chatroom_id = int(reason)
             chatroomUsers = self.factory.users.get(chatroom_id)
