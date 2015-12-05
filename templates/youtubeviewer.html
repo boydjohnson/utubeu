@@ -196,6 +196,22 @@
                     }
                     $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
                 }
+
+                if(input.suggestion_list != null){
+                    for(i in input.suggestion_list){
+                        var suggestion = JSON.parse(input.suggestion_list[i]);
+                        if(suggestion.username !=null) {
+                        var username = suggestion.username;
+                    }else {
+                        var username = "You";
+                    }
+                        var html_to_insert = '<div class="suggested" data-video-id="'+ suggestion.youtube_value +'"><img src="'
+                                    +suggestion.image_url+'"></img><div class="btn btn-success pull-right vote_btn">Vote!</div><p class="pull-right">'+
+                                username+'</p><p class="h3">' + suggestion.title + '</p><p class="description">'+suggestion.description+'</p>'
+                    $('#suggestion_list').append(html_to_insert);
+                    addVoteClickListeners()
+                    }
+                }
             };
 
 
