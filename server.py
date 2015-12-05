@@ -145,8 +145,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
                 cache.rpush(chatroom_sugg_key, dumps({'youtube_value': server_input.get('youtube_value'),
                                                       'title': server_input.get('title'),
                                                       'description': server_input.get('description'),
-                                                      'image_url': server_input.get('image_url'),
-                                                      'username': server_input.get('username')}))
+                                                      'image_url': server_input.get('image_url')}))
                 user_name = server_input.get("username")
                 for cru in chatroomUsers:
                     individual_output = dict(server_input)
@@ -162,6 +161,12 @@ class YouTubeWebSockets(WebSocketServerProtocol):
                     for cru in chatroomUsers:
                         cru.user.sendMessage(dumps({'start': True, 'youtube_value': server_input.get('youtube_value')}).encode('utf-8'),
                                              isBinary=False)
+                        chatroom_sugg_key = CHATROOM_SUGGESTIONS_KEY(chatroom_id)
+                        suggestions = cache.lrange(chatroom_sugg_key, 0, -1)
+                        for i, s in enumerate(suggestions):
+                            sugg = loads(s)
+                            if sugg.get('youtube_value')==server_input.get('youtube_value'):
+                                cache.lrem(chatroom_sugg_key, s, 0)
                 else:
                     for cru in chatroomUsers:
                         cru.user.sendMessage(dumps({'youtube_value': server_input.get('youtube_value'),

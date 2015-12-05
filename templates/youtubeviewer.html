@@ -165,14 +165,9 @@
 
                 }
                 if(input.youtube_value != null && input.percentage==null && input.start==null){
-                    if(input.username !=null) {
-                        var username = input.username;
-                    }else {
-                        var username = "You";
-                    }
                         var html_to_insert = '<div class="suggested" data-video-id="'+ input.youtube_value +'"><img src="'
-                                    +input.image_url+'"></img><div class="btn btn-success pull-right vote_btn">Vote!</div><p class="pull-right">'+
-                                username+'</p><p class="h3">' + input.title + '</p><p class="description">'+input.description+'</p>';
+                                    +input.image_url+'"></img><div class="btn btn-success pull-right vote_btn">Vote!</div><p class="h3">' +
+                                input.title + '</p><p class="description">'+input.description+'</p>';
                     $('#suggestion_list').append(html_to_insert);
                     addVoteClickListeners()
                 }
