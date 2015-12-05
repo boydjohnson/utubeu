@@ -186,7 +186,8 @@
                 }
                 if(input.start != null){
                     var youtube_value = input.youtube_value;
-                        player.cueVideoById(youtube_value,0,50);
+
+                        cueTheVideo(youtube_value);
 {#                    $('#video').attr('src', 'http://www.youtube.com/embed/'+youtube_value+'?enablejsapi=1&origin=http://utubeu.herokuapp.com');#}
                     $('.suggested[data-video-id="'+youtube_value+'"]').remove();
                 }
@@ -229,6 +230,8 @@
                 websocket.close(1000, "{{ chatroom.pk }}");
             };
 
+        function cueTheVideo(youtube_value) {
+
 
             var player;
 
@@ -241,11 +244,12 @@
                     }
                 });
             }
-
+            player.cueVideoById(youtube_value, 0, 15);
             function onPlayerReady(event) {
                 console.log("onPlayerReady Called");
                 event.target.playVideo();
             }
+        }
     </script>
     <script src="https://apis.google.com/js/client.js?onload=initialize"></script>
 {% endblock %}
