@@ -128,6 +128,8 @@
                 $('.vote_btn').click(function(){
                     var button_clicked = $(this);
                     var video_url = button_clicked.parent().attr('data-video-id');
+                    console.lot(video_url);
+
                     websocket.send(JSON.stringify({'chatroom_id': "{{ chatroom.pk }}",
                                      'vote': true, 'youtube_value': video_url}));
                     button_clicked.remove();
