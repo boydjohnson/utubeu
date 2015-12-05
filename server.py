@@ -12,6 +12,8 @@ def CHATROOM_MESSAGES_KEY(chatroom_id):
 def CHATROOM_SUGGESTIONS_KEY(chatroom_id):
     return "CR_SUGGEST_" + str(chatroom_id)
 
+#TODO: fully implement the playlist that will kick off plays when the prior video ends
+# for right now when the voting gets to a certain level the next voted on video starts
 def CHATROOM_PLAYLIST_KEY(chatroom_id):
     return "CR_PLAYLIST_"+str(chatroom_id)
 
