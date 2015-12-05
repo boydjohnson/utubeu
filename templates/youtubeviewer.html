@@ -120,6 +120,18 @@
 
                     websocket.send(JSON.stringify({chatroom_id: chatroom_id, youtube_value: video_id, username: username,
                                                 title: title, description: description, image_url: image_url}));
+
+                    addVoteClickListeners()
+                })
+            }
+
+            function addVoteClickListeners(){
+                $('.vote_btn').click(function(){
+                    var button_clicked = $(this);
+                    var video_url = button_clicked.parent().attr('data-video-id');
+                    websocket.send(JSON.stringify({'chatroom_id': "{{ chatroom.pk }}",
+                                     'vote': true, 'youtube_value': video_url}));
+                    button_clicked.remove();
                 })
             }
 
@@ -164,6 +176,12 @@
                                 username+'</p><p class="h3">' + input.title + '</p><p class="description">'+input.description+'</p>'
                     $('#suggestion_list').append(html_to_insert);
                 }
+                if(input.percentage !=null){
+                    var youtube_value = input.youtube_value;
+                    $('.suggested["data-video-id"='+youtube_value+']').prepend('<div class="well">'+input.percentage+'</div>');
+
+                }
+
                 if(input.last_ten !=null){
                     for(i in input.last_ten){
                         var pair_user_message= JSON.parse(input.last_ten[i]);
@@ -178,23 +196,7 @@
                 }
             };
 
-            $('.sidebar-toggle').click(function () {
-                if ($('.sidebar').hasClass('hidden')) {
-                    $('.sidebar').removeClass('hidden');
-                    $('.sidebar-toggle').removeClass('btn-info').addClass('btn-danger');
-                    $('.sidebar-toggle').removeClass('col-md-offset-12').addClass('col-md-offset-8');
 
-                } else {
-                    $('.sidebar').addClass('hidden');
-                    $('.sidebar-toggle').removeClass('btn-danger').addClass('btn-info');
-                    $('.sidebar-toggle').removeClass('col-md-offset-8').addClass('col-md-offset-12');
-                }
-
-            });
-
-            $('#sendvideobutton').click(function () {
-                $('#video').attr('src', $('#videourl').val());
-            });
 
             window.onbeforeunload = function () {
                 websocket.onclose = function () {

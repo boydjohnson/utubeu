@@ -3,13 +3,23 @@ from autobahn.twisted.resource import WebSocketResource, WSGIRootResource
 
 from redis import from_url
 
+import bleach
+
 #some key values to be used with redis
 def CHATROOM_MESSAGES_KEY(chatroom_id):
     return "CHATROOM_MESS" + str(chatroom_id)
 
-def getChatroomId_From_key(chatroom_key):
-    return chatroom_key.replace("CHATROOM_MESS", "")
+def CHATROOM_SUGGESTIONS_KEY(chatroom_id):
+    return "CR_SUGGEST_" + str(chatroom_id)
 
+def CHATROOM_PLAYLIST_KEY(chatroom_id):
+    return "CR_PLAYLIST_"+str(chatroom_id)
+
+def CHATROOM_USERS_KEY(chatroom_id):
+    return "CR_USERS_"+str(chatroom_id)
+
+def CHATROOM_VOTES_KEY(chatroom_id, youtube_value):
+    return "CR_" + str(chatroom_id)+"_" + youtube_value
 
 
 from twisted.internet import reactor
@@ -54,12 +64,16 @@ class YouTubeWebSockets(WebSocketServerProtocol):
     OUT suggestion = {youtube_value: '...', title: '...', description: '...',
                        image_url: 'https:...', //depending username: somebody}
 
-    IN vote = {chatroom_id: 58, youtube_value: '4859DidEing48d', username: somebody}
+    IN vote = {chatroom_id: 58, youtube_value: '4859DidEing48d', vote: 'true'}
     OUT vote = {youtube_value: '...', vote_total: percentage}
 
     strictly OUT
 
     userlist = { usernames = [somebody, somebodyelse, ...]}
+
+
+    TODO: Figure out blocking with Redis since if multiple threads are hitting Redis there might be craziness as
+    Things get set and retrieved... but this is at 10000 concurrent visitors.
 
     """
     def doPing(self):
@@ -95,11 +109,15 @@ class YouTubeWebSockets(WebSocketServerProtocol):
         if cache.exists(CHATROOM_MESSAGES_KEY(chatroom_id)):
             user_message_dict= cache.lrange(CHATROOM_MESSAGES_KEY(chatroom_id),0, -1)
             self.sendMessage(dumps({'last_ten': user_message_dict}).encode('utf-8'), isBinary=False)
+        if cache.exists(CHATROOM_SUGGESTIONS_KEY(chatroom_id)):
+            user_message_dict = cache.lrange(CHATROOM_SUGGESTIONS_KEY(chatroom_id))
+            self.sendMessage(dumps(user_message_dict).encode('utf-8'), isBinary=False)
         try:
             users = self.factory.users.get(chatroom_id)
             message = {'usernames':[cru.username for cru in users]}
             for u in users:
                 u.user.sendMessage(dumps(message).encode('utf-8'), isBinary=False)
+            cache.incr(CHATROOM_USERS_KEY(chatroom_id), 1)
         except KeyError:
             print "no chatroom"
 
@@ -107,11 +125,13 @@ class YouTubeWebSockets(WebSocketServerProtocol):
         if not isBinary:
             server_input = loads(payload, encoding='utf-8')
             chatroom_id = int(server_input.pop("chatroom_id"))
-            chatroom_mess_key = CHATROOM_MESSAGES_KEY(chatroom_id)
             chatroomUsers = self.factory.users.get(chatroom_id)
             if "message" in server_input:
+                chatroom_mess_key = CHATROOM_MESSAGES_KEY(chatroom_id)
                 user_name = server_input.get("username")
-                cache.rpush(chatroom_mess_key, dumps({'username': user_name,'msg': server_input.get('message')},encoding='utf-8'))
+                message = bleach.clean(server_input.get('message'))
+                server_input['message'] = message
+                cache.rpush(chatroom_mess_key, dumps({'username': user_name,'msg': message},encoding='utf-8'))
                 length_of_message_list = cache.llen(chatroom_mess_key)
                 if length_of_message_list>10:
                     cache.lpop(chatroom_mess_key)
@@ -121,12 +141,32 @@ class YouTubeWebSockets(WebSocketServerProtocol):
                         individual_output.pop('username')
                     cru.user.sendMessage(dumps(individual_output).encode('utf-8'), isBinary=False)
             elif "youtube_value" in server_input:
+                chatroom_sugg_key = CHATROOM_SUGGESTIONS_KEY(chatroom_id)
+                cache.rpush(chatroom_sugg_key, dumps({'youtube_value': server_input.get('youtube_value'),
+                                                      'title': server_input.get('title'),
+                                                      'description': server_input.get('description'),
+                                                      'image_url': server_input.get('image_url'),
+                                                      'username': server_input.get('username')}))
                 user_name = server_input.get("username")
                 for cru in chatroomUsers:
                     individual_output = dict(server_input)
                     if cru.username == user_name:
                         individual_output.pop("username")
                     cru.user.sendMessage(dumps(individual_output).encode('utf-8'), isBinary=False)
+            elif 'vote' in server_input:
+                chatroom_votes_key = CHATROOM_VOTES_KEY(chatroom_id, server_input.get('youtube_value'))
+                total_votes = float(cache.incr(chatroom_votes_key, 1))
+                total_users = float(cache.get(CHATROOM_USERS_KEY(chatroom_id)))
+                voting_percentage = total_votes/total_users
+                if voting_percentage > .4:
+                    for cru in chatroomUsers:
+                        cru.user.sendMessage(dumps({'start': True, 'youtube_value': server_input.get('youtube_value')}).encode('utf-8'),
+                                             isBinary=False)
+                else:
+                    for cru in chatroomUsers:
+                        cru.user.sendMessage(dumps({'youtube_value': server_input.get('youtube_value'),
+                                                    'percentage': voting_percentage}).encode('utf-8'), isBinary=False)
+
 
     def onClose(self, wasClean, code, reason):
         """The reason will be just the primary key of the chatroom---This seems like a hack"""
@@ -139,6 +179,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
             output = {'usernames':[cru.username for cru in chatroomUsers]}
             for c in chatroomUsers:
                 c.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
+            cache.decr(CHATROOM_USERS_KEY(chatroom_id), 1)
         except ValueError:
             pass
 
