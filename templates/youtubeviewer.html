@@ -13,14 +13,14 @@
             border: solid 2px black;
             border-radius: 5px;
         }
+
         #search_results {
             background-color: floralwhite;
             border: 1px solid black;
         }
 
-
         .individual_result, .suggested {
-            border:solid 1px black;
+            border: solid 1px black;
         }
     </style>
 
@@ -83,173 +83,194 @@
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 
-            function initialize() {
-                gapi.client.setApiKey('AIzaSyAvvnsZ3V67P23Td-0mD7BuuN42eoN7nNE');
-                gapi.client.load('youtube', 'v3').then(function () {
-                    afterLoad();
+        function initialize() {
+            gapi.client.setApiKey('AIzaSyAvvnsZ3V67P23Td-0mD7BuuN42eoN7nNE');
+            gapi.client.load('youtube', 'v3').then(function () {
+                afterLoad();
+            })
+        }
+
+
+        function afterLoad() {
+            $('#search_button').click(function (evt) {
+                gapi.client.youtube.search.list({
+                    q: $('#videosearchbox').val(),
+                    part: 'snippet',
+                    type: 'video',
+                    videoEmbeddable: 'true'
+                }).execute(function (response) {
+                    $('#search_results').children().remove();
+                    for (i in response.result.items) {
+                        var data = response.result.items[i];
+                        var video_id = data.id.videoId;
+                        var image_url = data.snippet.thumbnails.default.url;
+                        var title = data.snippet.title;
+                        var description = data.snippet.description;
+                        $('#search_results').append('<div class="individual_result" data-video-id="' + video_id + '"><img src="'
+                                + image_url + '"></img><p class="h3">' + title + '</p><p class="description">' + description + '</p>');
+                    }
+                    $('.individual_result').prepend('<div class="make_suggestion btn btn-success pull-right">Suggest It!</div>');
+                    addSuggestionClickListeners();
                 })
-            }
-
-
-            function afterLoad() {
-                $('#search_button').click(function (evt) {
-                    gapi.client.youtube.search.list({
-                        q: $('#videosearchbox').val(),
-                        part: 'snippet',
-                        type: 'video',
-                        videoEmbeddable: 'true'
-                    }).execute(function (response) {
-                        $('#search_results').children().remove();
-                        for(i in response.result.items) {
-                            var data = response.result.items[i];
-                            var video_id = data.id.videoId;
-                            var image_url = data.snippet.thumbnails.default.url;
-                            var title = data.snippet.title;
-                            var description = data.snippet.description;
-                            $('#search_results').append('<div class="individual_result" data-video-id="'+ video_id +'"><img src="'
-                                    +image_url+'"></img><p class="h3">' + title + '</p><p class="description">'+description+'</p>');
-                        }
-                        $('.individual_result').prepend('<div class="make_suggestion btn btn-success pull-right">Suggest It!</div>');
-                        addSuggestionClickListeners();
-                    })
-                });
-            }
-
-            var websocket = new WebSocket('ws://' + window.location.host + '/ws?chatroom-id=' + "{{ chatroom.pk }}&user-name=" + "{{ user.username }}");
-            function addSuggestionClickListeners(){
-                $('.make_suggestion').click(function(evt){
-                    var video_id = $(this).parent().attr('data-video-id');
-                    var chatroom_id = "{{ chatroom.pk }}";
-                    var username = "{{ user.username }}";
-                    var title = $(this).parent().children('p.h3').text();
-                    var description = $(this).parent().children('p.description').text()
-                    var image_url = $(this).parent().children('img').attr('src');
-
-                    websocket.send(JSON.stringify({chatroom_id: chatroom_id, youtube_value: video_id, username: username,
-                                                title: title, description: description, image_url: image_url}));
-
-                })
-            }
-
-            function addVoteClickListeners(){
-                $('.vote_btn').click(function (){
-                    var button_clicked = $(this);
-                    var video_url = button_clicked.parent().attr('data-video-id');
-                    websocket.send(JSON.stringify({'chatroom_id': "{{ chatroom.pk }}",
-                                     'vote': true, 'youtube_value': video_url}));
-                    button_clicked.remove();
-                })
-            }
-
-            $('#sendbutton').click(function () {
-                if($('#chatterbox').val()!="") {
-                    websocket.send(JSON.stringify({
-                        'chatroom_id': "{{ chatroom.pk }}",
-                        'username': "{{ user.username }}",
-                        'message': $('#chatterbox').val()
-                    }));
-                    $('#chatterbox').val("");
-                }
             });
+        }
 
-            websocket.onmessage = function (event) {
-                var input = JSON.parse(event.data);
-                if (input.usernames != null) {
-                    var usernames = input.usernames;
-                    $('#dock').children().remove();
-                    for (var i = 0; i < usernames.length; i++) {
-                        $('#dock').append('<div class="h3">' + usernames[i] + '</div>');
-                    }
+        var websocket = new WebSocket('ws://' + window.location.host + '/ws?chatroom-id=' + "{{ chatroom.pk }}&user-name=" + "{{ user.username }}");
+        function addSuggestionClickListeners() {
+            $('.make_suggestion').click(function (evt) {
+                var video_id = $(this).parent().attr('data-video-id');
+                var chatroom_id = "{{ chatroom.pk }}";
+                var username = "{{ user.username }}";
+                var title = $(this).parent().children('p.h3').text();
+                var description = $(this).parent().children('p.description').text()
+                var image_url = $(this).parent().children('img').attr('src');
+
+                websocket.send(JSON.stringify({
+                    chatroom_id: chatroom_id, youtube_value: video_id, username: username,
+                    title: title, description: description, image_url: image_url
+                }));
+
+            })
+        }
+
+        function addVoteClickListeners() {
+            $('.vote_btn').click(function () {
+                var button_clicked = $(this);
+                var video_url = button_clicked.parent().attr('data-video-id');
+                websocket.send(JSON.stringify({
+                    'chatroom_id': "{{ chatroom.pk }}",
+                    'vote': true, 'youtube_value': video_url
+                }));
+                button_clicked.remove();
+            })
+        }
+
+        $('#sendbutton').click(function () {
+            if ($('#chatterbox').val() != "") {
+                websocket.send(JSON.stringify({
+                    'chatroom_id': "{{ chatroom.pk }}",
+                    'username': "{{ user.username }}",
+                    'message': $('#chatterbox').val()
+                }));
+                $('#chatterbox').val("");
+            }
+        });
+
+        websocket.onmessage = function (event) {
+            var input = JSON.parse(event.data);
+            if (input.usernames != null) {
+                var usernames = input.usernames;
+                $('#dock').children().remove();
+                for (var i = 0; i < usernames.length; i++) {
+                    $('#dock').append('<div class="h3">' + usernames[i] + '</div>');
                 }
+            }
 
-                if (input.message != null) {
-                    if (input.username != null) {
-                        $('#chattertext').append('<p>' + input.username + " : " + input.message + '</p>');
+            if (input.message != null) {
+                if (input.username != null) {
+                    $('#chattertext').append('<p>' + input.username + " : " + input.message + '</p>');
+                } else {
+                    $('#chattertext').append('<p class="text-right">' + "You : " + input.message + '</p>');
+                }
+                $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
+
+            }
+            if (input.youtube_value != null && input.percentage == null && input.start == null) {
+                var html_to_insert = '<div class="suggested" data-video-id="' + input.youtube_value + '"><img src="'
+                        + input.image_url + '"></img><div class="btn btn-success pull-right vote_btn">Vote!</div><p class="h3">' +
+                        input.title + '</p><p class="description">' + input.description + '</p>';
+                $('#suggestion_list').append(html_to_insert);
+                addVoteClickListeners()
+            }
+            if (input.percentage != null) {
+                var youtube_value = input.youtube_value;
+                $('.suggested[data-video-id="' + youtube_value + '"]').children('div.well').remove();
+                $('.suggested[data-video-id="' + youtube_value + '"]').prepend('<div class="well">' + input.percentage + '</div>');
+
+            }
+            if (input.start != null) {
+                var youtube_value = input.youtube_value;
+
+                cueTheVideo(youtube_value);
+                {#                    $('#video').attr('src', 'http://www.youtube.com/embed/'+youtube_value+'?enablejsapi=1&origin=http://utubeu.herokuapp.com');#}
+                $('.suggested[data-video-id="' + youtube_value + '"]').remove();
+            }
+
+            if (input.last_ten != null) {
+                for (i in input.last_ten) {
+                    var pair_user_message = JSON.parse(input.last_ten[i]);
+                    if (pair_user_message.username == "{{ user.username }}") {
+                        var username = "You";
                     } else {
-                        $('#chattertext').append('<p class="text-right">' + "You : " + input.message + '</p>');
+                        var username = pair_user_message.username;
                     }
-                    $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
-
+                    $('#chattertext').append('<p>' + username + " : " + pair_user_message.msg + '</p>');
                 }
-                if(input.youtube_value != null && input.percentage==null && input.start==null){
-                        var html_to_insert = '<div class="suggested" data-video-id="'+ input.youtube_value +'"><img src="'
-                                    +input.image_url+'"></img><div class="btn btn-success pull-right vote_btn">Vote!</div><p class="h3">' +
-                                input.title + '</p><p class="description">'+input.description+'</p>';
-                    $('#suggestion_list').append(html_to_insert);
-                    addVoteClickListeners()
-                }
-                if(input.percentage !=null){
-                    var youtube_value = input.youtube_value;
-                    $('.suggested[data-video-id="'+youtube_value+'"]').children('div.well').remove();
-                    $('.suggested[data-video-id="'+youtube_value+'"]').prepend('<div class="well">'+input.percentage+'</div>');
+                $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
+            }
 
-                }
-                if(input.start != null){
-                    var youtube_value = input.youtube_value;
-
-                        cueTheVideo(youtube_value);
-{#                    $('#video').attr('src', 'http://www.youtube.com/embed/'+youtube_value+'?enablejsapi=1&origin=http://utubeu.herokuapp.com');#}
-                    $('.suggested[data-video-id="'+youtube_value+'"]').remove();
-                }
-
-                if(input.last_ten !=null){
-                    for(i in input.last_ten){
-                        var pair_user_message= JSON.parse(input.last_ten[i]);
-                        if(pair_user_message.username=="{{ user.username }}") {
-                            var username="You";
-                        }else{
-                            var username=pair_user_message.username;
-                        }
-                        $('#chattertext').append('<p>' + username + " : " + pair_user_message.msg + '</p>');
-                    }
-                    $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
-                }
-
-                if(input.suggestion_list != null){
-                    for(i in input.suggestion_list){
-                        var suggestion = JSON.parse(input.suggestion_list[i]);
-                        if(suggestion.username !=null) {
+            if (input.suggestion_list != null) {
+                for (i in input.suggestion_list) {
+                    var suggestion = JSON.parse(input.suggestion_list[i]);
+                    if (suggestion.username != null) {
                         var username = suggestion.username;
-                    }else {
+                    } else {
                         var username = "You";
                     }
-                        var html_to_insert = '<div class="suggested" data-video-id="'+ suggestion.youtube_value +'"><img src="'
-                                    +suggestion.image_url+'"></img><div class="btn btn-success pull-right vote_btn">Vote!</div><p class="pull-right">'+
-                                username+'</p><p class="h3">' + suggestion.title + '</p><p class="description">'+suggestion.description+'</p>'
+                    var html_to_insert = '<div class="suggested" data-video-id="' + suggestion.youtube_value + '"><img src="'
+                            + suggestion.image_url + '"></img><div class="btn btn-success pull-right vote_btn">Vote!</div><p class="pull-right">' +
+                            username + '</p><p class="h3">' + suggestion.title + '</p><p class="description">' + suggestion.description + '</p>'
                     $('#suggestion_list').append(html_to_insert);
-                    }
-                    addVoteClickListeners();
                 }
+                addVoteClickListeners();
+            }
+        };
+
+
+        window.onbeforeunload = function () {
+            websocket.onclose = function () {
             };
-
-
-
-            window.onbeforeunload = function () {
-                websocket.onclose = function () {
-                };
-                websocket.close(1000, "{{ chatroom.pk }}");
-            };
+            websocket.close(1000, "{{ chatroom.pk }}");
+        };
 
         function cueTheVideo(youtube_value) {
-
+            condole.log(youtube_value);
             console.log(player);
             console.log(window.player);
             player.loadVideoById(youtube_value);
 
         }
 
-    function onYouTubeIframeAPIReady() {
-                console.log("onYouTubeIframeAPIReady() called");
-               player = new YT.Player('player', {
-                    events: {
-                        'onReady': onPlayerReady,
-                    }
-                });
+        function stopVideo() {
+        player.stopVideo();
+      }
+
+
+        function onYouTubeIframeAPIReady() {
+            console.log("onYouTubeIframeAPIReady() called");
+            player = new YT.Player('player', {
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+
+            var done = false;
+
+            function onPlayerStateChange(event) {
+                if (event.data == YT.PlayerState.PLAYING && !done) {
+                    setTimeout(stopVideo, 6000);
+                    done = true;
+                }
             }
-    function onPlayerReady(event) {
+
+            function onPlayerReady(event) {
                 console.log("onPlayerReady Called");
                 event.target.playVideo();
             }
+
+
+        }
     </script>
     <script src="https://apis.google.com/js/client.js?onload=initialize"></script>
 {% endblock %}
