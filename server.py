@@ -1,6 +1,17 @@
 from autobahn.twisted.websocket import WebSocketServerFactory, WebSocketServerProtocol
 from autobahn.twisted.resource import WebSocketResource, WSGIRootResource
 
+from redis import from_url
+
+#some key values to be used with redis
+def CHATROOM_MESSAGES_KEY(chatroom_id):
+    return "CHATROOM_MESS" + str(chatroom_id)
+
+def getChatroomId_From_key(chatroom_key):
+    return chatroom_key.replace("CHATROOM_MESS", "")
+
+
+
 from twisted.internet import reactor
 from twisted.web.server import Site
 from twisted.web.wsgi import WSGIResource
@@ -13,6 +24,9 @@ from whitenoise.django import DjangoWhiteNoise
 
 from django.core.wsgi import get_wsgi_application
 from json import dumps, loads
+
+
+cache = from_url(os.environ["REDIS_URL"])
 
 
 class ChatroomUser:
@@ -71,6 +85,8 @@ class YouTubeWebSockets(WebSocketServerProtocol):
             for chatroom_user in user_room:
                 if chatroom_user.user == self:
                     chatroom_id = id
+        user_message_dict= cache.get(CHATROOM_MESSAGES_KEY(chatroom_id))
+        self.sendMessage(dumps(user_message_dict).encode('utf-8'), isBinary=False)
         try:
             users = self.factory.users.get(chatroom_id)
             message = {'usernames':[cru.username for cru in users]}
@@ -83,9 +99,13 @@ class YouTubeWebSockets(WebSocketServerProtocol):
         if not isBinary:
             server_input = loads(payload, encoding='utf-8')
             chatroom_id = int(server_input.pop("chatroom_id"))
+            chatroom_mess_key = CHATROOM_MESSAGES_KEY(chatroom_id)
             chatroomUsers = self.factory.users.get(chatroom_id)
             if "message" in server_input:
                 user_name = server_input.get("username")
+                length_of_message_list = cache.append(chatroom_mess_key, {'username':user_name, 'msg': server_input.get("message")})
+                if length_of_message_list>=10:
+                    cache.lpop(chatroom_mess_key)
                 for cru in chatroomUsers:
                     individual_output = dict(server_input)
                     if cru.username==user_name:
