@@ -165,9 +165,8 @@
                     $('#suggestion_list').append(html_to_insert);
                 }
                 if(input.last_ten !=null){
-                    console.log(input.last_ten);
                     for(i in input.last_ten){
-                        var pair_user_message= input.last_ten[i];
+                        var pair_user_message= JSON.parse(input.last_ten[i]);
                         $('#chattertext').append('<p>'+pair_user_message.username+" : "+pair_user_message.msg+'</p>');
                     }
                     $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
