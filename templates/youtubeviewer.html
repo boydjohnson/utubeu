@@ -165,6 +165,13 @@
                                 username+'</p><p class="h3">' + input.title + '</p><p class="description">'+input.description+'</p>'
                     $('#suggestion_list').append(html_to_insert);
                 }
+                if(input.last_ten !=null){
+                    for(i in input.last_ten){
+                        var pair_user_message= input.last_ten[i];
+                        $('#chattertext').append('<p>'+pair_user_message.username+" : "+pair_user_message.msg+'</p>');
+                    }
+                    $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
+                }
             };
 
             $('.sidebar-toggle').click(function () {

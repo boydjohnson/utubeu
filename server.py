@@ -86,7 +86,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
                 if chatroom_user.user == self:
                     chatroom_id = id
         user_message_dict= cache.get(CHATROOM_MESSAGES_KEY(chatroom_id))
-        self.sendMessage(dumps(user_message_dict).encode('utf-8'), isBinary=False)
+        self.sendMessage(dumps({'last_ten': user_message_dict}).encode('utf-8'), isBinary=False)
         try:
             users = self.factory.users.get(chatroom_id)
             message = {'usernames':[cru.username for cru in users]}
