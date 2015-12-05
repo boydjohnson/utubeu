@@ -85,9 +85,10 @@ class YouTubeWebSockets(WebSocketServerProtocol):
             for chatroom_user in user_room:
                 if chatroom_user.user == self:
                     chatroom_id = id
-        user_message_dict= cache.get(CHATROOM_MESSAGES_KEY(chatroom_id))
-        user_message_dict = [loads("{0:1}".format(*user_message.split(":"))) for user_message in user_message_dict] #ugly
-        self.sendMessage(dumps({'last_ten': user_message_dict}).encode('utf-8'), isBinary=False)
+        if cache.exists(CHATROOM_MESSAGES_KEY(chatroom_id)):
+            user_message_dict= cache.get(CHATROOM_MESSAGES_KEY(chatroom_id))
+            user_message_dict = [loads("{0:1}".format(*user_message.split(":"))) for user_message in user_message_dict] #ugly
+            self.sendMessage(dumps({'last_ten': user_message_dict}).encode('utf-8'), isBinary=False)
         try:
             users = self.factory.users.get(chatroom_id)
             message = {'usernames':[cru.username for cru in users]}
