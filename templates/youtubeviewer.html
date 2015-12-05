@@ -117,7 +117,7 @@
         var websocket = new WebSocket('ws://' + window.location.host + '/ws?chatroom-id=' + "{{ chatroom.pk }}&user-name=" + "{{ user.username }}");
         function addSuggestionClickListeners() {
             $('.make_suggestion').click(function (evt) {
-                evt.preventBubble();
+                evt.preventDefault();
                 var video_id = $(this).parent().attr('data-video-id');
                 var chatroom_id = "{{ chatroom.pk }}";
                 var username = "{{ user.username }}";
@@ -135,7 +135,7 @@
 
         function addVoteClickListeners() {
             $('.vote_btn').click(function (evt) {
-                evt.preventBubble();
+                evt.preventDefault();
                 var button_clicked = $(this);
                 var video_url = button_clicked.parent().attr('data-video-id');
                 websocket.send(JSON.stringify({
