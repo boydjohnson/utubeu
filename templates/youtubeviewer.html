@@ -186,8 +186,8 @@
                 }
                 if(input.start != null){
                     var youtube_value = input.youtube_value;
-
-                    $('#video').attr('src', 'http://www.youtube.com/embed/'+youtube_value+'?enablejsapi=1&origin=http://utubeu.herokuapp.com');
+                        player.cueVideoById(youtube_value,0,50);
+{#                    $('#video').attr('src', 'http://www.youtube.com/embed/'+youtube_value+'?enablejsapi=1&origin=http://utubeu.herokuapp.com');#}
                     $('.suggested[data-video-id="'+youtube_value+'"]').remove();
                 }
 
@@ -236,7 +236,6 @@
                 console.log("onYouTubeIframeAPIReady() called");
 
                 player = new YT.Player('player', {
-                    videoId: 'M7lc1UVf-VE',
                     events: {
                         'onReady': onPlayerReady,
                     }
