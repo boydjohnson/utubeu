@@ -179,7 +179,7 @@
                 if(input.percentage !=null){
                     var youtube_value = input.youtube_value;
                     console.log(youtube_value);
-                    console.log($('.suggested["data-video-id"='+youtube_value+']'));
+                    console.log($('.suggested["data-video-id"="'+youtube_value+'"]'));
                     $('.suggested["data-video-id"='+youtube_value+']').prepend('<div class="well">'+input.percentage+'</div>');
 
                 }
