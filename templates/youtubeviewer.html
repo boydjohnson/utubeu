@@ -76,6 +76,13 @@
 {% block js %}
 
     <script>
+        //asynchronously load the youtube iframe player script
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+
             function initialize() {
                 gapi.client.setApiKey('AIzaSyAvvnsZ3V67P23Td-0mD7BuuN42eoN7nNE');
                 gapi.client.load('youtube', 'v3').then(function () {
@@ -173,12 +180,14 @@
                 }
                 if(input.percentage !=null){
                     var youtube_value = input.youtube_value;
-                    console.log(youtube_value);
+                    $('.suggested[data-video-id="'+youtube_value+'"]').children('div.well').remove();
                     $('.suggested[data-video-id="'+youtube_value+'"]').prepend('<div class="well">'+input.percentage+'</div>');
 
                 }
                 if(input.start != null){
                     var youtube_value = input.youtube_value;
+
+                    $('#video').attr('src', youtube_value);
                     $('.suggested[data-video-id="'+youtube_value+'"]').remove();
                 }
 
