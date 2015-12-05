@@ -121,7 +121,6 @@
                     websocket.send(JSON.stringify({chatroom_id: chatroom_id, youtube_value: video_id, username: username,
                                                 title: title, description: description, image_url: image_url}));
 
-                    addVoteClickListeners()
                 })
             }
 
@@ -177,6 +176,7 @@
                                     +input.image_url+'"></img><div class="btn btn-success pull-right vote_btn">Vote!</div><p class="pull-right">'+
                                 username+'</p><p class="h3">' + input.title + '</p><p class="description">'+input.description+'</p>'
                     $('#suggestion_list').append(html_to_insert);
+                    addVoteClickListeners()
                 }
                 if(input.percentage !=null){
                     var youtube_value = input.youtube_value;
