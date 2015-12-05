@@ -41,11 +41,11 @@
         </div>
     </div>
 
-    <div class="row"><div id="video"></div></div>
     <div class="row">
+        <div id="video"></div>
+    </div>
 
-
-
+    <div class="row">
         <div class="col-md-3">
             <div id="search_results"></div>
             <textarea class="col-md-12" id="videosearchbox" rows="1"></textarea>
@@ -117,6 +117,8 @@
         var websocket = new WebSocket('ws://' + window.location.host + '/ws?chatroom-id=' + "{{ chatroom.pk }}&user-name=" + "{{ user.username }}");
         function addSuggestionClickListeners() {
             $('.make_suggestion').click(function (evt) {
+                evt.preventBubble();
+                evt.preventDefault();
                 var video_id = $(this).parent().attr('data-video-id');
                 var chatroom_id = "{{ chatroom.pk }}";
                 var username = "{{ user.username }}";
@@ -133,7 +135,9 @@
         }
 
         function addVoteClickListeners() {
-            $('.vote_btn').click(function () {
+            $('.vote_btn').click(function (evt) {
+                evt.preventBubble();
+                evt.preventDefault();
                 var button_clicked = $(this);
                 var video_url = button_clicked.parent().attr('data-video-id');
                 websocket.send(JSON.stringify({
@@ -239,25 +243,24 @@
         }
 
         function stopVideo() {
-        player.stopVideo();
-      }
+            player.stopVideo();
+        }
 
 
         function onYouTubeIframeAPIReady() {
             console.log("onYouTubeIframeAPIReady() called");
             var playerParams =
             {
-                playerVars:
-                {
-                    "enablejsapi":1,
-                    "origin":document.domain,
-                    "rel":0
+                playerVars: {
+                    "enablejsapi": 1,
+                    "origin": document.domain,
+                    "rel": 0
                 },
-                events:
-                {
-                    "onReady":onPlayerReady,
-                    "onError":function(){},
-                    "onStateChange":onPlayerStateChange
+                events: {
+                    "onReady": onPlayerReady,
+                    "onError": function () {
+                    },
+                    "onStateChange": onPlayerStateChange
                 }
             };
             player = new YT.Player('video', playerParams);
