@@ -164,7 +164,7 @@
                     $('#chattertext').scrollTop($('#chattertext')[0].scrollHeight);
 
                 }
-                if(input.youtube_value != null){
+                if(input.youtube_value != null && input.percentage==null){
                     if(input.username !=null) {
                         var username = input.username;
                     }else {
@@ -178,6 +178,7 @@
                 }
                 if(input.percentage !=null){
                     var youtube_value = input.youtube_value;
+                    console.log(youtube_value);
                     $('.suggested[data-video-id="'+youtube_value+'"]').prepend('<div class="well">'+input.percentage+'</div>');
 
                 }
