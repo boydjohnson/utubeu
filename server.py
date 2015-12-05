@@ -106,7 +106,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
                 user_name = server_input.get("username")
                 cache.rpush(chatroom_mess_key, dumps({'username': user_name,'msg': server_input.get('message')},encoding='utf-8'))
                 length_of_message_list = cache.llen(chatroom_mess_key)
-                if length_of_message_list>=10:
+                if length_of_message_list>10:
                     cache.lpop(chatroom_mess_key)
                 for cru in chatroomUsers:
                     individual_output = dict(server_input)
