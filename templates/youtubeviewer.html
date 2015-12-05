@@ -233,23 +233,23 @@
         function cueTheVideo(youtube_value) {
 
 
-            var player;
+            window.player.cueVideoById(youtube_value, 0, 15);
 
-            function onYouTubeIframeAPIReady() {
+        }
+
+    function onYouTubeIframeAPIReady() {
                 console.log("onYouTubeIframeAPIReady() called");
 
-                player = new YT.Player('player', {
+               window.player = new YT.Player('player', {
                     events: {
                         'onReady': onPlayerReady,
                     }
                 });
             }
-            player.cueVideoById(youtube_value, 0, 15);
-            function onPlayerReady(event) {
+    function onPlayerReady(event) {
                 console.log("onPlayerReady Called");
                 event.target.playVideo();
             }
-        }
     </script>
     <script src="https://apis.google.com/js/client.js?onload=initialize"></script>
 {% endblock %}
