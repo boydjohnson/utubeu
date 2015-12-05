@@ -140,7 +140,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
                     if cru.username==user_name:
                         individual_output.pop('username')
                     cru.user.sendMessage(dumps(individual_output).encode('utf-8'), isBinary=False)
-            elif "youtube_value" in server_input:
+            elif "youtube_value" in server_input and 'vote' not in server_input:
                 chatroom_sugg_key = CHATROOM_SUGGESTIONS_KEY(chatroom_id)
                 cache.rpush(chatroom_sugg_key, dumps({'youtube_value': server_input.get('youtube_value'),
                                                       'title': server_input.get('title'),

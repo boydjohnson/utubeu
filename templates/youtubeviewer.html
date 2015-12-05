@@ -127,12 +127,7 @@
             function addVoteClickListeners(){
                 $('.vote_btn').click(function (){
                     var button_clicked = $(this);
-                    console.log(button_clicked);
-                    console.log(button_clicked.parent());
-
                     var video_url = button_clicked.parent().attr('data-video-id');
-                    console.log(video_url);
-
                     websocket.send(JSON.stringify({'chatroom_id': "{{ chatroom.pk }}",
                                      'vote': true, 'youtube_value': video_url}));
                     button_clicked.remove();
