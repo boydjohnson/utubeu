@@ -22,7 +22,7 @@ class Chatroom(models.Model):
     description = models.TextField(max_length=100, blank=True, null=True)
     owner = models.ForeignKey(to=User, related_name='chatroom_from_owner', null=False)
 
-    users = models.ManyToManyField(to=User, related_name='chatroom_from_users', null=False)
+    users = models.ManyToManyField(to=User, related_name='chatroom_from_users')
 
 
     def __unicode__(self):

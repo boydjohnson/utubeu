@@ -52,6 +52,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
+    'rest_framework',
+    'rest_framework_social_oauth2',
+    'oauth2_provider',
     'viewer',
 )
 
@@ -133,6 +136,7 @@ AUTHENTICATION_BACKENDS = [
     'social.backends.google.GoogleOpenId',
     'social.backends.google.GoogleOAuth2',
     'social.backends.google.GoogleOAuth',
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -148,3 +152,13 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_secret
 
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    )
+}
+
+PROPRIETARY_BACKEND = 'Google'
