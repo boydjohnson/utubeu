@@ -7,6 +7,11 @@ class ChatroomSerializer(serializers.ModelSerializer):
         model = Chatroom
         fields = ('id', 'name', 'description')
 
+class ChatroomDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chatroom
+        fields = ('id', 'name', 'description', 'users')
+
 
 class InvitedEmails(serializers.ModelSerializer):
     class Meta:
