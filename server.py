@@ -25,6 +25,7 @@ from twisted.internet import reactor
 from twisted.web.server import Site
 from twisted.web.wsgi import WSGIResource
 
+import sys
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "utubeu.settings")
 
@@ -98,28 +99,31 @@ class YouTubeWebSockets(WebSocketServerProtocol):
         """On open can be terribly inefficient because it only is called when a user enters the chatroom
         chatroom_id will be set because onConnect will put the user in the room
         """
-        #for pinging to keep websockets open on heroku
-        # self.run=True
-        # self.doPing()
-        #
-        # for id, user_room in self.factory.users.iteritems():
-        #     for chatroom_user in user_room:
-        #         if chatroom_user.user == self:
-        #             chatroom_id = id
-        #
-        # if cache.exists(CHATROOM_MESSAGES_KEY(chatroom_id)):
-        #     user_message_dict= cache.lrange(CHATROOM_MESSAGES_KEY(chatroom_id),0, -1)
-        #     self.sendMessage(dumps({'last_ten': user_message_dict}).encode('utf-8'), isBinary=False)
-        # if cache.exists(CHATROOM_SUGGESTIONS_KEY(chatroom_id)):
-        #     user_message_dict = cache.lrange(CHATROOM_SUGGESTIONS_KEY(chatroom_id), 0, -1)
-        #     self.sendMessage(dumps({'suggestion_list': user_message_dict}).encode('utf-8'), isBinary=False)
-        # try:
-        #     users = self.factory.users.get(chatroom_id)
-        #     message = {'usernames':[cru.username for cru in users]}
-        #     for u in users:
-        #         u.user.sendMessage(dumps(message).encode('utf-8'), isBinary=False)
-        # except KeyError:
-        #     print "no chatroom"
+        # for pinging to keep websockets open on heroku
+        self.run=True
+        self.doPing()
+
+        for id, user_room in self.factory.users.iteritems():
+            for chatroom_user in user_room:
+                if chatroom_user.user == self:
+                    chatroom_id = id
+        print chatroom_id
+        sys.stdout.flush()
+        if cache.exists(CHATROOM_MESSAGES_KEY(chatroom_id)):
+            user_message_dict= cache.lrange(CHATROOM_MESSAGES_KEY(chatroom_id),0, -1)
+            self.sendMessage(dumps({'last_ten': user_message_dict}).encode('utf-8'), isBinary=False)
+        print "Last ten sent"
+        sys.stdout.flush()
+        if cache.exists(CHATROOM_SUGGESTIONS_KEY(chatroom_id)):
+            user_message_dict = cache.lrange(CHATROOM_SUGGESTIONS_KEY(chatroom_id), 0, -1)
+            self.sendMessage(dumps({'suggestion_list': user_message_dict}).encode('utf-8'), isBinary=False)
+        try:
+            users = self.factory.users.get(chatroom_id)
+            message = {'usernames':[cru.username for cru in users]}
+            for u in users:
+                u.user.sendMessage(dumps(message).encode('utf-8'), isBinary=False)
+        except KeyError:
+            print "no chatroom"
 
     def onMessage(self, payload, isBinary):
         if not isBinary:
