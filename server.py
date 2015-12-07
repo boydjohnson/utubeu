@@ -201,10 +201,10 @@ if __name__ == '__main__':
     #This is needed for development vs heroku environment
     try:
         port=int(os.environ.get("PORT"))
-        websockets_url = "ws://utubeu.herokuapp.com"
+        websockets_url = "ws://utubeu.herokuapp.com/ws"
     except:
         port=8000
-        websockets_url="ws://127.0.0.1:8000"
+        websockets_url="ws://127.0.0.1:8000/ws"
 
     factory = SeparateServerFactory(websockets_url, debug=True)
     factory.protocol = YouTubeWebSockets
