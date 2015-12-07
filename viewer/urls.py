@@ -5,7 +5,7 @@ urlpatterns = [
     url(r'^logout/$', 'viewer.views.logout', name='logout'),
     url(r'^chatroom/(?P<chatroom>[0-9]+)/$', 'viewer.views.enter_chatroom', name='enter_chatroom'),
     url(r'^create-chatroom/$', 'viewer.views.create_chatroom', name='create_chatroom'),
-    url(r'delete-chatroom/$', 'viewer.views.delete_chatroom', name='delete_chatroom'),
-    url(r'join-chatroom/$', 'viewer.views.join_chatroom', name='join_chatroom'),
+    url(r'^delete-chatroom/$', 'viewer.views.delete_chatroom', name='delete_chatroom'),
+    url(r'^join-chatroom/$', 'viewer.views.join_chatroom', name='join_chatroom'),
     url(r'^$', 'viewer.views.login', name='login')
 ]
