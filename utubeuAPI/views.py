@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView
 
 from utubeuAPI.serializers import ChatroomSerializer, ChatroomDetailSerializer
@@ -23,6 +25,10 @@ class MemberChatroomListView(ListAPIView):
 
 class ChatroomDetailView(RetrieveUpdateAPIView):
     serializer_class = ChatroomDetailSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Chatroom.object.filter(Q(owner=user) | Q(users=user))
 
 
 class JoinableChatroomListView(ListAPIView):
