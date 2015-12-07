@@ -153,7 +153,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
             elif 'vote' in server_input:
                 chatroom_votes_key = CHATROOM_VOTES_KEY(chatroom_id, server_input.get('youtube_value'))
                 total_votes = float(cache.incr(chatroom_votes_key, 1))
-                total_users = float(cache.get(CHATROOM_USERS_KEY(chatroom_id)))
+                total_users = len(chatroomUsers)
                 voting_percentage = total_votes/total_users
                 if voting_percentage > .4:
                     cache.delete(chatroom_votes_key)
