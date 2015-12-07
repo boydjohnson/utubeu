@@ -78,7 +78,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
     """
     def doPing(self):
         if self.run:
-            self.sendPing(payload=bytes(b'abc'))
+            self.sendPing(payload='abc'.encode('utf-8'))
             reactor.callLater(10, self.doPing)
 
     def onConnect(self, request):
