@@ -87,6 +87,8 @@ class YouTubeWebSockets(WebSocketServerProtocol):
             is the value in the self.factory.users dict with chatroom_id being the key
         """
         params = request.params
+        print "######### SUccess"
+        sys.stdout.flush()
         chatroom_id = int(params.get(u"chatroom-id")[0])
         new_user = ChatroomUser(self, params.get(u"user-name")[0], chatroom_id)
         if chatroom_id in self.factory.users:
