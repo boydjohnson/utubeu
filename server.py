@@ -99,7 +99,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
         """
         #for pinging to keep websockets open on heroku
         self.run=True
-        self.doPing()
+        # self.doPing()
 
         for id, user_room in self.factory.users.iteritems():
             for chatroom_user in user_room:
