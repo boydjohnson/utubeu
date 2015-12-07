@@ -17,9 +17,6 @@ def CHATROOM_SUGGESTIONS_KEY(chatroom_id):
 def CHATROOM_PLAYLIST_KEY(chatroom_id):
     return "CR_PLAYLIST_"+str(chatroom_id)
 
-def CHATROOM_USERS_KEY(chatroom_id):
-    return "CR_USERS_"+str(chatroom_id)
-
 def CHATROOM_VOTES_KEY(chatroom_id, youtube_value):
     return "CR_" + str(chatroom_id)+"_" + youtube_value
 
@@ -158,7 +155,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
             elif 'vote' in server_input:
                 chatroom_votes_key = CHATROOM_VOTES_KEY(chatroom_id, server_input.get('youtube_value'))
                 total_votes = float(cache.incr(chatroom_votes_key, 1))
-                total_users = float(cache.get(CHATROOM_USERS_KEY(chatroom_id)))
+                total_users = len(chatroomUsers)
                 voting_percentage = total_votes/total_users
                 if voting_percentage > .4:
                     cache.delete(chatroom_votes_key)
@@ -188,7 +185,6 @@ class YouTubeWebSockets(WebSocketServerProtocol):
             output = {'usernames':[cru.username for cru in chatroomUsers]}
             for c in chatroomUsers:
                 c.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
-            cache.decr(CHATROOM_USERS_KEY(chatroom_id), 1)
         except ValueError:
             pass
 
