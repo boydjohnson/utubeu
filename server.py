@@ -78,7 +78,7 @@ class YouTubeWebSockets(WebSocketServerProtocol):
     """
     def doPing(self):
         if self.run:
-            self.sendPing()
+            self.sendPing(payload=bytes(b'abc'))
             reactor.callLater(10, self.doPing)
 
     def onConnect(self, request):
@@ -107,13 +107,9 @@ class YouTubeWebSockets(WebSocketServerProtocol):
             for chatroom_user in user_room:
                 if chatroom_user.user == self:
                     chatroom_id = id
-        print chatroom_id
-        sys.stdout.flush()
         if cache.exists(CHATROOM_MESSAGES_KEY(chatroom_id)):
             user_message_dict= cache.lrange(CHATROOM_MESSAGES_KEY(chatroom_id),0, -1)
             self.sendMessage(dumps({'last_ten': user_message_dict}).encode('utf-8'), isBinary=False)
-        print "Last ten sent"
-        sys.stdout.flush()
         if cache.exists(CHATROOM_SUGGESTIONS_KEY(chatroom_id)):
             user_message_dict = cache.lrange(CHATROOM_SUGGESTIONS_KEY(chatroom_id), 0, -1)
             self.sendMessage(dumps({'suggestion_list': user_message_dict}).encode('utf-8'), isBinary=False)
