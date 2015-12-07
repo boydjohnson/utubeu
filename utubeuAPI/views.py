@@ -28,7 +28,7 @@ class ChatroomDetailView(RetrieveUpdateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Chatroom.object.filter(Q(owner=user) | Q(users=user))
+        return Chatroom.objects.filter(Q(owner=user) | Q(users=user))
 
 
 class JoinableChatroomListView(ListAPIView):
