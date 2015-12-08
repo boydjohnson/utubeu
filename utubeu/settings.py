@@ -39,7 +39,7 @@ if not DEBUG:
 else:
     SECRET_KEY = '20843hnfsdfh84304nfefh803h4'
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['utubeu.herokuapp.com']
 
 
 # Application definition
