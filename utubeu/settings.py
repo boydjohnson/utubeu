@@ -132,10 +132,9 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'statics'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'collection')
 
 AUTHENTICATION_BACKENDS = [
-    'social.backends.open_id.OpenIdAuth',
-    'social.backends.google.GoogleOpenId',
+
     'social.backends.google.GoogleOAuth2',
-    'social.backends.google.GoogleOAuth',
+
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]
