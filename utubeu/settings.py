@@ -160,4 +160,4 @@ REST_FRAMEWORK = {
     )
 }
 
-PROPRIETARY_BACKEND = 'Google'
+PROPRIETARY_BACKEND = 'google-oauth2'
