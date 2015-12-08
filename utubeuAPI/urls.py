@@ -6,6 +6,5 @@ from utubeuAPI.views import ChatroomDetailView, OwnedChatroomListCreateView, Joi
 urlpatterns = [
         url(r'^ownedchatrooms$', OwnedChatroomListCreateView.as_view(), name='owned_chatrooms'),
         url(r'^joinablechatrooms$', JoinableChatroomListView.as_view(), name='joinable_chatrooms'),
-        url(r'^chatroom', ChatroomDetailView.as_view(), name='chatroom_detail'),
         url(r'^chatroom/?P<pk>[0-9]+', ChatroomDetailView.as_view(), name='chatroom_detail'),
 ]
