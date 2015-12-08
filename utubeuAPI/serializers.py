@@ -22,8 +22,6 @@ class ChatroomDetailSerializer(serializers.ModelSerializer):
 
 class InvitedEmailsSerializer(serializers.ModelSerializer):
 
-
-
     class Meta:
         model = InvitedEmails
         fields = '__all__'
