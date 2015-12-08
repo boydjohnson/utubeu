@@ -133,7 +133,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collection')
 
 AUTHENTICATION_BACKENDS = [
 
-    'social.backends.google.GooglePlusAuth'
+    'social.backends.google.GoogleOAuth2',
 
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
@@ -160,4 +160,4 @@ REST_FRAMEWORK = {
     )
 }
 
-PROPRIETARY_BACKEND = 'google'
+PROPRIETARY_BACKEND = 'google-oauth2'
