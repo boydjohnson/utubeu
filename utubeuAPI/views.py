@@ -20,7 +20,7 @@ class MemberChatroomListView(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Chatroom.objects.filter(users=user.pk).exclude(owner=user)
+        return Chatroom.objects.filter(users=user.pk).exclude(owner=user.pk)
 
 
 class ChatroomDetailView(RetrieveUpdateAPIView):
@@ -28,7 +28,7 @@ class ChatroomDetailView(RetrieveUpdateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Chatroom.objects.filter(Q(owner=user.pk) | Q(users=user))
+        return Chatroom.objects.filter(Q(owner=user.pk) | Q(users=user.pk))
 
 
 class JoinableChatroomListView(ListAPIView):
