@@ -30,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -39,7 +39,7 @@ if not DEBUG:
 else:
     SECRET_KEY = '20843hnfsdfh84304nfefh803h4'
 
-ALLOWED_HOSTS = ['utubeu.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -67,6 +67,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'utubeu.urls'
@@ -134,7 +135,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collection')
 AUTHENTICATION_BACKENDS = [
 
     'social.backends.google.GoogleOAuth2',
-    'social.backends.google.GooglePlusAuth',
 
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
@@ -162,4 +162,4 @@ REST_FRAMEWORK = {
 }
 
 
-PROPRIETARY_BACKEND = 'google'
+PROPRIETARY_BACKEND = 'google-oauth2'
