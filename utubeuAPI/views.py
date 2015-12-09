@@ -55,10 +55,10 @@ class JoinableChatroomListView(ListAPIView):
         return InvitedEmails.objects.get(user_email=user.email).exclude(chatroom__users=user.pk)
 
 @psa('social:complete')
-@api_view(['POST'])
+@api_view(['GET'])
 def convert_token(request, backend):
-    client_id = request.POST.get("client_id")
-    client_secret = request.POST.get("client_secret")
+    client_id = request.GET.get("client_id")
+    client_secret = request.GET.get("client_secret")
     print client_id
     sys.stdout.flush()
     print client_secret
@@ -67,7 +67,7 @@ def convert_token(request, backend):
 
     print dir(request)
     sys.stdout.flush()
-    user = request.backend.do_auth(request.POST.get("token"))
+    user = request.backend.do_auth(request.GET.get("token"))
     if user and user.is_authenticated and user.is_active:
         old_token = AccessToken.objects.filter(user = user)
         if len(old_token)>0:
