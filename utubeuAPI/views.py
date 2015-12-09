@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import HttpResponse
@@ -21,7 +22,8 @@ from viewer.models import Chatroom, InvitedEmails
 
 from datetime import datetime
 from json import dumps
-import sys
+
+import requests
 
 class OwnedChatroomListCreateView(ListCreateAPIView):
     serializer_class = ChatroomSerializer
@@ -59,15 +61,16 @@ class JoinableChatroomListView(ListAPIView):
 def convert_token(request, backend):
     client_id = request.GET.get("client_id")
     client_secret = request.GET.get("client_secret")
-    print client_id
-    sys.stdout.flush()
-    print client_secret
-    sys.stdout.flush()
+
     my_app = get_object_or_404(Application, client_id=client_id, client_secret=client_secret)
 
-    print dir(request)
-    sys.stdout.flush()
-    user = request.backend.do_auth(request.GET.get("token"))
+    params = dict(code=request.GET.get("token"),
+                      client_id=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
+                      client_secret=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
+                      redirect_uri=settings.SECRET_URI,
+                      grant_type="authorization_code")
+    response = requests.post("https://www.googleapis.com/oauth2/v3/token", data=params).json()
+    user = request.backend.do_auth(response.get("access_token"))
     if user and user.is_authenticated and user.is_active:
         old_token = AccessToken.objects.filter(user = user)
         if len(old_token)>0:

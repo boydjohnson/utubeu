@@ -16,10 +16,11 @@ import dj_database_url
 import urlparse
 
 try:
-    from socialConfig import google_client_id, google_secret
+    from socialConfig import google_client_id, google_secret, google_redirect_uri
 except:
     google_client_id = os.environ['GOOGLE_CLIENT']
     google_secret = os.environ['GOOGLE_SECRET']
+    google_redirect_uri = os.environ['GOOGLE_REDIRECT_URL']
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
