@@ -10,9 +10,10 @@ class ChatroomInSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         owner = self.context.get('request').user
-        return Chatroom(owner=owner, name=validated_data.get('name'),
+        c = Chatroom(owner=owner, name=validated_data.get('name'),
                         description=validated_data.get('description'))
-
+        c.users.add(owner)
+        return c
 
 
 class ChatroomOutSerializer(serializers.ModelSerializer):
