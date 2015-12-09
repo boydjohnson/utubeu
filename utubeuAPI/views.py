@@ -21,6 +21,7 @@ from viewer.models import Chatroom, InvitedEmails
 
 from datetime import datetime
 from json import dumps
+import sys
 
 class OwnedChatroomListCreateView(ListCreateAPIView):
     serializer_class = ChatroomSerializer
@@ -56,13 +57,16 @@ class JoinableChatroomListView(ListAPIView):
 @psa('social:complete')
 @api_view(['POST'])
 def convert_token(request, backend):
-    print "What the hell?"
     client_id = request.POST.get("client_id")
     client_secret = request.POST.get("client_secret")
-
+    print client_id
+    sys.stdout.flush()
+    print client_secret
+    sys.stdout.flush()
     my_app = get_object_or_404(Application, client_id=client_id, client_secret=client_secret)
 
     print dir(request)
+    sys.stdout.flush()
     user = request.backend.do_auth(access_token=request.POST.get("token"))
     if user and user.is_authenticated and user.is_active:
         old_token = AccessToken.objects.filter(user = user)
