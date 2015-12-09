@@ -67,7 +67,7 @@ def convert_token(request, backend):
 
     print dir(request)
     sys.stdout.flush()
-    user = request.backend.do_auth(access_token=request.POST.get("token"))
+    user = request.backend.do_auth(request.POST.get("token"))
     if user and user.is_authenticated and user.is_active:
         old_token = AccessToken.objects.filter(user = user)
         if len(old_token)>0:
