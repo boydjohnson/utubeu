@@ -2,7 +2,20 @@ from rest_framework import serializers
 
 from viewer.models import Chatroom, InvitedEmails
 
-class ChatroomSerializer(serializers.ModelSerializer):
+
+class ChatroomInSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chatroom
+        fields = ('name', 'description')
+
+    def create(self, validated_data):
+        owner = self.request.user
+        return Chatroom(owner=owner, name=validated_data.get('name'),
+                        description=validated_data.get('description'))
+
+
+
+class ChatroomOutSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chatroom
         fields = ('id', 'name', 'description')

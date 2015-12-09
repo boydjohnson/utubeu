@@ -1,23 +1,19 @@
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 
 from oauth2_provider.models import Application, AccessToken
 
 from oauthlib.common import generate_token
 
 from social.apps.django_app.utils import psa
-from social.backends.google import GoogleOAuth2
 
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView
-from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from utubeuAPI.serializers import ChatroomSerializer, ChatroomDetailSerializer
+from utubeuAPI.serializers import ChatroomInSerializer, ChatroomDetailSerializer
 from viewer.models import Chatroom, InvitedEmails
 
 from datetime import datetime
@@ -26,15 +22,19 @@ from json import dumps
 import requests
 
 class OwnedChatroomListCreateView(ListCreateAPIView):
-    serializer_class = ChatroomSerializer
 
     def get_queryset(self):
         user = self.request.user
         return Chatroom.objects.filter(owner=user.pk)
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ChatroomInSerializer
+        else:
+            return ChatroomDetailSerializer
 
 class MemberChatroomListView(ListAPIView):
-    serializer_class = ChatroomSerializer
+    serializer_class = ChatroomDetailSerializer
 
     def get_queryset(self):
         user = self.request.user
@@ -50,7 +50,7 @@ class ChatroomDetailView(RetrieveUpdateAPIView):
 
 
 class JoinableChatroomListView(ListAPIView):
-    serializer_class = ChatroomSerializer
+    serializer_class = ChatroomDetailSerializer
 
     def get_queryset(self):
         user = self.request.user
