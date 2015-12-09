@@ -160,3 +160,5 @@ REST_FRAMEWORK = {
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
     )
 }
+
+PROPRIETARY_APPLICATION_NAME= 'utubeu'
