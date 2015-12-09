@@ -74,7 +74,7 @@ def convert_token(request, backend):
     if user and user.is_authenticated and user.is_active:
         old_token = AccessToken.objects.filter(user = user)
         if len(old_token)>0:
-            return Response(dumps({'access_token':old_token[0].token}), content_type="application/json")
+            return Response(dumps({'access_token':old_token[0].token}).encode('utf-8'), content_type="application/json")
         else:
             my_access_token = AccessToken.objects.create(user=user, token=generate_token(), application=my_app,
                                                          expires=datetime(2020,1,1), scope='create chatrooms')
