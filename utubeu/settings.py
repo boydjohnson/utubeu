@@ -149,6 +149,9 @@ LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = google_client_id
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_secret
 
+
+SECRET_URI = google_redirect_uri
+
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
     'social.pipeline.social_auth.social_uid',
