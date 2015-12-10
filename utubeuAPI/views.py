@@ -13,7 +13,7 @@ from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpda
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from utubeuAPI.serializers import ChatroomInSerializer, ChatroomDetailSerializer
+from utubeuAPI.serializers import ChatroomInSerializer, ChatroomDetailSerializer, ChatroomOutSerializer
 from viewer.models import Chatroom, InvitedEmails
 
 from datetime import datetime
@@ -31,7 +31,7 @@ class OwnedChatroomListCreateView(ListCreateAPIView):
         if self.request.method == 'POST':
             return ChatroomInSerializer
         else:
-            return ChatroomDetailSerializer
+            return ChatroomOutSerializer
 
 class MemberChatroomListView(ListAPIView):
     serializer_class = ChatroomDetailSerializer
