@@ -200,6 +200,7 @@
             }
 
             if (input.last_ten != null) {
+                console.log(input.last_ten);
                 for (i in input.last_ten) {
                     var pair_user_message = JSON.parse(input.last_ten[i]);
                     if (pair_user_message.username == "{{ user.username }}") {
@@ -213,7 +214,9 @@
             }
 
             if (input.suggestion_list != null) {
+                console.log(input.suggestion_list);
                 for (i in input.suggestion_list) {
+
                     var suggestion = JSON.parse(input.suggestion_list[i]);
                     if (suggestion.username != null) {
                         var username = suggestion.username;
