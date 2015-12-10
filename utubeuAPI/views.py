@@ -12,16 +12,17 @@ from social.apps.django_app.utils import psa
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from utubeuAPI.serializers import ChatroomInSerializer, ChatroomDetailSerializer, ChatroomOutSerializer
 from viewer.models import Chatroom, InvitedEmails
 
 from datetime import datetime
-from json import dumps
 
 import requests
 
 class OwnedChatroomListCreateView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user
@@ -35,6 +36,7 @@ class OwnedChatroomListCreateView(ListCreateAPIView):
 
 class MemberChatroomListView(ListAPIView):
     serializer_class = ChatroomDetailSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user
@@ -43,7 +45,7 @@ class MemberChatroomListView(ListAPIView):
 
 class ChatroomDetailView(RetrieveUpdateAPIView):
     serializer_class = ChatroomDetailSerializer
-
+    permission_classes = (IsAuthenticated,)
     def get_queryset(self):
         user = self.request.user
         return Chatroom.objects.filter(Q(owner=user.pk) | Q(users=user.pk))
@@ -51,6 +53,7 @@ class ChatroomDetailView(RetrieveUpdateAPIView):
 
 class JoinableChatroomListView(ListAPIView):
     serializer_class = ChatroomDetailSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         user = self.request.user
@@ -70,7 +73,7 @@ def convert_token(request, backend):
                       redirect_uri=settings.SECRET_URI,
                       grant_type="authorization_code")
     response = requests.post("https://www.googleapis.com/oauth2/v3/token", data=params).json()
-    user = request.backend.do_auth(response.get("access_token"))
+    user = request.backend.strategy.do_auth(response.get("access_token"))
     if user and user.is_authenticated and user.is_active:
         old_token = AccessToken.objects.filter(user = user)
         if len(old_token)>0:
