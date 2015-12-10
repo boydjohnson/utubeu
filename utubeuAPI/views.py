@@ -73,7 +73,7 @@ def convert_token(request, backend):
                       redirect_uri=settings.SECRET_URI,
                       grant_type="authorization_code")
     response = requests.post("https://www.googleapis.com/oauth2/v3/token", data=params).json()
-    user = request.strategy.backend.do_auth(response.get("access_token"))
+    user = request.backend.do_auth(response.get("access_token"))
     if user and user.is_authenticated and user.is_active:
         old_token = AccessToken.objects.filter(user = user)
         if len(old_token)>0:
