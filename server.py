@@ -175,18 +175,19 @@ class YouTubeWebSockets(WebSocketServerProtocol):
 
 
     def onClose(self, wasClean, code, reason):
-        """The reason will be just the primary key of the chatroom---This seems like a hack"""
         self.run=False
-        try:
-            chatroom_id = int(reason)
-            chatroomUsers = self.factory.users.get(chatroom_id)
-            chatroomUsers = [ cru for cru in chatroomUsers if self != cru.user]
-            self.factory.users[chatroom_id] = chatroomUsers
-            output = {'usernames':[cru.username for cru in chatroomUsers]}
-            for c in chatroomUsers:
-                c.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
-        except ValueError:
-            pass
+        for id, user_room in self.factory.users.iteritems():
+            for chatroom_user in user_room:
+                if chatroom_user.user == self:
+                    chatroom_id = id
+                    break
+        chatroomUsers = self.factory.users.get(chatroom_id)
+        chatroomUsers = [ cru for cru in chatroomUsers if self != cru.user]
+        self.factory.users[chatroom_id] = chatroomUsers
+        output = {'usernames':[cru.username for cru in chatroomUsers]}
+        for c in chatroomUsers:
+            c.user.sendMessage(dumps(output).encode('utf-8'), isBinary=False)
+
 
 class SeparateServerFactory(WebSocketServerFactory):
 
