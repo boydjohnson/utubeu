@@ -17,7 +17,8 @@ class ChatroomInSerializer(serializers.ModelSerializer):
         return c
 
     def validate(self, attrs):
-        Chatroom(**attrs).clean()
+        owner = self.context.get('request').user
+        Chatroom(owner=owner, **attrs).clean()
         return attrs
 
 
