@@ -60,7 +60,7 @@ class InvitedEmailsSerializer(serializers.ModelSerializer):
             raise exceptions.ValidationError("Users can only invite 20 other people into the chatroom.")
         owner = self.context.get('request').user
 
-        chatrooms = owner.owned_chatrooms.filter(id=attrs.get('id'))
+        chatrooms = owner.owned_chatrooms.filter(id=attrs.get('chatroom').id)
         if len(chatrooms) == 0:
             raise exceptions.PermissionDenied("User must be the owner of chatroom to invite other people.")
         return attrs

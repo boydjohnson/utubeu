@@ -60,6 +60,7 @@ class TestInvitedEmailsValidator(TestCase):
                                                          'chatroom': self.chatroom.id},
                                                    context={'request': self.request})
             ieserializer.is_valid(raise_exception=True)
+            ieserializer.save()
 
         self.assertRaises(ValidationError, too_many_emails)
 
