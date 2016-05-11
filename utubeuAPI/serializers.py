@@ -1,5 +1,7 @@
-from rest_framework import serializers
+from django.core.exceptions import ValidationError
 
+from rest_framework import serializers
+from rest_framework import exceptions
 from viewer.models import Chatroom, InvitedEmails
 
 
@@ -12,13 +14,17 @@ class ChatroomInSerializer(serializers.ModelSerializer):
         owner = self.context.get('request').user
         c = Chatroom(owner=owner, name=validated_data.get('name'),
                         description=validated_data.get('description'))
+        c.save()
         c.users.add(owner)
         c.save()
         return c
 
     def validate(self, attrs):
         owner = self.context.get('request').user
-        Chatroom(owner=owner, **attrs).clean()
+        try:
+            Chatroom(owner=owner, **attrs).clean()
+        except ValidationError:
+            raise exceptions.ValidationError("Only 2 owned chatrooms per user.")
         return attrs
 
 
