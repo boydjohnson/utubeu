@@ -14,7 +14,7 @@ class Chatroom(models.Model):
 
     def only_two_chatrooms_per_user(self):
         model = self.__class__
-        if model.objects.filter(owner=self.owner) >= 2:
+        if len(model.objects.filter(owner=self.owner)) >= 2:
             raise ValidationError("Can only create 2 %s instances per user" % model.__name__)
 
 
@@ -36,7 +36,7 @@ class InvitedEmails(models.Model):
 
     def only_20_emails_per_chatroom(self):
         model = self.__class__
-        if model.objects.filter(chatroom=self.chatroom)>=20:
+        if len(model.objects.filter(chatroom=self.chatroom))>=20:
             raise ValidationError("Can only have 20 %s instances per chatroom" % model.__name__)
 
     def clean(self):

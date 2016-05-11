@@ -60,30 +60,32 @@ class JoinableChatroomListView(ListAPIView):
         return InvitedEmails.objects.get(user_email=user.email).exclude(chatroom__users=user.pk)
 
 @psa('social:complete')
-@api_view(['GET'])
+@api_view(['POST'])
 def convert_token(request, backend):
-    client_id = request.GET.get("client_id")
-    client_secret = request.GET.get("client_secret")
+    if request.method == 'POST':
+        client_id = request.POST.get("client_id")
+        client_secret = request.POST.get("client_secret")
 
-    my_app = get_object_or_404(Application, client_id=client_id, client_secret=client_secret)
+        my_app = get_object_or_404(Application, client_id=client_id, client_secret=client_secret)
 
-    params = dict(code=request.GET.get("token"),
-                      client_id=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
-                      client_secret=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
-                      redirect_uri=settings.SECRET_URI,
-                      grant_type="authorization_code")
-    response = requests.post("https://www.googleapis.com/oauth2/v3/token", data=params).json()
-    user = request.backend.do_auth(response.get("access_token"))
-    if user and user.is_authenticated and user.is_active:
-        old_token = AccessToken.objects.filter(user = user)
-        if len(old_token)>0:
-            return Response({'access_token':old_token[0].token})
+        params = dict(code=request.GET.get("token"),
+                          client_id=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
+                          client_secret=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
+                          redirect_uri=settings.SECRET_URI,
+                          grant_type="authorization_code")
+        response = requests.post("https://www.googleapis.com/oauth2/v3/token", data=params).json()
+        user = request.backend.do_auth(response.get("access_token"))
+        if user and user.is_authenticated and user.is_active:
+            old_token = AccessToken.objects.filter(user = user)
+            if len(old_token)>0:
+                return Response({'access_token':old_token[0].token})
+            else:
+                my_access_token = AccessToken.objects.create(user=user, token=generate_token(), application=my_app,
+                                                             expires=datetime(2020,1,1), scope='create chatrooms')
+                return Response({'access_token':my_access_token.token})
         else:
-            my_access_token = AccessToken.objects.create(user=user, token=generate_token(), application=my_app,
-                                                         expires=datetime(2020,1,1), scope='create chatrooms')
-            return Response({'access_token':my_access_token.token})
+            raise PermissionDenied("User is not authenticated.")
     else:
-        raise PermissionDenied("User is not authenticated.")
-
+        raise PermissionError("Method not available")
 
 

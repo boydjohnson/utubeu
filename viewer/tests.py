@@ -28,6 +28,5 @@ class TestChatroomValidation(TestCase):
 
 
         def make_one_too_many_rooms():
-            ChatroomInSerializer(data="{name:'testroom3', description:'test test'", context={'request':self.request}).is_valid()
-
+            Chatroom(name='testroom3', description='test test', owner=self.user).clean()
         self.assertRaises(ValidationError, make_one_too_many_rooms)
