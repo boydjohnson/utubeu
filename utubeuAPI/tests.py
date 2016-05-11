@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework.exceptions import ValidationError
 
 from utubeuAPI.serializers import ChatroomInSerializer, InvitedEmailsSerializer
-from viewer.models import Chatroom
+from viewer.models import Chatroom, InvitedEmails
 
 class TestChatroomInSerializerValidation(TestCase):
 
@@ -49,12 +49,8 @@ class TestInvitedEmailsValidator(TestCase):
 
     def test_too_many_invites(self):
         the_emails = ['testemail'+str(x)+'@test.com' for x in range(20)]
-        the_invites = [InvitedEmailsSerializer(data={'user_email':email, 'loggedin': False,
-                                                     'chatroom': self.chatroom.id},
-                                               context={'request': self.request}) for email in the_emails]
-        map(lambda i: i.is_valid(), the_invites)
-        map(lambda i: i.save(), the_invites)
-
+        the_invites = [InvitedEmails.objects.create(user_email=email, loggedin=False,
+                                                    chatroom=self.chatroom) for email in the_emails]
         def too_many_emails():
             ieserializer = InvitedEmailsSerializer(data={'user_email': 'test@test.com', 'loggedin': False,
                                                          'chatroom': self.chatroom.id},

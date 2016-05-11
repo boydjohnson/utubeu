@@ -28,7 +28,8 @@ class TestInvitedEmailValidation(TestCase):
 
     def test_validate_only_20_emails_per_chatroom(self):
         the_emails = ['testemail'+str(x)+'@test.com' for x in range(20)]
-        the_invites = [InvitedEmails.objects.create(user_email=email, loggedin=False, chatroom=self.chatroom) for email in the_emails]
+        the_invites = [InvitedEmails.objects.create(user_email=email, loggedin=False,
+                                                    chatroom=self.chatroom) for email in the_emails]
         def make_too_many_invites():
             InvitedEmails(user_email='test@test.com', loggedin=False, chatroom=self.chatroom).clean()
 
