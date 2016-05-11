@@ -13,7 +13,12 @@ class ChatroomInSerializer(serializers.ModelSerializer):
         c = Chatroom(owner=owner, name=validated_data.get('name'),
                         description=validated_data.get('description'))
         c.users.add(owner)
+        c.save()
         return c
+
+    def validate(self, attrs):
+        Chatroom(**attrs).clean()
+        return attrs
 
 
 class ChatroomOutSerializer(serializers.ModelSerializer):
