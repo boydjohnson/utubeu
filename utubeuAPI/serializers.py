@@ -53,3 +53,14 @@ class InvitedEmailsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+    def validate(self, attrs):
+        try:
+            InvitedEmails(**attrs).clean()
+        except ValidationError:
+            raise exceptions.ValidationError("Users can only invite 20 other people into the chatroom.")
+        owner = self.context.get('request').user
+
+        chatrooms = owner.owned_chatrooms.filter(id=attrs.get('id'))
+        if len(chatrooms) == 0:
+            raise exceptions.PermissionDenied("User must be the owner of chatroom to invite other people.")
+        return attrs
