@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from rest_framework.exceptions import ValidationError
+
+from rest_framework.exceptions import ValidationError, PermissionDenied
 
 from utubeuAPI.serializers import ChatroomInSerializer, InvitedEmailsSerializer
 from viewer.models import Chatroom, InvitedEmails
@@ -56,7 +57,21 @@ class TestInvitedEmailsValidator(TestCase):
                                                          'chatroom': self.chatroom.id},
                                                    context={'request': self.request})
             ieserializer.is_valid(raise_exception=True)
-            ieserializer.save()
+
 
         self.assertRaises(ValidationError, too_many_emails)
 
+
+    def test_not_owner_but_inviting(self):
+        other_user = User.objects.create(username='bilbo', password='password')
+        other_chatroom = Chatroom.objects.create(name='other chatroom', description='description', owner=other_user)
+        email = 'tester@test.com'
+
+        def not_the_owner():
+            ieserializer = InvitedEmailsSerializer(data={'user_email': email, 'loggedin': False,
+                                                         'chatroom':other_chatroom.pk},
+                                                   context={'request': self.request})
+            ieserializer.is_valid(raise_exception=True)
+
+
+        self.assertRaises(PermissionDenied, not_the_owner)
