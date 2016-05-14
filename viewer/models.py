@@ -23,7 +23,7 @@ class Chatroom(models.Model):
 
     def clean(self):
         self.only_two_chatrooms_per_user()
-        super(Chatroom, self).clean()
+        super().clean()
 
 
 class InvitedEmails(models.Model):
