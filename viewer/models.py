@@ -17,7 +17,6 @@ class Chatroom(models.Model):
         if len(model.objects.filter(owner=self.owner)) >= 2:
             raise ValidationError("Can only create 2 %s instances per user" % model.__name__)
 
-
     def __str__(self):
         return self.name + " " + self.owner.username
 
