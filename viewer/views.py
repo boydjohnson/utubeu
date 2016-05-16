@@ -7,6 +7,13 @@ from django.shortcuts import render, redirect
 from viewer.models import Chatroom, InvitedEmails
 
 
+def main_page(request):
+    if request.method == 'GET':
+        return render(request, 'main.html')
+    else:
+        raise PermissionDenied("Method not supported.")
+
+
 @login_required(login_url="/")
 def dashboard(request):
     if request.method == 'GET':
