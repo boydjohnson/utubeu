@@ -1,8 +1,17 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-
+from django.core.urlresolvers import reverse
 
 from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.test import APITestCase
+
+from oauth2_provider.models import Application, AccessToken
+
+from oauthlib.common import generate_token
+
+import codecs
+from datetime import datetime
+import json
 
 from utubeuAPI.serializers import ChatroomInSerializer, InvitedEmailsSerializer
 from viewer.models import Chatroom, InvitedEmails
@@ -81,3 +90,30 @@ class TestInvitedEmailsValidator(TestCase):
             ieserializer.is_valid(raise_exception=True)
 
         self.assertRaises(PermissionDenied, not_the_owner)
+
+
+class TestOwnedChatroomsListCreateViewMobileApp(APITestCase):
+    """Testing the view with Bearer Oauth2 spoofed local credentials -- the mobile Android App
+        ... will seperately test the convert-token view that returns a local to UtubeU oauth token"""
+
+    def setUp(self):
+        self.user = User.objects.create(username='tester', password='password')
+
+        self.application = Application.objects.create(user=self.user, name='testApp', client_id='284058dk30dk',
+                                client_secret='20484kfk49kd', client_type=Application.CLIENT_CONFIDENTIAL,
+                                  authorization_grant_type=Application.GRANT_CLIENT_CREDENTIALS)
+        # the access token is what is given at the end of convert-token view
+        self.access_token = AccessToken.objects.create(user=self.user, token=generate_token(),
+                                                          application=self.application,
+                                                          expires=datetime(2020,1,1), scope='chatroom')
+
+    def test_create_an_owned_chatroom(self):
+        url = reverse('api:owned_chatrooms')
+        resp = self.client.post(path=url, data='{"name": "TestChatroom", "description": "TestChatroom description"}',
+                         content_type='application/json', HTTP_AUTHORIZATION='BEARER {}'.format(self.access_token.token))
+        self.assertEqual(resp.status_code, 201)
+        resp2 = self.client.get(path=url, HTTP_AUTHORIZATION='BEARER {}'.format(self.access_token.token))
+
+        self.assertEqual(json.loads(resp2.content.decode('utf-8')),
+                             [{"id":1, "name": "TestChatroom", "description": "TestChatroom description"}],
+                             "The Chatroom has been made and a GET will provide a list with it in.")

@@ -4,11 +4,13 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from oauth2_provider.models import Application, AccessToken
+from oauth2_provider.ext.rest_framework.authentication import OAuth2Authentication
 
 from oauthlib.common import generate_token
 
 from social.apps.django_app.utils import psa
 
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -22,6 +24,7 @@ from datetime import datetime
 import requests
 
 class OwnedChatroomListCreateView(ListCreateAPIView):
+    authentication_classes = (OAuth2Authentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
@@ -36,6 +39,7 @@ class OwnedChatroomListCreateView(ListCreateAPIView):
 
 class MemberChatroomListView(ListAPIView):
     serializer_class = ChatroomDetailSerializer
+    authentication_classes = (OAuth2Authentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):

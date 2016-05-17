@@ -71,6 +71,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
 )
 
 ROOT_URLCONF = 'utubeu.urls'
@@ -133,7 +134,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'statics'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'collection')
 
 AUTHENTICATION_BACKENDS = [
-
+    'oauth2_provider.backends.OAuth2Backend',
     'social.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 ]

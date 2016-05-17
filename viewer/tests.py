@@ -34,3 +34,4 @@ class TestInvitedEmailValidation(TestCase):
             InvitedEmails(user_email='test@test.com', loggedin=False, chatroom=self.chatroom).clean()
 
         self.assertRaises(ValidationError, make_too_many_invites)
+
