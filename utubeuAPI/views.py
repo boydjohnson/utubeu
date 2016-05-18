@@ -24,6 +24,7 @@ from datetime import datetime
 import requests
 
 class OwnedChatroomListCreateView(ListCreateAPIView):
+    """Can list the chatrooms a user owns and create new chatrooms"""
     authentication_classes = (OAuth2Authentication, SessionAuthentication)
     permission_classes = (IsAuthenticated,)
 
@@ -32,10 +33,8 @@ class OwnedChatroomListCreateView(ListCreateAPIView):
         return Chatroom.objects.filter(owner=user.pk)
 
     def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return ChatroomInSerializer
-        else:
-            return ChatroomOutSerializer
+        return ChatroomInSerializer
+
 
 class MemberChatroomListView(ListAPIView):
     serializer_class = ChatroomDetailSerializer

@@ -6,9 +6,10 @@ from viewer.models import Chatroom, InvitedEmails
 
 
 class ChatroomInSerializer(serializers.ModelSerializer):
+    """Tested to correctly make new chatrooms"""
     class Meta:
         model = Chatroom
-        fields = ('name', 'description')
+        fields = ('id', 'name', 'description')
 
     def create(self, validated_data):
         owner = self.context.get('request').user
@@ -47,7 +48,7 @@ class ChatroomDetailSerializer(serializers.ModelSerializer):
 
 
 class InvitedEmailsSerializer(serializers.ModelSerializer):
-
+    """tested to create InvitedEmails for a chatroom"""
     class Meta:
         model = InvitedEmails
         fields = '__all__'

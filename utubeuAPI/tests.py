@@ -110,10 +110,17 @@ class TestOwnedChatroomsListCreateViewMobileApp(APITestCase):
     def test_create_an_owned_chatroom(self):
         url = reverse('api:owned_chatrooms')
         resp = self.client.post(path=url, data='{"name": "TestChatroom", "description": "TestChatroom description"}',
-                         content_type='application/json', HTTP_AUTHORIZATION='BEARER {}'.format(self.access_token.token))
+                         content_type='application/json',
+                                HTTP_AUTHORIZATION='BEARER {}'.format(self.access_token.token))
         self.assertEqual(resp.status_code, 201)
-        resp2 = self.client.get(path=url, HTTP_AUTHORIZATION='BEARER {}'.format(self.access_token.token))
+        self.assertEqual(json.loads(resp.content.decode('utf-8')),
+                         {"id":1, "name": "TestChatroom", "description": "TestChatroom description"})
 
-        self.assertEqual(json.loads(resp2.content.decode('utf-8')),
-                             [{"id":1, "name": "TestChatroom", "description": "TestChatroom description"}],
-                             "The Chatroom has been made and a GET will provide a list with it in.")
+    def test_list_owned_chatrooms(self):
+        Chatroom.objects.create(owner=self.user, name='some chatroom', description='a chatroom')
+        Chatroom.objects.create(owner=self.user, name='some other chatroom', description='a chatroom')
+
+        url = reverse('api:owned_chatrooms')
+        resp = self.client.get(path=url, HTTP_AUTHORIZATION='BEARER {}'.format(self.access_token.token))
+        self.assertEqual(resp.status_code, 200, "Success on getting the list of chatrooms")
+        self.assertEqual(len(json.loads(resp.content.decode('utf-8'))), 2, "There are two chatrooms in the list")
