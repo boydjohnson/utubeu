@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.timezone import now
 
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.test import APITestCase
@@ -9,8 +10,7 @@ from oauth2_provider.models import Application, AccessToken
 
 from oauthlib.common import generate_token
 
-import codecs
-from datetime import datetime
+from datetime import timezone, timedelta
 import json
 
 from utubeuAPI.serializers import ChatroomInSerializer, InvitedEmailsSerializer
@@ -105,7 +105,7 @@ class TestOwnedChatroomsListCreateViewMobileApp(APITestCase):
         # the access token is what is given at the end of convert-token view
         self.access_token = AccessToken.objects.create(user=self.user, token=generate_token(),
                                                           application=self.application,
-                                                          expires=datetime(2020,1,1), scope='chatroom')
+                                                          expires=now()+timedelta(weeks=52), scope='chatroom')
 
     def test_create_an_owned_chatroom(self):
         url = reverse('api:owned_chatrooms')
