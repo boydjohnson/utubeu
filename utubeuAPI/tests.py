@@ -10,10 +10,10 @@ from oauth2_provider.models import Application, AccessToken
 
 from oauthlib.common import generate_token
 
-from datetime import timezone, timedelta
+from datetime import timedelta
 import json
 
-from utubeuAPI.serializers import ChatroomInSerializer, InvitedEmailsSerializer
+from utubeuAPI.serializers import ChatroomInSerializer, InvitedEmailsSerializer, ChatroomDetailSerializer
 from viewer.models import Chatroom, InvitedEmails
 
 class TestChatroomInSerializerValidation(TestCase):
@@ -48,6 +48,13 @@ class TestChatroomInSerializerValidation(TestCase):
 
         self.assertRaises(ValidationError, too_many_chatrooms)
 
+    def test_owner_is_initially_added(self):
+        chatroom = ChatroomInSerializer(data={'name': 'test', 'description': 'test test'},
+                                        context={'request': self.request})
+        chatroom.is_valid()
+        chatroom.save()
+        self.assertIn(self.user, Chatroom.objects.get(id=1).users.all(),
+                            "The owner is initially added to the Chatroom.users")
 
 class TestInvitedEmailsValidator(TestCase):
 
@@ -90,6 +97,25 @@ class TestInvitedEmailsValidator(TestCase):
             ieserializer.is_valid(raise_exception=True)
 
         self.assertRaises(PermissionDenied, not_the_owner)
+
+class TestChatroomDetailSerializer(TestCase):
+
+    def setUp(self):
+        self.a_whole_bunch_of_users = [u.pk for u in [User.objects.create(username='test'+str(i),
+                                                           password='password') for i in range(10)]]
+
+        self.user = User.objects.create(username='testtest', password='password')
+        self.chatroom = Chatroom.objects.create(name='testroom', description='test test', owner=self.user)
+
+    def test_that_update_of_chatroom_will_add_users(self):
+        chat = ChatroomDetailSerializer(instance=self.chatroom, data={'name':'testroom','description': 'test test',
+                                                                      'users': self.a_whole_bunch_of_users,
+                                                                      'owner': self.user})
+        chat.is_valid(raise_exception=True)
+        chat.save()
+        chatroom = Chatroom.objects.get(id=1)
+        for someuser in self.a_whole_bunch_of_users:
+            self.assertTrue(someuser in [u.pk for u in chatroom.users.all()], "{} is also in the Chatroom.users".format(someuser))
 
 
 class TestOwnedChatroomsListCreateViewMobileApp(APITestCase):

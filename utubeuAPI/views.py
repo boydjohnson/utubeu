@@ -11,13 +11,13 @@ from oauthlib.common import generate_token
 from social.apps.django_app.utils import psa
 
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from utubeuAPI.serializers import ChatroomInSerializer, ChatroomDetailSerializer, ChatroomOutSerializer
-from viewer.models import Chatroom, InvitedEmails
+from utubeuAPI.serializers import ChatroomInSerializer, ChatroomDetailSerializer
+from viewer.models import Chatroom
 
 from datetime import datetime
 
@@ -45,22 +45,6 @@ class MemberChatroomListView(ListAPIView):
         user = self.request.user
         return Chatroom.objects.filter(users=user.pk).exclude(owner=user.pk)
 
-
-class ChatroomDetailView(RetrieveUpdateAPIView):
-    serializer_class = ChatroomDetailSerializer
-    permission_classes = (IsAuthenticated,)
-    def get_queryset(self):
-        user = self.request.user
-        return Chatroom.objects.filter(Q(owner=user.pk) | Q(users=user.pk))
-
-
-class JoinableChatroomListView(ListAPIView):
-    serializer_class = ChatroomDetailSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        user = self.request.user
-        return InvitedEmails.objects.get(user_email=user.email).exclude(chatroom__users=user.pk)
 
 @psa('social:complete')
 @api_view(['POST'])

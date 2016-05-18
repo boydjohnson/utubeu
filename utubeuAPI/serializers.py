@@ -29,20 +29,14 @@ class ChatroomInSerializer(serializers.ModelSerializer):
         return attrs
 
 
-class ChatroomOutSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Chatroom
-        fields = ('id', 'name', 'description')
-
-
 class ChatroomDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chatroom
         fields = ('id', 'name', 'description', 'users')
 
     def update(self, instance, validated_data):
-        new_user = validated_data.get('users')
-        instance.users.add(new_user)
+        new_users = validated_data.get('users')
+        instance.users.add(*new_users)
         instance.save()
         return instance
 
