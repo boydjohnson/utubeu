@@ -150,3 +150,22 @@ class TestOwnedChatroomsListCreateViewMobileApp(APITestCase):
         resp = self.client.get(path=url, HTTP_AUTHORIZATION='BEARER {}'.format(self.access_token.token))
         self.assertEqual(resp.status_code, 200, "Success on getting the list of chatrooms")
         self.assertEqual(len(json.loads(resp.content.decode('utf-8'))), 2, "There are two chatrooms in the list")
+
+
+class TestInvitedCreateUpdateView(APITestCase):
+
+    def setUp(self):
+        self.user = User.objects.create(username='tester', password='password')
+
+        self.application = Application.objects.create(user=self.user, name='testApp', client_id='284058dk30dk',
+                                client_secret='20484kfk49kd', client_type=Application.CLIENT_CONFIDENTIAL,
+                                  authorization_grant_type=Application.GRANT_CLIENT_CREDENTIALS)
+        # the access token is what is given at the end of convert-token view
+        self.access_token = AccessToken.objects.create(user=self.user, token=generate_token(),
+                                                          application=self.application,
+                                                          expires=now()+timedelta(weeks=52), scope='chatroom')
+
+    def test_all_the_right_options_are_available(self):
+        url = reverse('api:invites')
+        resp = self.client.options(path=url, HTTP_AUTHORIZATION='BEARER {}'.format(self.access_token.token))
+        print(resp.content.decode('utf-8'))
