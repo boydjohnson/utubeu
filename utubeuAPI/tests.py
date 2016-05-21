@@ -168,4 +168,3 @@ class TestInvitedCreateUpdateView(APITestCase):
     def test_all_the_right_options_are_available(self):
         url = reverse('api:invites')
         resp = self.client.options(path=url, HTTP_AUTHORIZATION='BEARER {}'.format(self.access_token.token))
-        print(resp.content.decode('utf-8'))
