@@ -14,7 +14,6 @@ def main_page(request):
         raise PermissionDenied("Method not supported.")
 
 
-@login_required(login_url="/")
 def dashboard(request):
     if request.method == 'GET':
         user = request.user
@@ -22,13 +21,13 @@ def dashboard(request):
     else:
         raise PermissionDenied("Method not supported.")
 
-@login_required(login_url="/")
+
 def logout(request):
     """Logs out user"""
     auth_logout(request)
     return redirect('/')
 
-@login_required(login_url="/")
+
 def enter_chatroom(request, chatroom):
     if request.user.is_authenticated() and request.method=='GET':
         try:

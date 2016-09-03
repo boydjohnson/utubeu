@@ -17,9 +17,13 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from utubeuAPI import urls as api_urls
+from viewer import urls as main_urls
+from social.apps.django_app import urls as social_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/v1', include(api_urls, namespace='api'))
+    url(r'^api/v1', include(api_urls, namespace='api')),
+    url(r'social/', include(social_urls, namespace='social')),
+    url(r'', include(main_urls, namespace='viewer'))
 
 ]
