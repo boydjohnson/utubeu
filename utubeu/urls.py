@@ -1,9 +1,29 @@
-from django.conf.urls import include, url
+"""utubeu URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/1.10/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.conf.urls import url, include
+    2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
+"""
+from django.conf.urls import url, include
 from django.contrib import admin
 
+from utubeuAPI import urls as api_urls
+from viewer import urls as main_urls
+from social.apps.django_app import urls as social_urls
+
 urlpatterns = [
-    url(r'developAdmin/', include(admin.site.urls)),
-    url(r'social/', include('social.apps.django_app.urls',namespace='social')),
-    url(r'api/', include('utubeuAPI.urls', namespace='api')),
-    url(r'', include('viewer.urls', namespace='viewer')),
+    url(r'^admin/', admin.site.urls),
+    url(r'^api/v1', include(api_urls, namespace='api')),
+    url(r'social/', include(social_urls, namespace='social')),
+    url(r'', include(main_urls, namespace='viewer'))
+
 ]
