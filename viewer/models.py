@@ -32,9 +32,11 @@ class Chatroom(models.Model):
     identifier = models.CharField(max_length=38, default=generate_id_string())
     owner = models.ForeignKey(to=User, related_name='owned_chatrooms', null=False)
     joiners = models.ManyToManyField(to=User, related_name='joined_chatrooms')
+
     is_public = models.BooleanField(default=False)
     duration = models.BigIntegerField(default=45*60)
     is_active = models.BooleanField(default=True)
+    start = models.DateTimeField(auto_now=True, verbose_name="When the user added the chatroom")
 
     def __str__(self):
         return self.name + " " + self.owner.username
