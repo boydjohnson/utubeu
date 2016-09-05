@@ -7,11 +7,11 @@ from oauth2_provider.ext.rest_framework.authentication import OAuth2Authenticati
 
 from oauthlib.common import generate_token
 
-from social.apps.django_app.utils import psa
+
 
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import ListCreateAPIView, ListAPIView, GenericAPIView
-from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, ListModelMixin
+from rest_framework.generics import ListCreateAPIView, ListAPIView
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -45,35 +45,3 @@ class MemberChatroomListView(ListAPIView):
         user = self.request.user
         # exclude owned chatrooms so we have a clean break between owned and member chatrooms
         return Chatroom.objects.filter(users=user.pk).exclude(owner=user.pk)
-
-
-@psa('social:complete')
-@api_view(['POST'])
-def convert_token(request, backend):
-    if request.method == 'POST':
-        client_id = request.POST.get("client_id")
-        client_secret = request.POST.get("client_secret")
-
-        my_app = get_object_or_404(Application, client_id=client_id, client_secret=client_secret)
-
-        params = dict(code=request.GET.get("token"),
-                          client_id=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY,
-                          client_secret=settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
-                          redirect_uri=settings.SECRET_URI,
-                          grant_type="authorization_code")
-        response = requests.post("https://www.googleapis.com/oauth2/v3/token", data=params).json()
-        user = request.backend.do_auth(response.get("access_token"))
-        if user and user.is_authenticated and user.is_active:
-            old_token = AccessToken.objects.filter(user = user)
-            if len(old_token)>0:
-                return Response({'access_token':old_token[0].token})
-            else:
-                my_access_token = AccessToken.objects.create(user=user, token=generate_token(), application=my_app,
-                                                             expires=datetime(2020,1,1), scope='create chatrooms')
-                return Response({'access_token':my_access_token.token})
-        else:
-            raise PermissionDenied("User is not authenticated.")
-    else:
-        raise PermissionError("Method not available")
-
-
