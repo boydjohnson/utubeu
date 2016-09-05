@@ -1,109 +1,29 @@
 {% extends 'base.html' %}
 
 {% block title %}{% if user and user.is_authenticated %}Hello,
-    {{ user.get_full_name | default:user.username }}{% else %}UTubeU{% endif %}{% endblock %}
+    {{ user.get_full_name }}{% else %}UTubeU{% endif %}{% endblock %}
 
 {% block content %}
-
     <div class="row">
-        <div class="col-md-3 col-sm-6 col-xs-9">
-
-                {% if user and user.is_authenticated %}
-                        <div class="text-primary-color dark-primary-color large-padding small-shadow rounded-corners">Hello, {{ user.get_full_name|default:user.username }}!</div>
-                {% endif %}
+    <div class="column s12 m6">
+    <ul class="collection with-header">
+    <li href="#" class="collection-header"><h5>Rooms</h5></li>
+    <li><a href="#" class="collection-item">The greatest room Evar<span class="badge new accent-color" data-badge-caption="">27/30</span></a></li>
+    <li><a href="#" class="collection-item">The bestest room<span class="badge new accent-color" data-badge-caption="">4/15</span></a></li>
+    </ul>
+        <div class="fixed-action-btn" style="top: 50px; right: 15px;">
+        <div class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">add</i></div>
         </div>
-    <div class="col-md-9 col-sm-6 col-xs-9 h3">Chatrooms: </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-xs-12 col-md-8">
-            <div class="btn chatroom-color large-shadow">The best chatroom ever.</div>
-            <div class="btn chatroom-color large-shadow">The second best chatroom ever.</div>
-            <div class="btn chatroom-color large-shadow">The third best chatroom ever.</div>
-            <div class="btn chatroom-color large-shadow">The fourth best chatroom ever.</div>
-            <div class="btn chatroom0-color large-shadow">The fifth best chatroom ever.</div>
-
         </div>
-
     </div>
+
 
 
 {% endblock %}
 
 {% block js %}
-
-    <script>
-        $(document).ready(function () {
-
-
-            $('#post_chatroom_email_form').on('submit', function (event) {
-                event.preventDefault();
-                $.ajaxSetup({
-                    beforeSend: function (xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
-                    }
-                });
-                $.post($(this).attr('action'),
-                        $(this).serialize()
-                ).done(function (data) {
-                            if (data.errors == null) {
-                                $('input').val("");
-                                $('textarea').val("");
-                                $('.collapse').collapse('hide');
-                                $('.chatroom').append('<a href="/chatroom/' + data.chatroom_id + '" class="btn btn-warning">' + data.chatroom_name + '</a>');
-                                if (data.no_more_chatrooms) {
-                                    $('#room-maker').remove();
-                                    $('#create-button').remove();
-                                }
-                            }
-                        }).fail(function (data) {
-                            $('#error_bank').append('<p>' + data.errors + '</p>');
-
-                        });
-            });
-
-            $('.delete_chatroom').click(function (event) {
-                var chatroom_btn_group = $(this).parent();
-                $.ajaxSetup({
-                    beforeSend: function (xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
-                    }
-                });
-                $.post("", {'chatroom_id': $(this).attr('data-chatroom_id')}).done(function (data) {
-                    if (data.success) {
-                        chatroom_btn_group.remove();
-                    }
-                })
-            });
-
-            $('.join_chatroom').click(function (event) {
-                var join_button = $(this);
-                $.ajaxSetup({
-                    beforeSend: function (xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
-                    }
-                });
-                $.post("", {'chatroom_id': join_button.attr('data-chatroom_id')}).done(function (data) {
-
-                    join_button.remove();
-
-                })
-            })
-
-
-        });
-    </script>
-
 {% endblock %}
 
 
 {% block css %}
-    <style>
-        .btn {
-            margin: 1%;
-        }
-        .chatroom0-color {
-            background: #FFDABA;
-        }
-    </style>
-
 {% endblock %}

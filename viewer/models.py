@@ -30,10 +30,12 @@ class Chatroom(models.Model):
     name = models.TextField(verbose_name='Chatroom Name', max_length=50, blank=False, null=False)
     description = models.TextField(max_length=100, blank=True, null=True)
     identifier = models.CharField(max_length=38, default=generate_id_string())
+
     owner = models.ForeignKey(to=User, related_name='owned_chatrooms', null=False)
     joiners = models.ManyToManyField(to=User, related_name='joined_chatrooms')
 
     is_public = models.BooleanField(default=False)
+    max_occupants = models.IntegerField(default=20, verbose_name="The maximum number of joiners")
     duration = models.BigIntegerField(default=45*60)
     is_active = models.BooleanField(default=True)
     start = models.DateTimeField(auto_now=True, verbose_name="When the user added the chatroom")

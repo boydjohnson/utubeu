@@ -5,111 +5,28 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
-          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
-          crossorigin="anonymous">
-
-
-    <style>
-        body {
-            background: #C8E6C9;
-            font-family: "Arial Black", Gadget, sans-serif;
-            overflow-x: hidden;
-        }
-
-        .dark-primary-color {
-            background: #388E3C;
-        }
-
-        .default-primary-color {
-            background: #4CAF50;
-        }
-
-        .light-primary-color {
-            background: #C8E6C9;
-        }
-
-        .text-primary-color {
-            color: #FFFFFF;
-        }
-
-        .accent-color {
-            background: #FFC107;
-        }
-        .chatroom-color {
-            background: #A59FD0;
-        }
-
-        .primary-text-color {
-            color: #212121;
-        }
-
-        .secondary-text-color {
-            color: #727272;
-        }
-
-        .divider-color {
-            border-color: #B6B6B6;
-        }
-        .large-padding {
-            padding: 10%;
-        }
-        .small-padding {
-            padding-top: 1%;
-            padding-bottom: 1%;
-        }
-        .padding-top {
-            padding-top: 1%;
-        }
-        .small-shadow {
-            box-shadow: 0 4px 2px -2px #B6B6B6;
-        }
-
-        .large-shadow {
-            box-shadow: 2px 6px 2px -2px #B6B6B6;
-        }
-
-        .rounded-corners {
-            border-radius: 10px;
-        }
-
-        .icon-md {
-            font-size: 15pt;
-            color: #FFFFFF;
-        }
-
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
     {% block css %}
     {% endblock %}
 
 </head>
 <body>
+    <nav>
+        <div class="nav-wrapper dark-primary-color">
+            <a href="#" class="brand-logo">utubeu</a>
+        </div>
+    </nav>
 
-<div class="container-fluid">
+
     {% block content %}
     {% endblock %}
 
-
-
-</div>
-<nav class="navbar navbar-default navbar-fixed-bottom default-primary-color">
-        <div class="col-md-offset-3 padding-top">
-            <a class="col-xs-2 col-md-1" href="#">About</a>
-            {% if user and user.is_authenticated %}
-            <a class="col-xs-2 col-md-1" href="{% url 'viewer:logout' %}?next=/">Logout</a>
-            {% endif %}
-        </div>
-
-    </nav>
-
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script type="text/javascript" src="{% static 'javascript/js.cookie.js' %}"></script>
-<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
-        integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
 {% block js %}
 {% endblock %}
-
 </body>
 </html>
