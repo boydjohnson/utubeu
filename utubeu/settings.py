@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'oauth2_provider',
-    'social.apps.django_app',
+    # will later add in social authentication
+    # 'social.apps.django_app.default',
 
     'utubeuAPI',
     'viewer'
