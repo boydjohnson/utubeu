@@ -33,7 +33,8 @@ class Chatroom(models.Model):
     owner = models.ForeignKey(to=User, related_name='owned_chatrooms', null=False)
     joiners = models.ManyToManyField(to=User, related_name='joined_chatrooms')
     is_public = models.BooleanField(default=False)
-    duration = models.BigIntegerField(default=45*60, validators=[validate_duration])
+    duration = models.BigIntegerField(default=45*60)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name + " " + self.owner.username
