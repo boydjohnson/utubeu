@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
 from oauth2_provider.models import Application, AccessToken
@@ -17,8 +16,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from utubeuAPI.serializers import ChatroomInSerializer, ChatroomDetailSerializer, InvitedEmailsSerializer
-from viewer.models import Chatroom, InvitedEmails
+from utubeuAPI.serializers import ChatroomInSerializer, ChatroomDetailSerializer
+from viewer.models import Chatroom
 
 from datetime import datetime
 
@@ -36,20 +35,6 @@ class OwnedChatroomListCreateView(ListCreateAPIView):
     def get_serializer_class(self):
         return ChatroomInSerializer
 
-class InvitesCreateUpdateView(GenericAPIView, CreateModelMixin, UpdateModelMixin, ListModelMixin):
-    serializer_class = InvitedEmailsSerializer
-    authentication_classes = (OAuth2Authentication, SessionAuthentication)
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        user = self.request.user
-        return InvitedEmails.objects.filter(chatroom__owner=user)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
 class MemberChatroomListView(ListAPIView):
     serializer_class = ChatroomDetailSerializer

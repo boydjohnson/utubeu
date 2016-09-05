@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.shortcuts import render, redirect
 
 
-from viewer.models import Chatroom, InvitedEmails
+from viewer.models import Chatroom
 
 
 def main_page(request):
