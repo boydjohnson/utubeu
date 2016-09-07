@@ -29,7 +29,7 @@ def validate_duration(dur):
 class Chatroom(models.Model):
     name = models.TextField(verbose_name='Chatroom Name', max_length=50, blank=False, null=False)
     description = models.TextField(max_length=100, blank=True, null=True)
-    identifier = models.CharField(max_length=38, default=generate_id_string())
+    identifier = models.CharField(max_length=38, default=generate_id_string)
 
     owner = models.ForeignKey(to=User, related_name='owned_chatrooms', null=False)
     joiners = models.ManyToManyField(to=User, related_name='joined_chatrooms')

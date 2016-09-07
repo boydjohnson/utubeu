@@ -1,33 +1,6 @@
 {% extends 'base.html' %}
 {% block css %}
     <style>
-        #chattertext {
-            height: 200px;
-            overflow-y: scroll;
-            border: 1px solid black;
-            background-color: white;
-        }
-
-        #dock {
-            background-color: floralwhite;
-            border: solid 2px black;
-            border-radius: 5px;
-        }
-
-        #suggestion_list {
-            overflow-x: scroll;
-        }
-
-        #search_results {
-            background-color: floralwhite;
-            border: 1px solid black;
-            max-height: 300px;
-            overflow-y: scroll;
-        }
-
-        .individual_result, .suggested {
-            border: solid 1px black;
-        }
     </style>
 
 {% endblock %}
@@ -38,29 +11,38 @@
 
 {% block content %}
     <div class="row">
-        <div id="dock" class="col-md-3">
+        <div id="dock" class="col s12">
 
         </div>
-        <div class="h2 col-md-3" alt-text="{{ chatroom.description }}">
+        <div class="col s12 m4" alt-text="{{ chatroom.description }}">
             {{ chatroom.name }}
         </div>
-        <div id="suggestion_list" class="col-md-6"></div>
+        <div id="suggestion_list" class="col s12"></div>
     </div>
 
     <div class="row">
-        <div id="video" class="col-xs-5"></div>
-        <div class="col-md-3">
+        <div class="video-container col s12 m6">
+            <div id="video"></div>
+        </div>
+        <div class="col s12 m6">
             <div id="chattertext">
             </div>
-            <textarea class="col-md-12" id="chatterbox" rows="2" placeholder="Chat!"></textarea>
+            <div class="input-field">
+                <label for="chatterbox">Chat!</label>
+                <textarea class="materialize-textarea" id="chatterbox" rows="2"></textarea>
 
-            <div id="sendbutton" class="btn btn-success col-md-12">Send</div>
+            </div>
+            <div id="sendbutton" class="btn default-primary-color col s12 z-depth-2">Send</div>
         </div>
-        <div class="col-md-3">
+        <div class="col s12 m6">
             <div id="search_results"></div>
-            <textarea class="col-md-12" id="videosearchbox" rows="1"></textarea>
 
-            <div id="search_button" class="btn btn-success col-md-12">Search Videos!</div>
+            <div class="input-field">
+                <label for="videosearchbox">Search for videos.</label>
+                <textarea class="materialize-textarea" id="videosearchbox" rows="1"></textarea>
+            </div>
+
+            <div id="search_button" class="btn default-primary-color col s12 z-depth-2">Search Videos!</div>
         </div>
     </div>
 
