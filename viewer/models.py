@@ -41,4 +41,4 @@ class Chatroom(models.Model):
     start = models.DateTimeField(auto_now=True, verbose_name="When the user added the chatroom")
 
     def __str__(self):
-        return self.name + " " + self.owner.username
+        return self.name + ":" + self.owner.username + ":Active:" + self.is_active
