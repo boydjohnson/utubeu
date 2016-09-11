@@ -1,6 +1,6 @@
 from django import forms
 
-from viewer.models import Chatroom, InvitedEmails
+from utubeu_viewer.models import Chatroom, InvitedEmails
 
 
 

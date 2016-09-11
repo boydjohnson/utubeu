@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from viewer import views as v
+from utubeu_viewer import views as v
 
 urlpatterns = [
     url(r'^logout/$', v.logout, name='logout'),

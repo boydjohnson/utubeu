@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import viewer.models
+import utubeu_viewer.models
 
 
 class Migration(migrations.Migration):
@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.TextField(max_length=50, verbose_name='Chatroom Name')),
                 ('description', models.TextField(blank=True, max_length=100, null=True)),
-                ('identifier', models.CharField(default=viewer.models.generate_id_string, max_length=38)),
+                ('identifier', models.CharField(default=utubeu_viewer.models.generate_id_string, max_length=38)),
                 ('is_public', models.BooleanField(default=False)),
                 ('max_occupants', models.IntegerField(default=20, verbose_name='The maximum number of joiners')),
                 ('duration', models.BigIntegerField(default=2700)),

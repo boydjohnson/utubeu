@@ -17,11 +17,11 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from utubeuAPI import urls as api_urls
-from viewer import urls as main_urls
+from utubeu_viewer import urls as main_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/v1', include(api_urls, namespace='api')),
-    url(r'', include(main_urls, namespace='viewer'))
+    url(r'', include(main_urls, namespace='utubeu_viewer'))
 
 ]

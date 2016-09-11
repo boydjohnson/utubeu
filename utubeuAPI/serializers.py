@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from viewer.models import Chatroom
+from utubeu_viewer.models import Chatroom
 
 
-class ChatroomInSerializer(serializers.ModelSerializer):
-    """Tested to correctly make new chatrooms"""
+class ChatroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chatroom
         fields = ('id', 'name', 'description')
