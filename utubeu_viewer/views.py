@@ -13,15 +13,6 @@ def main_page(request):
     else:
         raise PermissionDenied("Method not supported.")
 
-
-def dashboard(request):
-    if request.method == 'GET':
-        user = request.user
-        return render(request, 'dash.html', context={'user': user})
-    else:
-        raise PermissionDenied("Method not supported.")
-
-
 def logout(request):
     """Logs out user"""
     auth_logout(request)
