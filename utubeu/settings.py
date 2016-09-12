@@ -42,7 +42,8 @@ INSTALLED_APPS = [
 
     'utubeuAPI',
     'utubeu_viewer',
-    'utubeu_dash'
+    'utubeu_dash',
+    'utubeu_auth'
 ]
 
 MIDDLEWARE = [
