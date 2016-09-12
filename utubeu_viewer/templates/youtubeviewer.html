@@ -91,13 +91,12 @@
                 })
             });
         }
-
-        var websocket = new WebSocket('ws://' + window.location.host + '/ws?chatroom-id=' + "{{ chatroom.pk }}&user-name=" + "{{ user.username }}");
+        var websocket = new WebSocket('ws://' + window.location.host + '/c/chat/' + window.location.pathname.substring(10).replace('/', ''));
         function addSuggestionClickListeners() {
             $('.make_suggestion').click(function (evt) {
                 evt.preventDefault();
                 var video_id = $(this).parent().attr('data-video-id');
-                var chatroom_id = "{{ chatroom.pk }}";
+                var chatroom_id = "{{ chatroom.identifier }}";
                 var username = "{{ user.username }}";
                 var title = $(this).parent().children('p.h3').text();
                 var description = $(this).parent().children('p.description').text()
@@ -128,10 +127,10 @@
             evt.preventDefault();
             if ($('#chatterbox').val() != "") {
                 websocket.send(JSON.stringify({
-                    'chatroom_id': "{{ chatroom.pk }}",
-                    'username': "{{ user.username }}",
-                    'message': $('#chatterbox').val()
-                }));
+                        'chatroom': "{{ chatroom.identifier }}",
+                        'username': "{{ user.username }}",
+                        'message': $('#chatterbox').val()
+                    }));
                 $('#chatterbox').val("");
             }
         });

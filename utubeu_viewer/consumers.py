@@ -1,12 +1,11 @@
-from channels.generic.websockets import WebsocketDemultiplexer
+from channels.generic.websockets import JsonWebsocketConsumer
 
 
-class ChatroomConsumer(WebsocketDemultiplexer):
+class ChatroomConsumer(JsonWebsocketConsumer):
 
-    mapping = {
-        'message': message_consumer,
-    }
-
-
-def message_consumer(message):
-    print(message)
+    def receive(self, content, **kwargs):
+        if 'chatroom' not in kwargs:
+            return
+        if kwargs['chatroom'] != content['chatroom']:
+            return
+        print(content)

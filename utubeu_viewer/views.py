@@ -23,9 +23,11 @@ def logout(request):
 def enter_chatroom(request, chatroom):
     if request.user.is_authenticated() and request.method=='GET':
         try:
-            cr = Chatroom.objects.filter(joiners=request.user).get(identifier=chatroom)
+            cr = Chatroom.objects.get(identifier=chatroom)
             if not cr.is_active:
-                redirect(to='/')
+                return redirect(to='/')
+            if request.user not in cr.joiners.all():
+                cr.joiners.add(request.user)
         except ObjectDoesNotExist:
             raise PermissionDenied("User is not a member of that chatroom.")
 
