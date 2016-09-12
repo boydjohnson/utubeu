@@ -13,6 +13,7 @@ def main_page(request):
     else:
         raise PermissionDenied("Method not supported.")
 
+
 def logout(request):
     """Logs out user"""
     auth_logout(request)
@@ -23,6 +24,8 @@ def enter_chatroom(request, chatroom):
     if request.user.is_authenticated() and request.method=='GET':
         try:
             cr = Chatroom.objects.filter(joiners=request.user).get(identifier=chatroom)
+            if not cr.is_active:
+                redirect(to='/')
         except ObjectDoesNotExist:
             raise PermissionDenied("User is not a member of that chatroom.")
 
