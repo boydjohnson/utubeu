@@ -26,27 +26,20 @@ class ChatroomConsumer(JsonWebsocketConsumer):
         if kwargs['chatroom'] != content['chatroom']:
             return
         if 'action' not in content:
-            print('No action!')
             return
         if content['action'] not in self.action_map:
-            print('NOT in action_map')
             return
         results = {k:v for k,v in content.items()}
         Channel(self.action_map[content['action']]).send(results)
 
     def disconnect(self, message, **kwargs):
-        print(message.content)
         if 'chatroom' in kwargs:
             Group(kwargs['chatroom']).discard(self.message.reply_channel)
 
 
 def chat_message_consumer(message):
-    print(message.content)
     if 'user' not in message.content:
-        print(message.content)
         return
     chatroom = message.content['chatroom']
     del message.content['chatroom']
     Group(chatroom[0:10]).send({'text': json.dumps(message.content)})
-
-
