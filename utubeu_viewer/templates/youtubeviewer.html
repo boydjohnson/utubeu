@@ -128,14 +128,16 @@
             if ($('#chatterbox').val() != "") {
                 websocket.send(JSON.stringify({
                         'chatroom': "{{ chatroom.identifier }}",
-                        'username': "{{ user.username }}",
-                        'message': $('#chatterbox').val()
+                        'user': "{{ user.id }}",
+                        'message': $('#chatterbox').val(),
+                        'action': 'ChatMess'
                     }));
                 $('#chatterbox').val("");
             }
         });
 
         websocket.onmessage = function (event) {
+            console.log(event.data);
             var input = JSON.parse(event.data);
             if (input.usernames != null) {
                 var usernames = input.usernames;
@@ -145,9 +147,10 @@
                 }
             }
 
-            if (input.message != null) {
-                if (input.username != null) {
-                    $('#chattertext').append('<p>' + input.username + " : " + input.message + '</p>');
+            if (input.action == 'ChatMess') {
+                console.log("Success!");
+                if (input.user != null) {
+                    $('#chattertext').append('<p>' + input.user + " : " + input.message + '</p>');
                 } else {
                     $('#chattertext').append('<p class="text-right">' + "You : " + input.message + '</p>');
                 }
