@@ -23,6 +23,8 @@ class ChatroomConsumer(JsonWebsocketConsumer):
         if 'chatroom' not in kwargs:
             return
             # print(self.message.reply_channel)
+        if 'chatroom' not in content:
+            return
         if kwargs['chatroom'] != content['chatroom']:
             return
         if 'action' not in content:
@@ -43,3 +45,18 @@ def chat_message_consumer(message):
     chatroom = message.content['chatroom']
     del message.content['chatroom']
     Group(chatroom[0:10]).send({'text': json.dumps(message.content)})
+
+
+def suggestion_consumer(message):
+
+    chatroom = message.content['chatroom']
+    del message.content['chatroom']
+    Group(chatroom[0:10]).send({'text': json.dumps(message.content)})
+
+
+def vote_sugg_consumer(message):
+   chatroom = message.content['chatroom']
+   del message.content['chatroom']
+   del message.content['direction']
+   m = {'start': 1, 'action': 'Start', 'youtube_value': message.content['youtube_value']}
+   Group(chatroom[0:10]).send({'text': json.dumps(m)})

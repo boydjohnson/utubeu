@@ -8,5 +8,7 @@ from utubeu_viewer import consumers as con
 channel_routing = [
     include(dash_routing, path=r'^/ws'),
     include(viewer_routing, path=r'^/c'),
-    route('ChatMess', con.chat_message_consumer)
+    route('ChatMess', con.chat_message_consumer),
+    route('Sugg', con.suggestion_consumer),
+    route('VoteSugg', con.vote_sugg_consumer)
 ]

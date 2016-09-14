@@ -97,13 +97,14 @@
                 evt.preventDefault();
                 var video_id = $(this).parent().attr('data-video-id');
                 var chatroom_id = "{{ chatroom.identifier }}";
-                var username = "{{ user.username }}";
+                var username = "{{ user.id }}";
                 var title = $(this).parent().children('p.h3').text();
                 var description = $(this).parent().children('p.description').text()
                 var image_url = $(this).parent().children('img').attr('src');
 
                 websocket.send(JSON.stringify({
-                    chatroom_id: chatroom_id, youtube_value: video_id, username: username,
+                    action: "Sugg",
+                    chatroom: chatroom_id, youtube_value: video_id, user: username,
                     title: title, description: description, image_url: image_url
                 }));
 
@@ -116,8 +117,9 @@
                 var button_clicked = $(this);
                 var video_url = button_clicked.parent().attr('data-video-id');
                 websocket.send(JSON.stringify({
-                    'chatroom_id': "{{ chatroom.pk }}",
-                    'vote': true, 'youtube_value': video_url
+                    action: "VoteSugg", direction: true, user_id: "{{ user.id }}",
+                    chatroom: "{{ chatroom.identifier }}",
+                    'youtube_value': video_url
                 }));
                 button_clicked.remove();
             })
@@ -148,7 +150,6 @@
             }
 
             if (input.action == 'ChatMess') {
-                console.log("Success!");
                 if (input.user != null) {
                     $('#chattertext').append('<p>' + input.user + " : " + input.message + '</p>');
                 } else {
