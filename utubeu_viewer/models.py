@@ -1,5 +1,6 @@
 from django.db import models
 
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.crypto import get_random_string
@@ -20,10 +21,8 @@ def generate_id_string():
 def validate_duration(dur):
         if timedelta(seconds=dur) < timedelta(minutes=10):
             raise ValidationError("Chatroom duration must be greater than 10 minutes")
-        elif timedelta(seconds=dur) > timedelta(days=1):
+        elif timedelta(seconds=dur) > timedelta(days=3):
             raise ValidationError("Chatroom duration must be less than 1 day")
-        else:
-            pass
 
 
 class Chatroom(models.Model):
@@ -42,3 +41,13 @@ class Chatroom(models.Model):
 
     def __str__(self):
         return self.name + ":" + self.owner.username + ":Active:" + str(self.is_active)
+
+
+class UserSiteInfo(models.Model):
+    user = models.OneToOneField(to=User, related_name='site_info', null=False)
+    has_logged_in = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.has_logged_in:
+            return "{} has logged in".format(str(self.user))
+        return "{} has not logged in".format(str(self.user))

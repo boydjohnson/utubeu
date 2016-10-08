@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from socialConfig import google_secret, google_client_id
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'channels',
+    'social.apps.django_app.default',
 
     'utubeuAPI',
     'utubeu_viewer',
-    'utubeu_dash',
-    'utubeu_auth'
+    'utubeu_dash'
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,12 @@ CHANNEL_LAYERS = {
         "ROUTING": "utubeu.routes.channel_routing",
     },
 }
+
+
+AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend'
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = google_client_id
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_secret

@@ -16,12 +16,15 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from social.apps.django_app import urls as social_urls
+
 from utubeuAPI import urls as api_urls
 from utubeu_viewer import urls as main_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/v1', include(api_urls, namespace='api')),
+    url(r'^social/', include(social_urls, namespace='social')),
     url(r'', include(main_urls, namespace='utubeu_viewer'))
 
 ]
