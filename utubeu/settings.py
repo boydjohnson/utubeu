@@ -144,5 +144,11 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend'
 )
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication'
+    ]
+}
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = google_client_id
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = google_secret

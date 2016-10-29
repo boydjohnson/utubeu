@@ -1,5 +1,3 @@
-from oauth2_provider.ext.rest_framework.authentication import OAuth2Authentication
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import ListCreateAPIView, ListAPIView
 
 from rest_framework.permissions import IsAuthenticated
