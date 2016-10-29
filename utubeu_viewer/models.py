@@ -46,6 +46,7 @@ class Chatroom(models.Model):
 class UserSiteInfo(models.Model):
     user = models.OneToOneField(to=User, related_name='site_info', null=False)
     has_logged_in = models.BooleanField(default=False)
+    madeup_username = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
         if self.has_logged_in:
