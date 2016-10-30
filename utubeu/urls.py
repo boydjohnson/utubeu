@@ -25,6 +25,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/v1', include(api_urls, namespace='api')),
     url(r'^social/', include(social_urls, namespace='social')),
-    url(r'', include(main_urls, namespace='utubeu_viewer'))
-
+    url(r'', include(main_urls, namespace='viewer'))
 ]
