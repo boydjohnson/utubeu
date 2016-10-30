@@ -23,7 +23,7 @@ from utubeu_viewer import urls as main_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/v1', include(api_urls, namespace='api')),
+    url(r'^api/v1/', include(api_urls, namespace='api')),
     url(r'^social/', include(social_urls, namespace='social')),
     url(r'', include(main_urls, namespace='viewer'))
 ]
