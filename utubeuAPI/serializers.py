@@ -5,12 +5,13 @@ from utubeu_viewer.models import Chatroom
 class ChatroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chatroom
-        fields = ('id', 'name', 'description', 'identifier')
+        fields = ('id', 'name', 'description', 'identifier', 'is_public', 'max_occupants')
 
         extra_kwargs = {
             'identifier': {
                 'read_only': True,
             }
+
         }
 
     def create(self, validated_data):
@@ -26,7 +27,7 @@ class ChatroomSerializer(serializers.ModelSerializer):
 class ChatroomDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chatroom
-        fields = ('id', 'name', 'description', 'joiners')
+        fields = ('id', 'name', 'identifier', 'max_occupants', 'description', 'number_of_joiners')
 
     def update(self, instance, validated_data):
         new_users = validated_data.get('joiners', [])

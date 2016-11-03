@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.core.exceptions import ObjectDoesNotExist
 
 from datetime import timedelta
 
@@ -41,6 +40,9 @@ class Chatroom(models.Model):
     def __str__(self):
         return self.name + ":" + self.owner.username + ":Active:" + str(self.is_active)
 
+    def number_of_joiners(self):
+        return self.joiners.count()
+
     def save(self, *args, **kwargs):
         urlified_name = self.name.replace(" ", "-")
 
@@ -51,11 +53,9 @@ class Chatroom(models.Model):
             other_identifiers = list(filter(lambda x: string_is_integer(x.split('-')[-1]), other_identifiers))
             if len(other_identifiers) > 0:
                 largest_value = max(other_identifiers, key=lambda x: x.split('-')[-1]).split('-')[-1]
-                print(largest_value)
                 others_number = int(largest_value)
                 urlified_name += "-" + str(others_number + 1)
             elif len(other_chatrooms) > 0:
-                print("We've made contact")
                 urlified_name += "-" + str(1)
             print(urlified_name)
             self.identifier = urlified_name
