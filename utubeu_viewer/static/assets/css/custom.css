@@ -1,0 +1,70 @@
+/* Add here all your css styles (customizations) */
+.video-outline {
+    border: 1px solid #ddd;
+    display: block;
+    height: 100px;
+    margin: 20px;
+    background: #ddd;
+}
+span.other{
+    color:green;
+}
+span.user{
+    color:red;
+}
+.header > .container{
+    margin-bottom: 0;
+}
+
+/* Let's get this party started */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(128,128,128.8);
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(128,128,128,0.4);
+}
+
+#chat-box {
+    height: 300px;
+    overflow-y: scroll;
+}
+#chat-input input{
+    width:100%;
+}
+#chat-box p:nth-child(even){
+    background-color:#eeeeee;
+}
+.topbar::after {
+    clear: both;
+    display: block;
+    content: "";
+}
+body{
+    background-color: #eee;
+}
+.reg-block-header {
+    padding-bottom: 5px;
+    margin-bottom: 30px;
+    border-bottom: none;
+}
+.reg-block {
+    width: 380px;
+    padding: 20px;
+    margin: 60px auto;
+    background: #fff;
+    border-top:none;
+}

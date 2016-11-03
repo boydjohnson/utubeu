@@ -2,8 +2,7 @@
 {% load staticfiles %}
 
 {% block content %}
-
-    <div class="row">
+  <!--  <div class="row">
         <div class="h3 col-md-offset-2 col-md-8 col-xs-12">Great! You have found UtubeU. Have fun!</div>
 
     </div>
@@ -13,7 +12,112 @@
                 <img class="img-responsive" src="{% static 'images/btn_google_signin_dark_normal_web@2x.png' %}"></a></div>
         </div>
     </div>
+-->
+<!--=== Content Part ===-->
+<div class="container">
+    <div class="container content-lg">
+        <div class="title-v1">
+            <h2>Utubeu</h2>
+        </div>
 
+        <div class="row">
+            <div class="col-md-6 content-boxes-v3 margin-bottom-40">
+                <div class="clearfix margin-bottom-30">
+                    <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-users"></i>
+                    <div class="content-boxes-in-v3">
+                        <h2 class="heading-sm">Watch Videos With Your Friends</h2>
+                        <p>Create your own viewing room to watch videos with your friends</p>
+                    </div>
+                </div>
+                <div class="clearfix margin-bottom-30">
+                    <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-social-youtube"></i>
+                    <div class="content-boxes-in-v3">
+                        <h2 class="heading-sm">Social Youtube </h2>
+                        <p>Suggest all your favorite Youtube Videos for sharing.</p>
+                    </div>
+                </div>
+                <div class="clearfix margin-bottom-30">
+                    <i class="icon-custom icon-md rounded-x icon-bg-u icon-line icon-like"></i>
+                    <div class="content-boxes-in-v3">
+                        <h2 class="heading-sm">Vote On Your Favorite Youtube Videos</h2>
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
+                    </div>
+                </div>
+            </div>
 
+            <div class="col-md-6">
+                <!--Reg Block-->
+                <div class="reg-block">
+                    <div class="reg-block-header">
+                        <h2>Sign In</h2>
+                        <ul class="social-icons text-center">
+                        <!-- <li><a class="rounded-x social_facebook" data-original-title="Facebook" href="#"></a></li>
+                            <li><a class="rounded-x social_twitter" data-original-title="Twitter" href="#"></a></li>-->
+                            <li><a class="rounded-x social_googleplus" data-original-title="Google Plus" href="#"></a></li>
+                        <!-- <li><a class="rounded-x social_linkedin" data-original-title="Linkedin" href="#"></a></li> -->
+                        </ul>
+                    </div>
+                </div>
+                <!--End Reg Block-->
+            </div>
+        </div>
+    </div>
+</div><!--/container-->
+<div class="parallax-counter parallaxBg" style="background-position: 50% -406px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-xs-6">
+                <div class="counters">
+                    <span class="counter">109</span>
+                    <h4>Live Users</h4>
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6">
+                <div class="counters">
+                    <span class="counter">277</span>
+                    <h4>Public Chat Rooms</h4>
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6">
+                <div class="counters">
+                    <span class="counter">78</span>
+                    <h4>Private Chat Rooms</h4>
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6">
+                <div class="counters">
+                    <span class="counter">100029</span>
+                    <h4>Upvotes</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--=== End Content Part ===-->
+{% endblock %}
 
+{% block js %}
+<!-- JS Global Compulsory -->
+<script type="text/javascript" src="Unify-v1.8/HTML/assets/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="Unify-v1.8/HTML/assets/plugins/jquery/jquery-migrate.min.js"></script>
+<script type="text/javascript" src="Unify-v1.8/HTML/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- JS Implementing Plugins -->
+<script type="text/javascript" src="Unify-v1.8/HTML/assets/plugins/back-to-top.js"></script>
+<script type="text/javascript" src="Unify-v1.8/HTML/assets/plugins/backstretch/jquery.backstretch.min.js"></script>
+<!-- JS Customization -->
+<script type="text/javascript" src="Unify-v1.8/HTML/assets/js/custom.js"></script>
+<!-- JS Page Level -->
+<script type="text/javascript" src="Unify-v1.8/HTML/assets/js/app.js"></script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        App.init();
+    });
+
+</script>
+
+<!--[if lt IE 9]>
+<script src="Unify-v1.8/HTML/assets/plugins/respond.js"></script>
+<script src="Unify-v1.8/HTML/assets/plugins/html5shiv.js"></script>
+<script src="Unify-v1.8/HTML/assets/plugins/placeholder-IE-fixes.js"></script>
+<![endif]-->
 {% endblock %}
