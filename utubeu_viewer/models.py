@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.crypto import get_random_string
 
+import re
 import random
 import string
 
@@ -56,15 +57,21 @@ class Chatroom(models.Model):
 
         if self.pk is None:
             other_identifiers = map(lambda x: x[0], other_chatrooms)
-            other_identifiers = list(filter(lambda x: string_is_integer(x.split('-')[-1]), other_identifiers))
-            if len(other_identifiers) > 0:
-                largest_value = max(other_identifiers, key=lambda x: x.split('-')[-1]).split('-')[-1]
-                others_number = int(largest_value)
-                urlified_name += "-" + str(others_number + 1)
-            elif len(other_chatrooms) > 0:
-                urlified_name += "-" + str(1)
-            print(urlified_name)
-            self.identifier = urlified_name
+            if urlified_name in other_identifiers:
+                regex = re.compile(urlified_name + '-[0-9]{0,}$')
+                other_ending_numbers = set()
+                for other in other_identifiers:
+                    if regex.match(other) is not None:
+                        if string_is_integer(other.split('-')[-1]):
+                            other_ending_numbers.add(int(other.split('-')[-1]))
+                maximum = max(other_ending_numbers)
+                nums_not_in_set = set(range(1, maximum)) - other_ending_numbers
+                if len(nums_not_in_set) == 0:
+                    self.identifier = urlified_name + "-{}".format(maximum + 1)
+                else:
+                    self.identifier = urlified_name + "-{}".format(min(nums_not_in_set))
+            else:
+                self.identifier = urlified_name
         super(Chatroom, self).save(*args, **kwargs)
 
 

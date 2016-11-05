@@ -23,8 +23,7 @@ class ChatroomSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         owner = self.context.get('request').user
-        c = Chatroom(owner=owner, name=validated_data.get('name'),
-                        description=validated_data.get('description'))
+        c = Chatroom(owner=owner, **validated_data)
         c.save()
         c.joiners.add(owner)
         c.save()
