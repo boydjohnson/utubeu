@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.utils.crypto import get_random_string
 
-from datetime import timedelta
+import random
+import string
 
 
 def string_is_integer(value):
@@ -16,17 +17,19 @@ def string_is_integer(value):
     return False
 
 
-def validate_duration(dur):
-        if timedelta(seconds=dur) < timedelta(minutes=10):
-            raise ValidationError("Chatroom duration must be greater than 10 minutes")
-        elif timedelta(seconds=dur) > timedelta(days=3):
-            raise ValidationError("Chatroom duration must be less than 1 day")
-
+def generate_id_string():
+    chars = string.ascii_lowercase + string.ascii_uppercase + string.digits
+    num_chars = random.randint(34, 38)
+    return get_random_string(length=num_chars,
+                             allowed_chars=chars
+)
 
 class Chatroom(models.Model):
     name = models.TextField(verbose_name='Chatroom Name', max_length=50, blank=False, null=False)
-    description = models.TextField(max_length=100, blank=True, null=True)
-    identifier = models.CharField(max_length=38, blank=True, null=False)
+    description = models.TextField(blank=True, null=True)
+
+    identifier = models.TextField(blank=True, null=False)
+    internal_identifier = models.CharField(max_length=38, default=generate_id_string)
 
     owner = models.ForeignKey(to=User, related_name='owned_chatrooms', null=False)
     joiners = models.ManyToManyField(to=User, related_name='joined_chatrooms')
@@ -47,7 +50,7 @@ class Chatroom(models.Model):
         return self.joiners.count()
 
     def save(self, *args, **kwargs):
-        urlified_name = self.name.replace(" ", "-")
+        urlified_name = self.name.lower().replace(" ", "-")
 
         other_chatrooms = Chatroom.objects.filter(identifier__contains=urlified_name).values_list('identifier')
 
