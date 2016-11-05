@@ -37,6 +37,9 @@ class Chatroom(models.Model):
     is_active = models.BooleanField(default=True)
     start = models.DateTimeField(auto_now=True, verbose_name="When the user added the chatroom")
 
+    last_video_thumb = models.TextField(verbose_name="The thumbnail url of the last video played.",
+                                        blank=True, null=True)
+
     def __str__(self):
         return self.name + ":" + self.owner.username + ":Active:" + str(self.is_active)
 
