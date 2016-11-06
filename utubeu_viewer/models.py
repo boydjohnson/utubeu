@@ -64,7 +64,7 @@ class Chatroom(models.Model):
                     if regex.match(other) is not None:
                         if string_is_integer(other.split('-')[-1]):
                             other_ending_numbers.add(int(other.split('-')[-1]))
-                maximum = max(other_ending_numbers)
+                maximum = max(other_ending_numbers) if len(other_ending_numbers) != 0 else 2
                 nums_not_in_set = set(range(1, maximum)) - other_ending_numbers
                 if len(nums_not_in_set) == 0:
                     self.identifier = urlified_name + "-{}".format(maximum + 1)
