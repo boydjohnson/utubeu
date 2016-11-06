@@ -6,6 +6,6 @@
 </head>
 <body>
     Splash Page
-    <a href="{% url 'utubeu_viewer:enter_chatroom' 'chatroom' %}">Enter the chatroom</a>
+    <a href="{% url 'viewer:enter_chatroom' chatroom='{{ chatroom }}' %}">Enter the chatroom</a>
 </body>
 </html>

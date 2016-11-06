@@ -1,5 +1,9 @@
+from django.db.models import ObjectDoesNotExist
+
 from channels.generic.websockets import JsonWebsocketConsumer
 from channels.channel import Channel, Group
+
+from utubeu_viewer.models import Chatroom
 
 import json
 
@@ -10,19 +14,25 @@ class ChatroomConsumer(JsonWebsocketConsumer):
         'ChatMess': 'ChatMess',
         'Sugg': 'Sugg',
         'VoteSugg': 'VoteSugg',
-        'VotePlaylist': 'VotePlaylist',
         'VoteCurrent': 'VoteCurrent'
     }
+
+    http_user = True
 
     def connect(self, message, **kwargs):
         if 'chatroom' not in kwargs:
             return
-        Group(kwargs['chatroom'][0:10]).add(self.message.reply_channel)
+        try:
+            cr = Chatroom.objects.get(internal_identifier=kwargs['chatroom'])
+            if self.message.user not in cr.joiners.all():
+                return
+        except ObjectDoesNotExist:
+            return
+        Group(kwargs['chatroom']).add(self.message.reply_channel)
 
     def receive(self, content, **kwargs):
         if 'chatroom' not in kwargs:
             return
-            # print(self.message.reply_channel)
         if 'chatroom' not in content:
             return
         if kwargs['chatroom'] != content['chatroom']:

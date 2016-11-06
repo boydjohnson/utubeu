@@ -41,16 +41,15 @@
 
             <div id="search_button" class="btn default-primary-color col s12 z-depth-2">Search Videos!</div>
         </div>
+
+        <div id="chatroom" data-chatroom="{{ chatroom.internal_identifier }}"></div>
     </div>
 
 {% endblock %}
 
 
 {% block js %}
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="{% static 'js/angular-youtube-embed.min.js' %}"></script>
-    <script src="https://cdn.rawgit.com/AngularClass/angular-websocket/v2.0.0/dist/angular-websocket.js"></script>
-    <script src="{% static 'js/playerApp.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="{% static 'js/Example_WebSockets.js' %}"></script>
 
 {% endblock %}
