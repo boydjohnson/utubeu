@@ -7,6 +7,8 @@ from utubeu_viewer.models import Chatroom
 
 import json
 
+import redis
+
 
 class ChatroomConsumer(JsonWebsocketConsumer):
 
@@ -18,10 +20,10 @@ class ChatroomConsumer(JsonWebsocketConsumer):
     }
 
     http_user = True
+    channel_session_user = True
+    channel_session = True
 
     def connect(self, message, **kwargs):
-        if 'chatroom' not in kwargs:
-            return
         try:
             cr = Chatroom.objects.get(internal_identifier=kwargs['chatroom'])
             if self.message.user not in cr.joiners.all():
@@ -29,19 +31,24 @@ class ChatroomConsumer(JsonWebsocketConsumer):
         except ObjectDoesNotExist:
             return
         Group(kwargs['chatroom']).add(self.message.reply_channel)
+        # r = redis.StrictRedis(host='localhost', port=6379)
+        # pipeline = r.pipeline(transaction=False)
+        # if r.exists(kwargs['chatroom'] + ":lastten"):
+        #     print("THe key exists!")
+        #     self.message.channel.send(json.dumps(r.get(kwargs['chatroom'] + ":lastten")))
+
+
 
     def receive(self, content, **kwargs):
         if 'chatroom' not in kwargs:
-            return
-        if 'chatroom' not in content:
-            return
-        if kwargs['chatroom'] != content['chatroom']:
             return
         if 'action' not in content:
             return
         if content['action'] not in self.action_map:
             return
         results = {k:v for k,v in content.items()}
+        results['chatroom'] = kwargs['chatroom']
+        results['user'] = self.message.user.site_info.madeup_username
         Channel(self.action_map[content['action']]).send(results)
 
     def disconnect(self, message, **kwargs):
@@ -50,11 +57,19 @@ class ChatroomConsumer(JsonWebsocketConsumer):
 
 
 def chat_message_consumer(message):
-    if 'user' not in message.content:
-        return
     chatroom = message.content['chatroom']
-    del message.content['chatroom']
-    Group(chatroom[0:10]).send({'text': json.dumps(message.content)})
+    if 'text' not in message.content:
+        return
+    msg = {
+        'user': message.content['user'],
+        'text': message.content['text']
+    }
+    Group(chatroom).send({'text': json.dumps(msg)})
+    # r = redis.StrictRedis(host='localhost', port=6379, db=1)
+    # redis_pipeline = r.pipeline()
+    # redis_pipeline.lpush(chatroom + ":lastten", json.dumps({'user': message.content['user'],
+    #                                                         'text': message.content['text']}))
+
 
 
 def suggestion_consumer(message):

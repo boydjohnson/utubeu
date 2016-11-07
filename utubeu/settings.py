@@ -92,6 +92,8 @@ DATABASES = {
     }
 }
 
+
+
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -130,11 +132,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "asgiref.inmemory.ChannelLayer",
         "ROUTING": "utubeu.routes.channel_routing",
+        # "CONFIG": {
+        #     "hosts": [("localhost", 6379)],
+        # },
     },
 }
 

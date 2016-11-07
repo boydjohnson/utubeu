@@ -5,7 +5,7 @@ var websockets = new WebSocket('ws://' + window.location.host +'/c/chat/' + iden
 
 websockets.onopen = function (event) {
     console.log(event);
-
+    websockets.send(JSON.stringify({'action': 'ChatMess', 'text': "Hello!"}));
 };
 
 
