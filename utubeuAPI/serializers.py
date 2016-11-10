@@ -6,7 +6,7 @@ class ChatroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chatroom
         fields = ('id', 'name', 'description', 'identifier', 'is_public', 'max_occupants', 'last_video_thumb',
-                  'internal_identifier')
+                  'internal_identifier', 'number_of_joiners')
 
         extra_kwargs = {
             'identifier': {
@@ -18,6 +18,9 @@ class ChatroomSerializer(serializers.ModelSerializer):
             'last_video_thumb': {
                 'read_only': True,
             },
+            'number_of_joiners': {
+                'read_only': True,
+            }
         }
 
     def create(self, validated_data):
@@ -33,7 +36,7 @@ class ChatroomDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chatroom
         fields = ('id', 'name', 'identifier', 'max_occupants', 'description', 'number_of_joiners', 'last_video_thumb',
-                  'internal_identifier')
+                  'internal_identifier', 'is_public')
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
