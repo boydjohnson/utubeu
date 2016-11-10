@@ -27,7 +27,7 @@ def generate_id_string():
 
 class Chatroom(models.Model):
     name = models.TextField(verbose_name='Chatroom Name', max_length=50, blank=False, null=False)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, max_length=50)
 
     identifier = models.TextField(blank=True, null=False)
     internal_identifier = models.CharField(max_length=38, default=generate_id_string)
