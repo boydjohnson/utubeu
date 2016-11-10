@@ -44,21 +44,8 @@
 
 <body>
 <div class="wrapper">
-    <!--=== Header ===-->
-    <div class="header">
-        <div class="container">
-            <!-- Topbar -->
-            <div class="topbar pull-right">
-                <ul class="loginbar">
-                    <li><a href="page_faq.html">Help</a></li>
-                    <li class="topbar-devider"></li>
-                    <li><a href="page_login.html">Login</a></li>
-                </ul>
-            </div>
-            <!-- End Topbar -->
-        </div><!--/end container-->
-    </div>
-    <!--=== End Header ===-->
+    {% block navigation %}
+    {% endblock %}
 
     <!--=== Search Block ===-->
     <div class="search-block parallaxBg">
@@ -97,6 +84,8 @@
 <script type="text/javascript" src="{% static 'assets/plugins/owl-carousel/owl-carousel/owl.carousel.js' %}"></script>
 <!-- JS Customization -->
 <script type="text/javascript" src="{% static 'assets/js/custom.js' %}"></script>
+{% block js %}
+{% endblock %}
 <!-- JS Page Level -->
 <script type="text/javascript" src="{% static 'assets/js/app.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/plugins/owl-carousel.js' %}"></script>
