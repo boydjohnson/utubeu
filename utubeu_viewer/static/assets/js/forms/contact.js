@@ -38,47 +38,41 @@ var ContactForm = function () {
                 // Ajax form submition
                 submitHandler: function (form) {
                     console.log(form);
-                    $("#createNewChatroomForm").submit(function (e) {
-                        e.preventDefault();
-                        $("#createNewChatroomForm").ajaxSubmit(
-                            {
-                                type: "POST",
-                                dataType: "json",
-                                url: "/api/v1/ownedchatrooms",
-                                beforeSend: function () {
+                    console.log($(form));
 
-                                    //$('form button[type="submit"]').attr('disabled', true);
+                    $(form).ajaxSubmit(
+                        {
+                            type: "POST",
+                            dataType: "json",
+                            url: "/api/v1/ownedchatrooms",
+                            beforeSubmit: function (arr, $form, options ) {
 
-                                    var name = $("input[name=chatroomName]").val();
-                                    var description = $("input[name=chatroomDescription]").val();
-                                    var isPublic = false;
-                                    var maxOccupants = $("input[name=chatroomMaxOccupants]").val();
-                                    var token = $("input[name=csrfmiddlewaretoken]").val();
-                                    var data = {
-                                        "name": name,
-                                        "description": description,
-                                        "is_public": isPublic,
-                                        "max_occupants": maxOccupants
-                                    };
+                                $('form button[type="submit"]').attr('disabled', true);
 
-
-                                },
-                                headers: {
+                                var token = $("input[name=csrfmiddlewaretoken]").val();
+                                arr.push({name:"is_public",value:"true"});
+                                options.headers = {
                                     "X-CSRFToken": token
-                                },
-                                data: data,
-                                success: function () {
+                                };
 
-                                    $("#createNewChatroomForm").addClass('submited');
-                                }
-
+                            },
+                            error:function(){
+                                console.log("There was an error: woops");
+                            },
+                            success: function () {
+                                //TODO: processss request
+                                // sample response json {"id":3,"name":"Testing The Chatroom","description":"Description","identifier":"testing-the-chatroom","is_public":true,"max_occupants":20,"last_video_thumb":null,"internal_identifier":"UiwbnyvsTxD3vd9qpvfdtz3S7FpYvM4nWl6w"}
+                                $("#createNewChatroomForm").addClass('submited');
                             }
-                        );
-                        return false;
-                    });
+
+                        }
+                    );
+
+                    // this should break the normal submissions process
+                    return false;
+
                 },
 
-                // Do not change code below
                 errorPlacement: function (error, element) {
                     error.insertBefore(element.parent());
                 }

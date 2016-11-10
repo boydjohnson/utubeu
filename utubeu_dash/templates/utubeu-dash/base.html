@@ -54,13 +54,13 @@
                 <h1>Create <span class="color-green">new</span> chatroom</h1>
                 <form id="createNewChatroomForm" action="#" method="post">
                     <div class="form-group">
-                        <input type="text" id="chatroomName" class="form-control"  name="chatroomName" placeholder="Enter Name of Chatroom ..." maxlength="50">
+                        <input type="text" id="chatroomName" class="form-control"  name="name" placeholder="Enter Name of Chatroom ..." maxlength="50" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="chatroomDescription" name="chatroomDescription" class="form-control" placeholder="Enter Description ..." maxlength="">
+                        <input type="text" id="chatroomDescription" name="description" class="form-control" placeholder="Enter Description ..." maxlength="" required>
                     </div>
                     <div class="form-group">
-                        <input type="number" id="chatroomMaxOccupants" name="chatroomMaxOccupants" class="form-control" placeholder="Enter Max Occupants ..." value="20" min="2" max="20">
+                        <input type="number" id="chatroomMaxOccupants" name="max_occupants" class="form-control" placeholder="Enter Max Occupants ..." value="20" min="2" max="20" required>
                     </div>
                     <div class="form-group text-left">
                         <button type="submit" class="btn-u">Create</button>
