@@ -46,7 +46,7 @@ class ChatroomConsumer(JsonWebsocketConsumer):
             return
         results = {k:v for k,v in content.items()}
         results['chatroom'] = kwargs['chatroom']
-        results['user'] = self.message.user.site_info.madeup_username
+        results['user'] = self.message.user.site_info.madeup_username or 'AnonymousUser'
         Channel(self.action_map[content['action']]).send(results)
 
     def disconnect(self, message, **kwargs):
@@ -60,7 +60,8 @@ def chat_message_consumer(message):
         return
     msg = {
         'user': message.content['user'],
-        'text': message.content['text']
+        'text': message.content['text'],
+        'action': 'ChatMess'
     }
     Group(chatroom).send({'text': json.dumps(msg)})
     r = redis.StrictRedis(host='localhost', port=6379)
@@ -72,15 +73,46 @@ def chat_message_consumer(message):
 
 
 def suggestion_consumer(message):
-
+    if 'video_id' not in message.content:
+        return
+    if 'imageurl' not in message.content:
+        return
+    if 'title' not in message.content:
+        return
+    if 'description' not in message.content:
+        return
+    video_id = message.content['video_id']
     chatroom = message.content['chatroom']
-    del message.content['chatroom']
-    Group(chatroom[0:10]).send({'text': json.dumps(message.content)})
+    imageurl = message.content['imageurl']
+    r = redis.StrictRedis(host='localhost', port=6379)
+    if not r.sismember(chatroom + ":sugset", message.content['video_id']):
+        r.sadd(chatroom + ":sugset", message.content['video_id'])
+    else:
+        return
+    
+    r.hsetnx(chatroom + ":sughash", video_id, json.dumps({'video_id': video_id,
+                                                          'imageurl': imageurl}))
+    msg = {
+        'video_id': video_id,
+        'title': message.content['title'],
+        'description': message.content['description'],
+        'imageurl': imageurl,
+        'action': 'Sugg'
+    }
+    Group(chatroom).send({'text': json.dumps(msg)})
+
+
+def play_decider(message):
+    """
+    will determine OnVote whether a new video will be added to the play queue
+    """
+    pass
+
+
 
 
 def vote_sugg_consumer(message):
+
    chatroom = message.content['chatroom']
-   del message.content['chatroom']
-   del message.content['direction']
-   m = {'start': 1, 'action': 'Start', 'youtube_value': message.content['youtube_value']}
-   Group(chatroom[0:10]).send({'text': json.dumps(m)})
+
+   Group(chatroom).send({'text': json.dumps(m)})

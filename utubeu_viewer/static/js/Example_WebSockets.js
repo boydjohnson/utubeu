@@ -10,6 +10,10 @@ websockets.onopen = function (event) {
 
 
 
+
 websockets.onmessage = function(event){
    console.log(event.data);
+    websockets.send(JSON.stringify({'action': 'Sugg', 'title': 'the best video ever!', 'video_id': '284knsodihg84w02nief',
+                                 'imageurl': 'http://youtube.com/urlsomething', 'description': "the best video ever."}));
+
 };
