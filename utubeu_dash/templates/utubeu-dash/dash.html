@@ -1,30 +1,114 @@
 {% extends 'utubeu-dash/base.html' %}
+{% load staticfiles %}
 
 {% block title %}{% if user and user.is_authenticated %}Hello,
     {{ user.get_full_name }}{% else %}UTubeU{% endif %}{% endblock %}
 
+{% block navigation %}
+<!--=== Header ===-->
+<div class="header">
+    <div class="container">
+
+        <!-- Topbar -->
+        <div class="row">
+            <div class="topbar pull-left">
+                <ul class="list-inline ">
+                    <li>Welcome: {{ user.username }} <a href="#"><i class="fa fa-pencil" id="edit_username"></i></a></li>
+                </ul>
+            </div>
+            <div class="topbar pull-right">
+                <!-- Welcome User -->
+
+                <!--/end Welcome User -->
+                <ul class="loginbar">
+                    <li><a href="/">Home</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- End Topbar -->
+
+    </div><!--/end container-->
+</div>
+<!--=== End Header ===-->
+{% endblock %}
+
 {% block content %}
 <!--=== Content ===-->
 <div class="container content">
-    <div class="row">
-        <div class="col s12 m6">
-            <ul class="collapsible" data-collapsible="expandable">
-                <li><h5>Rooms</h5></li>
-                <li>
-                    <div class="collapsible-header">
-                        <a href="#">The greatest room Evar<span class="badge new accent-color"
-                                                                data-badge-caption="">27/30</span></a></div>
-                    <div class="collapsible-body"><p>Lorem ipsum dolar!</p></div>
-                </li>
-                <li>
-                    <div class="collapsible-header"><a href="#">The bestest room<span class="badge new accent-color"
-                                                                                      data-badge-caption="">4/15</span></a>
-                    </div>
-                    <div class="collapsible-body"><p>Lorem ipsum dolar!</p></div>
-                </li>
+    <h2><a href="javascript:void(0)" id="publicChatrooms">Public Chatrooms</a></h2>
+    <div class="row margin-bottom-20">
+        <div class="col-sm-3 col-xs-6 md-margin-bottom-20">
+            <div class="box-shadow shadow-effect-1 margin-bottom-20">
+                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            </div>
+            <div class="description">
+              <p>Some description for the chatroom</p>
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20">
+            <div class="box-shadow shadow-effect-2">
+                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-6 md-margin-bottom-20">
+            <div class="box-shadow shadow-effect-1">
+                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20">
+            <div class="box-shadow shadow-effect-2">
+                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="chatCategory">
+        <h2><a href="javascript:void(0)" id="ownedChatrooms">Owned Chatrooms</a></h2>
+        <div class="row margin-bottom-20 chatList">
+            <div class="col-sm-3 col-xs-6 md-margin-bottom-20 roomWrap">
+                <div class="box-shadow shadow-effect-1 room">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20 roomWrap">
+                <div class="box-shadow shadow-effect-2 room">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6 md-margin-bottom-20 roomWrap">
+                <div class="box-shadow shadow-effect-1 room">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
+            </div>
+            <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20roomWrap">
+                <div class="box-shadow shadow-effect-2 room">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
 
-            </ul>
-
+    <h2>Member Chatrooms</h2>
+    <div class="row margin-bottom-20">
+        <div class="col-sm-3 col-xs-6 md-margin-bottom-20">
+            <div class="box-shadow shadow-effect-1">
+                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20">
+            <div class="box-shadow shadow-effect-2">
+                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-6 md-margin-bottom-20">
+            <div class="box-shadow shadow-effect-1">
+                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20">
+            <div class="box-shadow shadow-effect-2">
+                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            </div>
         </div>
     </div>
 </div><!--/container-->
@@ -32,6 +116,35 @@
 {% endblock %}
 
 {% block js %}
+<script>
+    $('#ownedChatrooms').on("click",function(event){
+        var $that = $(this);
+        event.preventDefault();
+        $.getJSON("http://localhost:8000/api/v1/memberchatrooms", function(data){
+            console.log(data);
+            var chatList = $that.closest(".chatCategory").find(".chatList");
+            chatList.children().remove();
+            for( var d in data){
+               // chatList.append(data[d].description);
+                chatList.append(getCardHTML(data[d].description));
+
+            }
+
+        });
+    })
+    function getCardHTML(data){
+        var htmlString = document.createElement('div').setAttribute('class','col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20');
+        var innerHtml = document.createElement('div').setAttribute('class','box-shadow shadow-effect-2');
+        var innerHtml = document.createElement('div').setAttribute('class','box-shadow shadow-effect-2');
+        var innerHtml = document.createElement('div').setAttribute('class','box-shadow shadow-effect-2');
+
+        var imageHtml = document.createElement('img');
+            imageHtml.setAttribute('class','img-responsive img-bordered');
+            imageHtml.setAttribute('src','{% static 'assets/img/demo.jpg' %}');
+
+        return imageHtml;
+    }
+</script>
 {% endblock %}
 
 
