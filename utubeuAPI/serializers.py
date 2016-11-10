@@ -18,9 +18,6 @@ class ChatroomSerializer(serializers.ModelSerializer):
             'last_video_thumb': {
                 'read_only': True,
             },
-            'max_occupants': {
-                'read_only': True,
-            }
         }
 
     def create(self, validated_data):
