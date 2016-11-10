@@ -36,31 +36,44 @@
 {% block content %}
 <!--=== Content ===-->
 <div class="container content">
-    <h2><a href="javascript:void(0)" id="publicChatrooms">Public Chatrooms</a></h2>
-    <div class="row margin-bottom-20">
-        <div class="col-sm-3 col-xs-6 md-margin-bottom-20">
-            <div class="box-shadow shadow-effect-1 margin-bottom-20">
-                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+    <button class="btn-u" data-toggle="modal" data-target="#shareLinks">Share Links Modal</button>
+    <div class="chatCategory">
+        <h2><a href="javascript:void(0)" id="publicChatrooms">Public Chatrooms</a></h2>
+        <div class="row margin-bottom-20">
+            <div class="col-sm-2 col-xs-6 md-margin-bottom-20">
+                <div class="box-shadow shadow-effect-1 margin-bottom-20">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
+                <div class="description">
+                  <p>Some description for the chatroom</p>
+                </div>
             </div>
-            <div class="description">
-              <p>Some description for the chatroom</p>
+            <div class="col-sm-2 col-xs-6 shadow-wrapper md-margin-bottom-20">
+                <div class="box-shadow shadow-effect-2">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
             </div>
-        </div>
-        <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20">
-            <div class="box-shadow shadow-effect-2">
-                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            <div class="col-sm-2 col-xs-6 shadow-wrapper md-margin-bottom-20">
+                <div class="box-shadow shadow-effect-2">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
             </div>
-        </div>
-        <div class="col-sm-3 col-xs-6 md-margin-bottom-20">
-            <div class="box-shadow shadow-effect-1">
-                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            <div class="col-sm-2 col-xs-6 shadow-wrapper md-margin-bottom-20">
+                <div class="box-shadow shadow-effect-2">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
             </div>
-        </div>
-        <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20">
-            <div class="box-shadow shadow-effect-2">
-                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            <div class="col-sm-2 col-xs-6 shadow-wrapper md-margin-bottom-20">
+                <div class="box-shadow shadow-effect-2">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
             </div>
-        </div>
+            <div class="col-sm-2 col-xs-6 shadow-wrapper md-margin-bottom-20">
+                <div class="box-shadow shadow-effect-2">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
+            </div>
+         </div>
     </div>
     <div class="chatCategory">
         <h2><a href="javascript:void(0)" id="ownedChatrooms">Owned Chatrooms</a></h2>
@@ -88,8 +101,9 @@
         </div>
     </div>
 
-    <h2>Member Chatrooms</h2>
-    <div class="row margin-bottom-20">
+    <div class="chatCategory">
+        <h2>Member Chatrooms</h2>
+        <div class="row margin-bottom-20">
         <div class="col-sm-3 col-xs-6 md-margin-bottom-20">
             <div class="box-shadow shadow-effect-1">
                 <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
@@ -111,7 +125,66 @@
             </div>
         </div>
     </div>
+    </div>
 </div><!--/container-->
+
+<!--== Share Links Modal ==-->
+<div class="modal fade" id="shareLinks" tabindex="-1" role="dialog" aria-labelledby="shareLinksModal" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel4">Anyone can join this chatroom using the link below.</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Chatroom link</h4>
+                        <p id="share-url">htt://utubeu.com/share-link-placeholder.html</p>
+                    </div>
+                    <div class="col-md-12">
+                        <h4>Share on your social media</h4>
+
+                        <ul class="social-icons social-icons-color">
+                            <li><a href="#" data-original-title="Amazon" class="rounded social_amazon"></a></li>
+                            <li><a href="#" data-original-title="Behance" class="rounded social_behance"></a></li>
+                            <li><a href="#" data-original-title="Blogger" class="rounded social_blogger"></a></li>
+                            <li><a href="#" data-original-title="Deviantart" class="rounded social_deviantart"></a></li>
+                            <li><a href="#" data-original-title="Dribbble" class="rounded social_dribbble"></a></li>
+                            <li><a href="#" data-original-title="Dropbox" class="rounded social_dropbox"></a></li>
+                            <li><a href="#" data-original-title="Evernote" class="rounded social_evernote"></a></li>
+                            <li><a href="#" data-original-title="Facebook" class="rounded social_facebook"></a></li>
+                            <li><a href="#" data-original-title="Forrst" class="rounded social_forrst"></a></li>
+                            <li><a href="#" data-original-title="Google Plus" class="rounded social_googleplus"></a></li>
+                            <li><a href="#" data-original-title="Jolicloud" class="rounded social_jolicloud"></a></li>
+                            <li><a href="#" data-original-title="Last-fm" class="rounded social_last-fm"></a></li>
+                            <li><a href="#" data-original-title="Linkedin" class="rounded social_linkedin"></a></li>
+                            <li><a href="#" data-original-title="Picasa" class="rounded social_picasa"></a></li>
+                            <li><a href="#" data-original-title="Feed" class="rounded social_rss"></a></li>
+                            <li><a href="#" data-original-title="Skype" class="rounded social_skype"></a></li>
+                            <li><a href="#" data-original-title="Spotify" class="rounded social_spotify"></a></li>
+                            <li><a href="#" data-original-title="Stumbleupon" class="rounded social_stumbleupon"></a></li>
+                            <li><a href="#" data-original-title="Tumblr" class="rounded social_tumblr"></a></li>
+                            <li><a href="#" data-original-title="Twitter" class="rounded social_twitter"></a></li>
+                            <li><a href="#" data-original-title="Vimeo" class="rounded social_vimeo"></a></li>
+                            <li><a href="#" data-original-title="Wordpress" class="rounded social_wordpress"></a></li>
+                            <li><a href="#" data-original-title="Xing" class="rounded social_xing"></a></li>
+                            <li><a href="#" data-original-title="Yahoo" class="rounded social_yahoo"></a></li>
+                            <li><a href="#" data-original-title="Youtube" class="rounded social_youtube"></a></li>
+                            <li><a href="#" data-original-title="vKontakte" class="rounded social_vk"></a></li>
+                            <li><a href="#" data-original-title="Instagram" class="rounded social_instagram"></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-u btn-u-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--== End Share Links Modal == -->
+
 <!--=== End Content ===-->
 {% endblock %}
 
