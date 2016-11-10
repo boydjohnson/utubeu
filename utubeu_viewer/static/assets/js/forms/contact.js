@@ -37,9 +37,6 @@ var ContactForm = function () {
 
                 // Ajax form submition
                 submitHandler: function (form) {
-                    console.log(form);
-                    console.log($(form));
-
                     $(form).ajaxSubmit(
                         {
                             type: "POST",
