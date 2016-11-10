@@ -20,8 +20,7 @@ class ChatroomConsumer(JsonWebsocketConsumer):
     }
 
     http_user = True
-    channel_session_user = True
-    channel_session = True
+    strict_ordering = True
 
     def connect(self, message, **kwargs):
         try:
@@ -31,11 +30,10 @@ class ChatroomConsumer(JsonWebsocketConsumer):
         except ObjectDoesNotExist:
             return
         Group(kwargs['chatroom']).add(self.message.reply_channel)
-        # r = redis.StrictRedis(host='localhost', port=6379)
-        # pipeline = r.pipeline(transaction=False)
-        # if r.exists(kwargs['chatroom'] + ":lastten"):
-        #     print("THe key exists!")
-        #     self.message.channel.send(json.dumps(r.get(kwargs['chatroom'] + ":lastten")))
+        r = redis.StrictRedis(host='localhost', port=6379)
+        if r.exists(kwargs['chatroom'] + ":lastten"):
+            last_ten_messages = [m.decode('UTF-8') for m in r.lrange(kwargs['chatroom'] + ":lastten", 0, 10)]
+            self.message.reply_channel.send({"text": json.dumps(last_ten_messages)})
 
 
 
@@ -65,11 +63,12 @@ def chat_message_consumer(message):
         'text': message.content['text']
     }
     Group(chatroom).send({'text': json.dumps(msg)})
-    # r = redis.StrictRedis(host='localhost', port=6379, db=1)
-    # redis_pipeline = r.pipeline()
-    # redis_pipeline.lpush(chatroom + ":lastten", json.dumps({'user': message.content['user'],
-    #                                                         'text': message.content['text']}))
-
+    r = redis.StrictRedis(host='localhost', port=6379)
+    redis_pipeline = r.pipeline()
+    redis_pipeline.lpush(chatroom + ":lastten", {'user': message.content['user'],
+                                                            'text': message.content['text']})
+    redis_pipeline.ltrim(chatroom + ":lastten", 0, 10)
+    redis_pipeline.execute()
 
 
 def suggestion_consumer(message):
