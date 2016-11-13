@@ -10,6 +10,5 @@ channel_routing = [
     include(viewer_routing, path=r'^/c'),
     route('ChatMess', con.chat_message_consumer),
     route('Sugg', con.suggestion_consumer),
-    route('VoteSugg', con.vote_sugg_consumer),
-    route('decider', con.play_decider)
+    route('VoteSugg', con.vote_sugg_consumer)
 ]
