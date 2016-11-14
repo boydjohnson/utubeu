@@ -1,10 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.crypto import get_random_string
+from django.utils.http import urlquote_plus
 
 import re
 import random
 import string
+
+from socialConfig import facebook_app_id
+from socialConfig import utubeu_web_address
 
 
 def string_is_integer(value):
@@ -43,6 +47,22 @@ class Chatroom(models.Model):
 
     last_video_thumb = models.TextField(verbose_name="The thumbnail url of the last video played.",
                                         blank=True, null=True)
+
+    def web_address(self):
+        return "{base}/chatroom/{identifier}".format(base=utubeu_web_address,
+                                                            identifier=self.identifier)
+
+    def facebook_share(self):
+        web_address = self.web_address()
+        return_address = "{base}/dashboard".format(base=utubeu_web_address)
+        return "https://www.facebook.com/dialog/share?app_id={app_id}" \
+               "&display=page&href={url}&redirect_uri={redirect_url}".format(app_id=facebook_app_id,
+                                                                             url=urlquote_plus(web_address),
+                                                                             redirect_url=urlquote_plus(return_address))
+
+    def twitter_share(self):
+        return "https://twitter.com/intent/tweet?url={url}" \
+               "&text={title}".format(url=urlquote_plus(self.web_address()), title=urlquote_plus(self.name))
 
     def __str__(self):
         return self.name + ":" + self.owner.username + ":Active:" + str(self.is_active)

@@ -2,6 +2,8 @@ from django.db.models import Q, ObjectDoesNotExist
 
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.filters import SearchFilter
 
 
 from utubeuAPI.serializers import ChatroomSerializer, ChatroomDetailSerializer, UserInfoSerializer
@@ -48,3 +50,13 @@ class UserInfoGetUpdateView(RetrieveUpdateAPIView):
         except ObjectDoesNotExist:
             user_info = UserSiteInfo.objects.create(user=user_pk)
         return user_info
+
+
+class ChatroomSearchView(ReadOnlyModelViewSet):
+    serializer_class = ChatroomDetailSerializer
+    permission_classes = (IsAuthenticated, )
+    filter_backends = (SearchFilter, )
+    search_fields = ('name', 'description')
+
+    def get_queryset(self):
+        return Chatroom.objects.filter(Q(owner=self.request.user) | Q(is_public=True))
