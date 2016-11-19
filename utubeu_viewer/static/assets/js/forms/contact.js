@@ -56,10 +56,21 @@ var ContactForm = function () {
                             error:function(){
                                 console.log("There was an error: woops");
                             },
-                            success: function () {
-                                //TODO: processss request
-                                // sample response json {"id":3,"name":"Testing The Chatroom","description":"Description","identifier":"testing-the-chatroom","is_public":true,"max_occupants":20,"last_video_thumb":null,"internal_identifier":"UiwbnyvsTxD3vd9qpvfdtz3S7FpYvM4nWl6w"}
+                            success: function (data) {
+                                console.log(data);
+                                // sample response json {"id":3,"name":"Testing The Chatroom","description":"Description",
+                                // "web_address":"localhost:8000/chatroom/testing-the-chatroom","is_public":true,
+                                // "max_occupants":20,"last_video_thumb":null,
+                                // "internal_identifier":"UiwbnyvsTxD3vd9qpvfdtz3S7FpYvM4nWl6w",
+                                // "facebook_share": somelink,
+                                // "twitter_share": someotherlink}
                                 $("#createNewChatroomForm").addClass('submited');
+
+                                $("#share-url").val(data.web_address);
+                                $("#facebook_share").attr('href', data.facebook_share);
+                                $("#twitter_share").attr('href', data.twitter_share);
+                                $("#shareLinks").modal("toggle");
+
                             }
 
                         }
