@@ -28,13 +28,3 @@ class TestSerializers(TestCase):
         c = chatroom.save()
         self.assertIn(self.user, Chatroom.objects.get(id=c.pk).joiners.all(),
                             "The owner is initially added to the Chatroom.joiners")
-
-    def test_that_update_of_chatroom_will_add_users(self):
-        chat = ChatroomDetailSerializer(instance=self.chatroom, data={'name':'testroom','description': 'test test',
-                                                                      'joiners': self.a_whole_bunch_of_users,
-                                                                      'owner': self.user})
-        chat.is_valid(raise_exception=True)
-        c = chat.save()
-        chatroom = Chatroom.objects.get(id=c.pk)
-        for someuser in self.a_whole_bunch_of_users:
-            self.assertTrue(someuser in [u.pk for u in chatroom.joiners.all()], "{} is also in the Chatroom.users".format(someuser))

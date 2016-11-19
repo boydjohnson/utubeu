@@ -41,8 +41,8 @@ class ChatroomSerializer(serializers.ModelSerializer):
 class ChatroomDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chatroom
-        fields = ('id', 'name', 'identifier', 'max_occupants', 'description', 'number_of_joiners', 'last_video_thumb',
-                  'internal_identifier', 'is_public')
+        fields = ('id', 'name', 'web_address', 'max_occupants', 'description', 'number_of_joiners', 'last_video_thumb',
+                  'internal_identifier', 'is_public', 'facebook_share', 'twitter_share')
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
