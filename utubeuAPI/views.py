@@ -7,7 +7,7 @@ from rest_framework.filters import SearchFilter
 
 
 from utubeuAPI.serializers import ChatroomSerializer, ChatroomDetailSerializer, UserInfoSerializer
-from utubeuAPI.pagination import PublicChatroomPagination
+from utubeuAPI.pagination import ChatroomPagination, ManyChatroomPagination
 from utubeu_viewer.models import Chatroom, UserSiteInfo
 
 
@@ -15,6 +15,7 @@ class OwnedChatroomListCreateView(ListCreateAPIView):
     """Can list the chatrooms a user owns and create new chatrooms"""
     permission_classes = (IsAuthenticated, )
     serializer_class = ChatroomSerializer
+    pagination_class = ManyChatroomPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -24,6 +25,7 @@ class OwnedChatroomListCreateView(ListCreateAPIView):
 class MemberChatroomListView(ListAPIView):
     serializer_class = ChatroomDetailSerializer
     permission_classes = (IsAuthenticated, )
+    pagination_class = ManyChatroomPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -33,7 +35,7 @@ class MemberChatroomListView(ListAPIView):
 class PublicChatroomListView(ListAPIView):
     serializer_class = ChatroomDetailSerializer
     permission_classes = (IsAuthenticated, )
-    pagination_class = PublicChatroomPagination
+    pagination_class = ChatroomPagination
 
     def get_queryset(self):
         return Chatroom.objects.filter(~Q(owner=self.request.user.pk),is_public=True)
@@ -55,8 +57,9 @@ class UserInfoGetUpdateView(RetrieveUpdateAPIView):
 class ChatroomSearchView(ReadOnlyModelViewSet):
     serializer_class = ChatroomDetailSerializer
     permission_classes = (IsAuthenticated, )
+    pagination_class = ManyChatroomPagination
     filter_backends = (SearchFilter, )
     search_fields = ('name', 'description')
 
     def get_queryset(self):
-        return Chatroom.objects.filter(Q(owner=self.request.user) | Q(is_public=True))
+        return Chatroom.objects.filter(Q(joiners=self.request.user) | Q(is_public=True))
