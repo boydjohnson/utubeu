@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 from utubeu_viewer.models import Chatroom
 
-
+@login_required(login_url='viewer:main_page')
 def dashboard(request):
     if request.method == 'GET':
         user = request.user

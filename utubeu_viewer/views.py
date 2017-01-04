@@ -7,10 +7,12 @@ from django.shortcuts import render, redirect, reverse
 
 from utubeu_viewer.models import Chatroom, UserSiteInfo
 
-
 def main_page(request):
     if request.method == 'GET':
-        return render(request, 'main.html')
+        if request.user.is_authenticated():
+             return redirect('viewer:dashboard')
+        else:
+            return render(request, 'main.html')
     else:
         raise PermissionDenied("Method not supported.")
 

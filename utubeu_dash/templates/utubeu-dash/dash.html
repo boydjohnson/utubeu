@@ -21,7 +21,7 @@
 
                 <!--/end Welcome User -->
                 <ul class="loginbar">
-                    <li><a href="/">Home</a></li>
+                    <li><a href="{% url 'viewer:logout' %}">Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -37,95 +37,69 @@
 <!--=== Content ===-->
 <div class="container content">
     <button class="btn-u" data-toggle="modal" data-target="#shareLinks">Share Links Modal</button>
+
+    <!--=== Public Chatrooms ===-->
     <div class="chatCategory">
         <h2><a href="javascript:void(0)" id="publicChatrooms">Public Chatrooms</a></h2>
         <div class="row margin-bottom-20">
+            {% for chatroom in public_chatrooms %}
             <div class="col-sm-2 col-xs-6 md-margin-bottom-20">
-                <div class="box-shadow shadow-effect-1 margin-bottom-20">
-                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-                </div>
-                <div class="description">
-                  <p>Some description for the chatroom</p>
-                </div>
+                <a href="{{ chatroom.web_address }}">
+                    <div class="box-shadow shadow-effect-1 margin-bottom-20">
+                        <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                    </div>
+                    <div class="description">
+                        <p>{{ chatroom.name }}</p>
+                    </div>
+                    <div class="description">
+                        <p>{{ chatroom.description }}</p>
+                    </div>
+                </a>
             </div>
-            <div class="col-sm-2 col-xs-6 shadow-wrapper md-margin-bottom-20">
-                <div class="box-shadow shadow-effect-2">
-                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-                </div>
-            </div>
-            <div class="col-sm-2 col-xs-6 shadow-wrapper md-margin-bottom-20">
-                <div class="box-shadow shadow-effect-2">
-                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-                </div>
-            </div>
-            <div class="col-sm-2 col-xs-6 shadow-wrapper md-margin-bottom-20">
-                <div class="box-shadow shadow-effect-2">
-                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-                </div>
-            </div>
-            <div class="col-sm-2 col-xs-6 shadow-wrapper md-margin-bottom-20">
-                <div class="box-shadow shadow-effect-2">
-                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-                </div>
-            </div>
-            <div class="col-sm-2 col-xs-6 shadow-wrapper md-margin-bottom-20">
-                <div class="box-shadow shadow-effect-2">
-                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-                </div>
-            </div>
+            {% endfor%}
          </div>
     </div>
+    <!--=== End Public Chatrooms ===-->
+    <!--=== Owned Chatrooms ===-->
     <div class="chatCategory">
         <h2><a href="javascript:void(0)" id="ownedChatrooms">Owned Chatrooms</a></h2>
         <div class="row margin-bottom-20 chatList">
+            {% for chatroom in owned_chatrooms %}
             <div class="col-sm-3 col-xs-6 md-margin-bottom-20 roomWrap">
                 <div class="box-shadow shadow-effect-1 room">
                     <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
                 </div>
-            </div>
-            <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20 roomWrap">
-                <div class="box-shadow shadow-effect-2 room">
-                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                <div class="description">
+                    <p>{{ chatroom.name }}</p>
+                </div>
+                <div class="description">
+                    <p>{{ chatroom.description }}</p>
                 </div>
             </div>
-            <div class="col-sm-3 col-xs-6 md-margin-bottom-20 roomWrap">
-                <div class="box-shadow shadow-effect-1 room">
-                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-                </div>
-            </div>
-            <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20roomWrap">
-                <div class="box-shadow shadow-effect-2 room">
-                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-                </div>
-            </div>
+            {% endfor%}
         </div>
     </div>
-
+    <!--=== End Owned Chatrooms ===-->
+    <!--=== Member Chatrooms ===-->
     <div class="chatCategory">
         <h2>Member Chatrooms</h2>
         <div class="row margin-bottom-20">
-        <div class="col-sm-3 col-xs-6 md-margin-bottom-20">
-            <div class="box-shadow shadow-effect-1">
-                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+            {% for chatroom in member_chatrooms %}
+            <div class="col-sm-3 col-xs-6 md-margin-bottom-20">
+                <div class="box-shadow shadow-effect-1">
+                    <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
+                </div>
+                <div class="description">
+                    <p>{{ chatroom.name }}</p>
+                </div>
+                <div class="description">
+                    <p>{{ chatroom.description }}</p>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20">
-            <div class="box-shadow shadow-effect-2">
-                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-            </div>
-        </div>
-        <div class="col-sm-3 col-xs-6 md-margin-bottom-20">
-            <div class="box-shadow shadow-effect-1">
-                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-            </div>
-        </div>
-        <div class="col-sm-3 col-xs-6 shadow-wrapper md-margin-bottom-20">
-            <div class="box-shadow shadow-effect-2">
-                <img class="img-responsive img-bordered" src="{% static 'assets/img/demo.jpg' %}" alt="">
-            </div>
+            {% endfor%}
         </div>
     </div>
-    </div>
+    <!--=== End Member Chatrooms ===-->
 </div><!--/container-->
 
 <!--== Share Links Modal ==-->
