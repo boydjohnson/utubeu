@@ -90,10 +90,11 @@
         </div>
     </div>
 </div>
-<div class="service-info margin-bottom-60">
+<div id="chatroom" data-chatroom="{{ chatroom.internal_identifier }}" class="service-info margin-bottom-60">
     <div class="container">
         <div class="headline-center-v2 headline-center-v2-dark margin-bottom-10">
-            <h2>Features</h2>
+            <h2>{{ chatroom.name }}</h2>
+            <p>{{ chatroom.description }}</p>
             <span class="bordered-icon"><i class="fa fa-th-large"></i></span>
         </div>
 
@@ -103,20 +104,23 @@
                 </div>
             </div><div class="col-md-6">
             <div id="chat-box">
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="user">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="other">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="other">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="other">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="other">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="other">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="other">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="other">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="other">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="other">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="other">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
             </div>
-            <div id="chat-input">
-                <input type="text">
+            <div id="chat-input" class="input-group">
+                <input type="text" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn-u btn-u-blue" type="button">Send</button>
+                    </span>
             </div>
         </div>
 
