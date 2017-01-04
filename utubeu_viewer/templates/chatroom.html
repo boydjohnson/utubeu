@@ -2,8 +2,7 @@
 {% load staticfiles %}
 
 {% block css %}
-    <style>
-    </style>
+    <link rel="stylesheet" href="{% static 'assets/plugins/owl-carousel/owl-carousel/owl.carousel.css' %}">
 {% endblock %}
 
 {% block title %}
@@ -47,6 +46,50 @@
 {% endblock content1 %}
 
 {% block content %}
+<!-- End Owl Clients v1 -->
+    <div class="owl-clients-v1 owl-carousel owl-theme">
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+        <div class="item">
+            <img src="{% static 'assets/img/demo.jpg' %}" alt="">
+        </div>
+    </div>
+
+    <div class="owl-controls clickable">
+        <div class="owl-pagination">
+            <div class="owl-page active"><span class=""></span></div>
+            <div class="owl-page"><span class=""></span></div>
+        </div>
+    </div>
+</div>
 <div class="service-info margin-bottom-60">
     <div class="container">
         <div class="headline-center-v2 headline-center-v2-dark margin-bottom-10">
@@ -56,16 +99,24 @@
 
         <div class="row">
             <div class="col-md-6">
-                <div class="responsive-video">
-                    <iframe src="//player.vimeo.com/video/78451097?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
+                <div class="responsive-video video-outline">
                 </div>
             </div><div class="col-md-6">
             <div id="chat-box">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p><span class="username">username</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
             </div>
-            <div id="chat-input"><input>
+            <div id="chat-input">
+                <input type="text">
             </div>
         </div>
 
@@ -76,7 +127,18 @@
 {% endblock %}
 
 {% block js %}
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <!-- JS Implementing Plugins -->
+    <script type="text/javascript" src="{% static 'assets/plugins/owl-carousel/owl-carousel/owl.carousel.js' %}"></script>
+    <!-- JS Page Level -->
+    <script type="text/javascript" src="{% static 'assets/js/plugins/owl-carousel.js' %}"></script>
+
     <script src="{% static 'js/Example_WebSockets.js' %}"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            OwlCarousel.initOwlCarousel();
+        });
+    </script>
 
 {% endblock %}
