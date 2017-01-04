@@ -9,8 +9,8 @@
 {% block title %}
     UtubeU--{{ chatroom.name }}
 {% endblock %}
+{% block content1 %}
 
-{% block content %}
     <div class="row">
         <div class="col s12 m4" alt-text="{{ chatroom.description }}">
             {{ chatroom.name }}
@@ -44,9 +44,36 @@
 
         <div id="chatroom" data-chatroom="{{ chatroom.internal_identifier }}"></div>
     </div>
+{% endblock content1 %}
 
+{% block content %}
+<div class="service-info margin-bottom-60">
+    <div class="container">
+        <div class="headline-center-v2 headline-center-v2-dark margin-bottom-10">
+            <h2>Features</h2>
+            <span class="bordered-icon"><i class="fa fa-th-large"></i></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="responsive-video">
+                    <iframe src="//player.vimeo.com/video/78451097?title=0&amp;byline=0&amp;portrait=0&amp;badge=0" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
+                </div>
+            </div><div class="col-md-6">
+            <div id="chat-box">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id nisi augue. Maecenas eu risus ex. Pellentesque laoreet eros at erat lacinia tempus.</p>
+            </div>
+            <div id="chat-input"><input>
+            </div>
+        </div>
+
+
+        </div><!--/row-->
+    </div>
+</div>
 {% endblock %}
-
 
 {% block js %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>

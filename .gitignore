@@ -62,3 +62,6 @@ target/
 # Created by .ignore support plugin (hsz.mobi)
 socialConfig.py
 .vagrant/
+
+#OSX filesystem
+.DS_Store
